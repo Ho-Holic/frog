@@ -4,12 +4,32 @@
 #include <QLayout>
 #include <QTimer>
 
+// self
+#include "GraphWidget.h"
+#include "World.h"
+#include "LibraryImportWidget.h"
+
 nsSettingSpider::MainWindow::MainWindow(QWidget* parent)
 : QMainWindow(parent) {
-  QWidget* widget = new QWidget(this);
-  nsSettingSpider::World* world = new nsSettingSpider::World(widget);
-  nsSettingSpider::GraphWidget* graphWidget = new nsSettingSpider::GraphWidget(widget);
 
+  QWidget* widget = new QWidget(this);
+
+  World* world = new World(widget);
+  GraphWidget* graphWidget = new GraphWidget(widget);
+  LibraryImportWidget* libraryImport = new LibraryImportWidget(widget);
+
+  QHBoxLayout* layout = new QHBoxLayout(widget);  
+  layout->addWidget(graphWidget, 100);
+  layout->addWidget(libraryImport, 30);
+
+  setCentralWidget(widget);
+
+  connectParts(world, graphWidget, libraryImport);
+}
+
+void nsSettingSpider::MainWindow::connectParts(nsSettingSpider::World* world,
+                                               nsSettingSpider::GraphWidget* graphWidget,
+                                               LibraryImportWidget* libraryImport) {
   connect(world,       SIGNAL(entityChanged(Entity*)),
           graphWidget, SLOT(drawEntity(Entity*)));
 
@@ -39,11 +59,6 @@ nsSettingSpider::MainWindow::MainWindow(QWidget* parent)
 
   connect(graphWidget, SIGNAL(onRelationTypeChange(const RelationType&)),
           world,       SLOT(changeRelationType(const RelationType&)));
-
-  QHBoxLayout* layout = new QHBoxLayout(widget);  
-  layout->addWidget(graphWidget);
-
-  setCentralWidget(widget);
 }
 
 

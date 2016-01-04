@@ -20,7 +20,9 @@ SOURCES += src/main.cpp\
     src/Relation.cpp \
     src/GraphWidget.cpp \
     src/Connection.cpp \
-    src/ColorScheme.cpp
+    src/ColorScheme.cpp \
+    src/LibraryImportWidget.cpp \
+    src/LibraryAddWidget.cpp
 
 HEADERS  += \
     src/MainWindow.h \
@@ -31,4 +33,6 @@ HEADERS  += \
     src/cplusplus11.h \
     src/GraphWidget.h \
     src/Connection.h \
-    src/ColorScheme.h
+    src/ColorScheme.h \
+    src/LibraryImportWidget.h \
+    src/LibraryAddWidget.h

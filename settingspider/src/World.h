@@ -1,5 +1,5 @@
-#ifndef SETTINGSPIDER_WORLD_HPP
-#define SETTINGSPIDER_WORLD_HPP
+#ifndef SETTINGSPIDER_WORLD_H
+#define SETTINGSPIDER_WORLD_H
 
 // qt
 #include <QObject>
@@ -93,4 +93,4 @@ namespace nsSettingSpider {
 
 
 
-#endif // SETTINGSPIDER_WORLD_HPP
+#endif // SETTINGSPIDER_WORLD_H
