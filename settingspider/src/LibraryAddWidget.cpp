@@ -1,5 +1,6 @@
 // self
 #include "LibraryAddWidget.h"
+#include "PathPair.h"
 
 // qt
 #include <QTreeView>
@@ -27,11 +28,17 @@ nsSettingSpider::LibraryAddWidget::LibraryAddWidget(QWidget* parent)
   layout->setMargin(0);
 
   QFileSystemModel* model = new QFileSystemModel(this);
-  model->setRootPath(mPath);
+  model->setFilter(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Drives | QDir::AllDirs);
+  QModelIndex index = model->setRootPath(mPath);
 
   QTreeView* tree = new QTreeView(this);
   tree->setModel(model);
-  tree->setRootIndex(model->index(mPath));
+  tree->setRootIndex(index);
+
+  // hide columns
+  for (int i = 1; i < model->columnCount(); ++i) {
+    tree->hideColumn(i);
+  }
 
   QLabel* pathCaption = new QLabel("<b>Part of the path:</b>", this);
   QLabel* pathText = new QLabel(mPath, this);
@@ -82,7 +89,7 @@ void nsSettingSpider::LibraryAddWidget::libraryPathChanged(const QModelIndex& in
     parts += 1;
   }
 
-  // don't use parts-1, because we need extra state
+  // don't use "parts - 1", because we need extra state
   // see LibraryAddWidget::dividePathAt
   mPathSlider->setRange(0, parts);
 
@@ -93,7 +100,7 @@ void nsSettingSpider::LibraryAddWidget::addLibrary() {
 
   if (mPath.isEmpty()) return;
 
-  emit onPathAddition(mPath); // trim path a bit
+  emit onPathAddition(PathPair(mPath, mPathForAddition));
   emit onCancelClicked();
 }
 
@@ -115,8 +122,6 @@ void nsSettingSpider::LibraryAddWidget::dividePathAt(int pos) {
 
   // windows path don't start with "/", so need generic workaround
 
-  QString finalPath = mPath;
-
   if (pos > 0) {
 
     int sectionsLeft = pos;
@@ -134,19 +139,26 @@ void nsSettingSpider::LibraryAddWidget::dividePathAt(int pos) {
     QString left = mPath.left(splitPos + 1);
     QString right = mPath.mid(splitPos + 1);
 
+
     QColor rightColor = mPathLabel->palette().color(QPalette::Text);
     QColor leftColor((rightColor.red()   + 255) / 1.5,
                      (rightColor.green() + 255) / 1.5,
                      (rightColor.blue()  + 255) / 1.5);
 
-    finalPath = QString("<font color=\"%1\">%2</font><font color=\"%3\">%4</font>")
-                    .arg(leftColor.name())
-                    .arg(left)
-                    .arg(rightColor.name())
-                    .arg(right);
+    QString coloredPath = QString("<font color=\"%1\">%2</font><font color=\"%3\">%4</font>")
+                          .arg(leftColor.name())
+                          .arg(left)
+                          .arg(rightColor.name())
+                          .arg(right);
+
+    mPathForAddition = right;
+    mPathLabel->setText(coloredPath);
 
   }
+  else {
+    mPathForAddition = mPath;
+    mPathLabel->setText(mPath);
+  }
 
-  mPathForAddition = finalPath;
-  mPathLabel->setText(mPathForAddition);
+
 }

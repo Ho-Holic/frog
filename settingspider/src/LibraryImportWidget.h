@@ -8,7 +8,9 @@ class QTreeWidget;
 
 namespace nsSettingSpider {
 
+  class PathPair;
   class LibraryAddWidget;
+  class LibraryModel;
 
   class LibraryImportWidget : public QStackedWidget {
   private:
@@ -16,17 +18,12 @@ namespace nsSettingSpider {
   private:
     enum { LibraryViewMode, LibraryAddMode };
   public:
-    LibraryImportWidget(QWidget* parent = 0);
+    LibraryImportWidget(QWidget* parent = 0);    
   public slots:
     void switchToLibraryViewMode();
     void switchToLibraryAddMode();
-  private slots:
-    void createMenuAt(const QPoint& pos);
   private:
-    static QTreeWidget* createLibraryViewWidget(QWidget* parent);
-    static LibraryAddWidget* createLibraryAddWidget(QWidget* parent);
-  private:
-    QTreeWidget* mLibraryView;
+    LibraryModel* mModel;
   };
 }
 

@@ -22,7 +22,11 @@ SOURCES += src/main.cpp\
     src/Connection.cpp \
     src/ColorScheme.cpp \
     src/LibraryImportWidget.cpp \
-    src/LibraryAddWidget.cpp
+    src/LibraryAddWidget.cpp \
+    src/LibraryViewWidget.cpp \
+    src/PathPair.cpp \
+    src/LibraryModel.cpp \
+    src/LibraryItem.cpp
 
 HEADERS  += \
     src/MainWindow.h \
@@ -35,4 +39,8 @@ HEADERS  += \
     src/Connection.h \
     src/ColorScheme.h \
     src/LibraryImportWidget.h \
-    src/LibraryAddWidget.h
+    src/LibraryAddWidget.h \
+    src/LibraryViewWidget.h \
+    src/PathPair.h \
+    src/LibraryModel.h \
+    src/LibraryItem.h

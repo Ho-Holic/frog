@@ -3,6 +3,7 @@
 // qt
 #include <QLayout>
 #include <QTimer>
+#include <QSplitter>
 
 // self
 #include "GraphWidget.h"
@@ -14,13 +15,18 @@ nsSettingSpider::MainWindow::MainWindow(QWidget* parent)
 
   QWidget* widget = new QWidget(this);
 
-  World* world = new World(widget);
-  GraphWidget* graphWidget = new GraphWidget(widget);
-  LibraryImportWidget* libraryImport = new LibraryImportWidget(widget);
+  QHBoxLayout* layout = new QHBoxLayout(widget);
+  QSplitter* splitter = new QSplitter(widget);
 
-  QHBoxLayout* layout = new QHBoxLayout(widget);  
-  layout->addWidget(graphWidget, 100);
-  layout->addWidget(libraryImport, 30);
+  World* world = new World(splitter);
+  GraphWidget* graphWidget = new GraphWidget(splitter);
+  LibraryImportWidget* libraryImport = new LibraryImportWidget(splitter);
+
+  splitter->addWidget(graphWidget);
+  splitter->addWidget(libraryImport);
+  splitter->setStretchFactor(0, 80);
+  splitter->setStretchFactor(1, 20);
+  layout->addWidget(splitter);
 
   setCentralWidget(widget);
 

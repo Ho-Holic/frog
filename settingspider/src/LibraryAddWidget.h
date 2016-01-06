@@ -9,13 +9,16 @@ class QFileSystemModel;
 class QSlider;
 
 namespace nsSettingSpider {
+
+  class PathPair;
+
   class LibraryAddWidget : public QWidget {
     Q_OBJECT
   public:
     LibraryAddWidget(QWidget* parent = 0);
   signals:
     void onCancelClicked();
-    void onPathAddition(const QString& path);
+    void onPathAddition(const PathPair&);
   private slots:
     void libraryPathChanged(const QModelIndex&);
     void addLibrary();

@@ -1,64 +1,35 @@
 // self
 #include "LibraryImportWidget.h"
+#include "LibraryViewWidget.h"
 #include "LibraryAddWidget.h"
-
-// qt
-#include <QVBoxLayout>
-#include <QMenu>
-#include <QHeaderView>
-#include <QTreeWidget>
-
-// common
-#include "cplusplus11.h"
+#include "PathPair.h"
+#include "LibraryModel.h"
 
 // tmp
 #include <QDebug>
 
-#warning write my model for libView
-
 nsSettingSpider::LibraryImportWidget::LibraryImportWidget(QWidget* parent)
 : QStackedWidget(parent)
-, mLibraryView(nullptr) {
+, mModel(new LibraryModel(this)) {
 
-  QTreeWidget* libView = createLibraryViewWidget(this);
-  LibraryAddWidget* libAdd = createLibraryAddWidget(this);
+  LibraryViewWidget* libView = new LibraryViewWidget(this);
+  libView->setModel(mModel);
+
+  connect(libView, SIGNAL(onLibraryAddClicked()),
+          this,    SLOT(switchToLibraryAddMode()));
+
+  LibraryAddWidget* libAdd = new LibraryAddWidget(this);
+
+  connect(libAdd, SIGNAL(onPathAddition(const PathPair&)),
+          mModel, SLOT(addPath(const PathPair&)));
+
+  connect(libAdd, SIGNAL(onCancelClicked()),
+          this,   SLOT(switchToLibraryViewMode()));
 
   addWidget(libView);
   addWidget(libAdd);
 
-  mLibraryView = libView;
-}
 
-QTreeWidget* nsSettingSpider::LibraryImportWidget::createLibraryViewWidget(QWidget* parent) {
-  QTreeWidget* tree = new QTreeWidget(parent);
-  tree->setHeaderLabel("Libraries");
-  tree->setContextMenuPolicy(Qt::CustomContextMenu);
-
-  connect(tree,   SIGNAL(customContextMenuRequested(const QPoint&)),
-          parent, SLOT(createMenuAt(const QPoint&)));
-
-  return tree;
-}
-
-nsSettingSpider::LibraryAddWidget* nsSettingSpider::LibraryImportWidget::createLibraryAddWidget(QWidget* parent) {
-  LibraryAddWidget* tree = new LibraryAddWidget(parent);
-
-  connect(tree,   SIGNAL(onCancelClicked()),
-          parent, SLOT(switchToLibraryViewMode()));
-
-  return tree;
-}
-
-void nsSettingSpider::LibraryImportWidget::createMenuAt(const QPoint& pos) {
-
-  QMenu* menu = new QMenu(this);
-  QAction* addAction = new QAction("Add library folder", this);
-
-  connect(addAction, SIGNAL(triggered()),
-          this,      SLOT(switchToLibraryAddMode()));
-
-  menu->addAction(addAction);
-  menu->popup(mLibraryView->viewport()->mapToGlobal(pos));
 }
 
 void nsSettingSpider::LibraryImportWidget::switchToLibraryViewMode() {
