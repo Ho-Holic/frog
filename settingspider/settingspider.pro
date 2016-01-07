@@ -1,8 +1,3 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2015-08-31T23:36:43
-#
-#-------------------------------------------------
 
 QT       += core gui
 
@@ -11,36 +6,38 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = settingspider
 TEMPLATE = app
 
+INCLUDEPATH += src/
 
-SOURCES += src/main.cpp\
-        src/MainWindow.cpp \
-    src/World.cpp \
-    src/Entity.cpp \
+SOURCES += \
+    src/main.cpp\
+    src/MainWindow.cpp \
     src/IdGenerator.cpp \
-    src/Relation.cpp \
-    src/GraphWidget.cpp \
-    src/Connection.cpp \
-    src/ColorScheme.cpp \
-    src/LibraryImportWidget.cpp \
-    src/LibraryAddWidget.cpp \
-    src/LibraryViewWidget.cpp \
-    src/PathPair.cpp \
-    src/LibraryModel.cpp \
-    src/LibraryItem.cpp
+    src/world/World.cpp \
+    src/world/Entity.cpp \
+    src/world/Relation.cpp \
+    src/world/Connection.cpp \
+    src/render/GraphWidget.cpp \
+    src/render/ColorScheme.cpp \
+    src/import/PathPair.cpp \
+    src/import/LibraryImportWidget.cpp \
+    src/import/LibraryAddWidget.cpp \
+    src/import/LibraryViewWidget.cpp \
+    src/import/LibraryModel.cpp \
+    src/import/LibraryItem.cpp
 
 HEADERS  += \
-    src/MainWindow.h \
-    src/Entity.h \
-    src/World.h \
-    src/IdGenerator.h \
-    src/Relation.h \
     src/cplusplus11.h \
-    src/GraphWidget.h \
-    src/Connection.h \
-    src/ColorScheme.h \
-    src/LibraryImportWidget.h \
-    src/LibraryAddWidget.h \
-    src/LibraryViewWidget.h \
-    src/PathPair.h \
-    src/LibraryModel.h \
-    src/LibraryItem.h
+    src/MainWindow.h \
+    src/IdGenerator.h \
+    src/world/World.h \
+    src/world/Entity.h \
+    src/world/Relation.h \
+    src/world/Connection.h \
+    src/render/GraphWidget.h \
+    src/render/ColorScheme.h \
+    src/import/PathPair.h \
+    src/import/LibraryImportWidget.h \
+    src/import/LibraryAddWidget.h \
+    src/import/LibraryViewWidget.h \
+    src/import/LibraryModel.h \
+    src/import/LibraryItem.h

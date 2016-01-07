@@ -1,6 +1,8 @@
 // self
 #include "GraphWidget.h"
 #include "ColorScheme.h"
+#include "world/Entity.h"
+#include "world/Connection.h"
 
 // qt
 #include <QPainter>

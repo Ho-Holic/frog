@@ -5,12 +5,12 @@
 #include <QWidget>
 
 // self
-#include "Entity.h"
-#include "Connection.h"
+#include "world/Relation.h"
 
 namespace nsSettingSpider {
 
-  // сделать удаление в самой верхушке графа
+  class Entity;
+  class Connection;
 
   class GraphWidget : public QWidget {
     Q_OBJECT

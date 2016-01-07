@@ -6,9 +6,9 @@
 #include <QSplitter>
 
 // self
-#include "GraphWidget.h"
-#include "World.h"
-#include "LibraryImportWidget.h"
+#include "render/GraphWidget.h"
+#include "world/World.h"
+#include "import/LibraryImportWidget.h"
 
 nsSettingSpider::MainWindow::MainWindow(QWidget* parent)
 : QMainWindow(parent) {

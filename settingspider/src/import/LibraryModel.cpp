@@ -6,25 +6,33 @@
 // common
 #include "cplusplus11.h"
 
+// tmp
+#include <QDebug>
+
 nsSettingSpider::LibraryModel::LibraryModel(QObject* parent)
 : QAbstractItemModel(parent)
-, mInvisibleRoot(new LibraryItem(PathPair("a", "b"), nullptr)) {
-  //
+, mRootItem(new LibraryItem()) {
+  //  
 }
 
 nsSettingSpider::LibraryModel::~LibraryModel() {
-  delete mInvisibleRoot;
+  delete mRootItem;
 }
 
 void nsSettingSpider::LibraryModel::addPath(const PathPair& pathPair) {
-  LibraryItem* child = new LibraryItem(pathPair, mInvisibleRoot);
-  mInvisibleRoot->appendChild(child);
+
+  beginInsertRows(QModelIndex(), mRootItem->childCount(), mRootItem->childCount());
+
+  LibraryItem* child = new LibraryItem(pathPair, mRootItem);  
+  mRootItem->appendChild(child);
+
+  endInsertRows();
 }
 
 int nsSettingSpider::LibraryModel::columnCount(const QModelIndex& parent) const {
 
   return parent.isValid() ? static_cast<LibraryItem*>(parent.internalPointer())->columnCount()
-                          : mInvisibleRoot->columnCount();
+                          : mRootItem->columnCount();
 }
 
 QVariant nsSettingSpider::LibraryModel::data(const QModelIndex& index, int role) const {
@@ -37,12 +45,13 @@ QVariant nsSettingSpider::LibraryModel::data(const QModelIndex& index, int role)
     return QVariant();
   }
 
-  LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
+  LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());  
 
   return item->data(index.column());
 }
 
 Qt::ItemFlags nsSettingSpider::LibraryModel::flags(const QModelIndex& index) const {
+
   if ( ! index.isValid()) {
     return 0;
   }
@@ -53,7 +62,7 @@ Qt::ItemFlags nsSettingSpider::LibraryModel::flags(const QModelIndex& index) con
 QVariant nsSettingSpider::LibraryModel::headerData(int section, Qt::Orientation orientation, int role) const {
 
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-    return mInvisibleRoot->data(section);
+    return mRootItem->data(section);
   }
 
   return QVariant();
@@ -66,9 +75,9 @@ QModelIndex nsSettingSpider::LibraryModel::index(int row, int column, const QMod
   }
 
   LibraryItem* parentItem = parent.isValid() ? static_cast<LibraryItem*>(parent.internalPointer())
-                                             : mInvisibleRoot;
+                                             : mRootItem;
 
-  LibraryItem* childItem = parentItem->childItem(row);
+  LibraryItem* childItem = parentItem->childItem(row);  
 
   return childItem ? createIndex(row, column, childItem)
                    : QModelIndex();
@@ -83,7 +92,7 @@ QModelIndex nsSettingSpider::LibraryModel::parent(const QModelIndex& index) cons
   LibraryItem* childItem = static_cast<LibraryItem*>(index.internalPointer());
   LibraryItem* parentItem = childItem->parentItem();
 
-  if (parentItem == mInvisibleRoot) {
+  if (parentItem == mRootItem) {
     return QModelIndex();
   }
 
@@ -97,6 +106,6 @@ int nsSettingSpider::LibraryModel::rowCount(const QModelIndex& parent) const {
   }
 
   LibraryItem* parentItem = parent.isValid() ? static_cast<LibraryItem*>(parent.internalPointer())
-                                             : mInvisibleRoot;
+                                             : mRootItem;
   return parentItem->childCount();
 }

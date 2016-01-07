@@ -9,19 +9,18 @@ namespace nsSettingSpider {
   class PathPair;
 
   class LibraryItem {
-  public:
-    // for invisible root case
+  public:    
     LibraryItem();
     LibraryItem(const PathPair& pathPair, LibraryItem* parentItem);
     ~LibraryItem();
   public:
     void appendChild(LibraryItem* child);
-    LibraryItem* childItem(int row);
-    LibraryItem* parentItem();
-    int row();
-    int columnCount();
-    int childCount();
-    QVariant data(int column);
+    LibraryItem* childItem(int row) const;
+    LibraryItem* parentItem() const;
+    int row() const;
+    int columnCount() const;
+    int childCount() const;
+    QVariant data(int column) const;
   private:
     QString mPath;
     QString mName;

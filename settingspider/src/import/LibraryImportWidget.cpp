@@ -33,7 +33,7 @@ nsSettingSpider::LibraryImportWidget::LibraryImportWidget(QWidget* parent)
 }
 
 void nsSettingSpider::LibraryImportWidget::switchToLibraryViewMode() {
-  setCurrentIndex(LibraryViewMode);
+  setCurrentIndex(LibraryViewMode);  
 }
 
 void nsSettingSpider::LibraryImportWidget::switchToLibraryAddMode() {

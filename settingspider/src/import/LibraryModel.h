@@ -27,7 +27,7 @@ namespace nsSettingSpider {
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const;
   private:
-    LibraryItem* mInvisibleRoot;
+    LibraryItem* mRootItem;
   };
 }
 

@@ -247,6 +247,7 @@ void nsSettingSpider::World::connectFinalize(const QPoint& pos) {
 }
 
 void nsSettingSpider::World::moveConnectEdit(const QPoint& from, const QPoint& to) {
+  Q_UNUSED(to);
   Q_UNUSED(from);
   Q_ASSERT( ! mActiveEntity->inRelations(mRelationType).empty());
 

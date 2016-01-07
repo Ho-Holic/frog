@@ -1,8 +1,7 @@
 #ifndef SETTINGSPIDER_COLORSCHEME_H
 #define SETTINGSPIDER_COLORSCHEME_H
 
-// qt
-#include <QColor>
+class QColor;
 
 namespace nsSettingSpider {
 

@@ -1,6 +1,9 @@
 // self
 #include "ColorScheme.h"
 
+// qt
+#include <QColor>
+
 QColor nsSettingSpider::ColorScheme::background() {
   return QColor(30, 30, 39);
 }
