@@ -8,8 +8,6 @@ class QTreeWidget;
 
 namespace nsSettingSpider {
 
-  class PathPair;
-  class LibraryAddWidget;
   class LibraryModel;
 
   class LibraryImportWidget : public QStackedWidget {

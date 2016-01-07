@@ -10,8 +10,11 @@ namespace nsSettingSpider {
   class LibraryItemData {
   public:
     LibraryItemData(const QString& path, const QString& name);
-    QString path;
-    QString name;
+    QString path() const;
+    QString name() const;
+  private:
+    QString mPath;
+    QString mName;
   };
 }
 

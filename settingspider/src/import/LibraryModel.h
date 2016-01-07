@@ -15,9 +15,8 @@ namespace nsSettingSpider {
     LibraryModel(QObject* parent = 0);
     ~LibraryModel();
   public slots:
-    void addPath(const LibraryItemData& pathPair);
+    void addPath(const LibraryItemData& itemData);
   public:
-
     virtual int columnCount(const QModelIndex & parent = QModelIndex()) const;
     virtual QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     virtual QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
@@ -26,6 +25,10 @@ namespace nsSettingSpider {
     virtual Qt::ItemFlags flags(const QModelIndex& index) const;
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const;
+  private:
+    void attachTreeTo(LibraryItem* parent) const;
+    void attachDirectoriesTo(QList<LibraryItem*>& parents, LibraryItem* parent) const;
+    void attachFilesTo(LibraryItem* parent) const;
   private:
     LibraryItem* mRootItem;
   };

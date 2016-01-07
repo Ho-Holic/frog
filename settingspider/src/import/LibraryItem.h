@@ -1,17 +1,22 @@
 #ifndef SETTINGSPIDER_LIBRARYITEM_H
 #define SETTINGSPIDER_LIBRARYITEM_H
 
+// self
+#include "LibraryItemData.h"
+
 // qt
 #include <QVariant>
 
-namespace nsSettingSpider {
-
-  class LibraryItemData;
+namespace nsSettingSpider {  
 
   class LibraryItem {
+  public:
+    enum Type { Root, Directory, File };
   public:    
     LibraryItem();
-    LibraryItem(const LibraryItemData& pathPair, LibraryItem* parentItem);
+    LibraryItem(Type type,
+                const LibraryItemData& itemData,
+                LibraryItem* parentItem);
     ~LibraryItem();
   public:
     void appendChild(LibraryItem* child);
@@ -22,9 +27,11 @@ namespace nsSettingSpider {
     int childCount() const;
     QVariant data(int column) const;
     bool isRootItem() const;
+    QString path() const;
+    QString name() const;
   private:
-    QString mPath;
-    QString mName;
+    Type mItemType;
+    LibraryItemData mItemData;
     LibraryItem* mParentItem;
     QList<LibraryItem*> mChildItems;    
   };

@@ -3,11 +3,16 @@
 #include "LibraryItem.h"
 #include "LibraryItemData.h"
 
+// qt
+#include <QDirIterator>
+
 // common
 #include "cplusplus11.h"
 
 // tmp
 #include <QDebug>
+
+// TODO: two subtrees "active" and "pending"
 
 nsSettingSpider::LibraryModel::LibraryModel(QObject* parent)
 : QAbstractItemModel(parent)
@@ -19,14 +24,64 @@ nsSettingSpider::LibraryModel::~LibraryModel() {
   delete mRootItem;
 }
 
-void nsSettingSpider::LibraryModel::addPath(const LibraryItemData& pathPair) {
+void nsSettingSpider::LibraryModel::addPath(const LibraryItemData& itemData) {
 
   beginInsertRows(QModelIndex(), mRootItem->childCount(), mRootItem->childCount());
 
-  LibraryItem* child = new LibraryItem(pathPair, mRootItem);  
-  mRootItem->appendChild(child);
+  LibraryItem* currentNode = new LibraryItem(LibraryItem::Directory, itemData, mRootItem);
+  attachTreeTo(currentNode);
+
+  mRootItem->appendChild(currentNode);
 
   endInsertRows();
+}
+
+void nsSettingSpider::LibraryModel::attachTreeTo(nsSettingSpider::LibraryItem* parent) const {
+
+  QList<LibraryItem*> parents;
+  parents.push_back(parent);
+
+  while ( ! parents.empty()) {
+
+    LibraryItem* currentParent = parents.last();
+
+    attachDirectoriesTo(parents, currentParent);
+    attachFilesTo(currentParent);
+
+    // remove parent that was traversed
+    parents.pop_back();
+  }
+}
+
+void nsSettingSpider::LibraryModel::attachDirectoriesTo(QList<LibraryItem*>& parents,
+                                                        nsSettingSpider::LibraryItem* parent) const {
+
+  QDir::Filters filter = QDir::Dirs | QDir::NoDotAndDotDot | QDir::Drives | QDir::AllDirs;
+  QDirIterator it(parent->path(), filter, QDirIterator::NoIteratorFlags);
+
+  while (it.hasNext()) {
+    it.next();
+
+    LibraryItem* child = new LibraryItem(LibraryItem::Directory,
+                                        LibraryItemData(it.filePath(), it.fileName()),
+                                        parent);
+    parent->appendChild(child);
+    parents.push_front(child);
+  }
+}
+
+void nsSettingSpider::LibraryModel::attachFilesTo(nsSettingSpider::LibraryItem* parent) const {
+  QDir::Filters filter = QDir::NoDotAndDotDot | QDir::Files;
+  QDirIterator it(parent->path(), filter, QDirIterator::NoIteratorFlags);
+
+  while (it.hasNext()) {
+    it.next();
+    LibraryItem* child = new LibraryItem(LibraryItem::File,
+                                        LibraryItemData(it.filePath(), it.fileName()),
+                                        parent);
+    parent->appendChild(child);
+
+  }
 }
 
 int nsSettingSpider::LibraryModel::columnCount(const QModelIndex& parent) const {

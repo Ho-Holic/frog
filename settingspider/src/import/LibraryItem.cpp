@@ -1,6 +1,5 @@
 // self
 #include "LibraryItem.h"
-#include "LibraryItemData.h"
 
 // common
 #include "cplusplus11.h"
@@ -11,17 +10,19 @@
 // tmp
 #include <QDebug>
 
-nsSettingSpider::LibraryItem::LibraryItem(const LibraryItemData& pathPair, LibraryItem* parentItem)
-: mPath(pathPair.path)
-, mName(pathPair.name)
+nsSettingSpider::LibraryItem::LibraryItem(Type type,
+                                          const LibraryItemData& itemData,
+                                          LibraryItem* parentItem)
+: mItemType(type)
+, mItemData(itemData)
 , mParentItem(parentItem)
 , mChildItems() {
   //
 }
 
 nsSettingSpider::LibraryItem::LibraryItem()
-: mPath()
-, mName("Libraries")
+: mItemType(Root)
+, mItemData(QString(), "Libraries")
 , mParentItem(nullptr)
 , mChildItems() {
   //
@@ -32,12 +33,6 @@ nsSettingSpider::LibraryItem::~LibraryItem() {
 }
 
 void nsSettingSpider::LibraryItem::appendChild(LibraryItem* child) {
-  if (isRootItem()) {
-    for (int i = 0; i < 10; ++i) {
-      LibraryItem* node = new LibraryItem(LibraryItemData(mPath+"/"+"libCat.so", "libCat.so"), child);
-      child->appendChild(node);
-    }
-  }
   mChildItems.append(child);  
 }
 
@@ -65,9 +60,17 @@ nsSettingSpider::LibraryItem* nsSettingSpider::LibraryItem::childItem(int row) c
 
 QVariant nsSettingSpider::LibraryItem::data(int column) const {
   Q_UNUSED(column);
-  return mName;
+  return mItemData.name();
 }
 
 bool nsSettingSpider::LibraryItem::isRootItem() const {
   return mParentItem == nullptr;
+}
+
+QString nsSettingSpider::LibraryItem::path() const {
+  return mItemData.path();
+}
+
+QString nsSettingSpider::LibraryItem::name() const {
+  return mItemData.name();
 }
