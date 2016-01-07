@@ -7,7 +7,7 @@
 namespace nsSettingSpider {
 
   class LibraryItem;
-  class PathPair;
+  class LibraryItemData;
 
   class LibraryModel : public QAbstractItemModel {
     Q_OBJECT
@@ -15,7 +15,7 @@ namespace nsSettingSpider {
     LibraryModel(QObject* parent = 0);
     ~LibraryModel();
   public slots:
-    void addPath(const PathPair& pathPair);
+    void addPath(const LibraryItemData& pathPair);
   public:
 
     virtual int columnCount(const QModelIndex & parent = QModelIndex()) const;

@@ -1,7 +1,7 @@
 // self
 #include "LibraryModel.h"
 #include "LibraryItem.h"
-#include "PathPair.h"
+#include "LibraryItemData.h"
 
 // common
 #include "cplusplus11.h"
@@ -19,7 +19,7 @@ nsSettingSpider::LibraryModel::~LibraryModel() {
   delete mRootItem;
 }
 
-void nsSettingSpider::LibraryModel::addPath(const PathPair& pathPair) {
+void nsSettingSpider::LibraryModel::addPath(const LibraryItemData& pathPair) {
 
   beginInsertRows(QModelIndex(), mRootItem->childCount(), mRootItem->childCount());
 

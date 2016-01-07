@@ -1,6 +1,6 @@
 // self
 #include "LibraryAddWidget.h"
-#include "PathPair.h"
+#include "LibraryItemData.h"
 
 // qt
 #include <QTreeView>
@@ -100,7 +100,7 @@ void nsSettingSpider::LibraryAddWidget::addLibrary() {
 
   if (mPath.isEmpty()) return;
 
-  emit onPathAddition(PathPair(mPath, mPathForAddition));
+  emit onPathAddition(LibraryItemData(mPath, mPathForAddition));
   emit onCancelClicked();
 }
 

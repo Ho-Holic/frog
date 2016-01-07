@@ -10,7 +10,7 @@ class QSlider;
 
 namespace nsSettingSpider {
 
-  class PathPair;
+  class LibraryItemData;
 
   class LibraryAddWidget : public QWidget {
     Q_OBJECT
@@ -18,7 +18,7 @@ namespace nsSettingSpider {
     LibraryAddWidget(QWidget* parent = 0);
   signals:
     void onCancelClicked();
-    void onPathAddition(const PathPair&);
+    void onPathAddition(const LibraryItemData&);
   private slots:
     void libraryPathChanged(const QModelIndex&);
     void addLibrary();

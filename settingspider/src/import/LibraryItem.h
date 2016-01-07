@@ -6,12 +6,12 @@
 
 namespace nsSettingSpider {
 
-  class PathPair;
+  class LibraryItemData;
 
   class LibraryItem {
   public:    
     LibraryItem();
-    LibraryItem(const PathPair& pathPair, LibraryItem* parentItem);
+    LibraryItem(const LibraryItemData& pathPair, LibraryItem* parentItem);
     ~LibraryItem();
   public:
     void appendChild(LibraryItem* child);
@@ -21,11 +21,12 @@ namespace nsSettingSpider {
     int columnCount() const;
     int childCount() const;
     QVariant data(int column) const;
+    bool isRootItem() const;
   private:
     QString mPath;
     QString mName;
     LibraryItem* mParentItem;
-    QList<LibraryItem*> mChildItems;
+    QList<LibraryItem*> mChildItems;    
   };
 
 }

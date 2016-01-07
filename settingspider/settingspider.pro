@@ -18,12 +18,12 @@ SOURCES += \
     src/world/Connection.cpp \
     src/render/GraphWidget.cpp \
     src/render/ColorScheme.cpp \
-    src/import/PathPair.cpp \
     src/import/LibraryImportWidget.cpp \
     src/import/LibraryAddWidget.cpp \
     src/import/LibraryViewWidget.cpp \
     src/import/LibraryModel.cpp \
-    src/import/LibraryItem.cpp
+    src/import/LibraryItem.cpp \
+    src/import/LibraryItemData.cpp
 
 HEADERS  += \
     src/cplusplus11.h \
@@ -35,9 +35,9 @@ HEADERS  += \
     src/world/Connection.h \
     src/render/GraphWidget.h \
     src/render/ColorScheme.h \
-    src/import/PathPair.h \
     src/import/LibraryImportWidget.h \
     src/import/LibraryAddWidget.h \
     src/import/LibraryViewWidget.h \
     src/import/LibraryModel.h \
-    src/import/LibraryItem.h
+    src/import/LibraryItem.h \
+    src/import/LibraryItemData.h

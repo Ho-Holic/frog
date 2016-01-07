@@ -2,7 +2,7 @@
 #include "LibraryImportWidget.h"
 #include "LibraryViewWidget.h"
 #include "LibraryAddWidget.h"
-#include "PathPair.h"
+#include "LibraryItemData.h"
 #include "LibraryModel.h"
 
 // tmp
@@ -20,8 +20,8 @@ nsSettingSpider::LibraryImportWidget::LibraryImportWidget(QWidget* parent)
 
   LibraryAddWidget* libAdd = new LibraryAddWidget(this);
 
-  connect(libAdd, SIGNAL(onPathAddition(const PathPair&)),
-          mModel, SLOT(addPath(const PathPair&)));
+  connect(libAdd, SIGNAL(onPathAddition(const LibraryItemData&)),
+          mModel, SLOT(addPath(const LibraryItemData&)));
 
   connect(libAdd, SIGNAL(onCancelClicked()),
           this,   SLOT(switchToLibraryViewMode()));
