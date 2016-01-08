@@ -5,6 +5,8 @@
 
 // qt
 #include <QDirIterator>
+#include <QMimeData>
+#include <QTextStream>
 
 // common
 #include "cplusplus11.h"
@@ -17,9 +19,9 @@
 nsSettingSpider::LibraryModel::LibraryModel(QObject* parent)
 : QAbstractItemModel(parent)
 , mRootItem(new LibraryItem(LibraryItem::Header, "Libraries"))
-, mActiveItem(new LibraryItem(LibraryItem::Active, "Active", mRootItem))
+, mSceneItem(new LibraryItem(LibraryItem::Scene, "Scene", mRootItem))
 , mPendingItem(new LibraryItem(LibraryItem::Pending, "Pending", mRootItem)) {
-  mRootItem->appendChild(mActiveItem);
+  mRootItem->appendChild(mSceneItem);
   mRootItem->appendChild(mPendingItem);
 }
 
@@ -31,14 +33,14 @@ void nsSettingSpider::LibraryModel::addPath(const LibraryItemData& itemData) {
 
   beginInsertRows(QModelIndex(), mRootItem->childCount(), mRootItem->childCount());
 
-  LibraryItem* currentNode = new LibraryItem(LibraryItem::Directory, itemData, mPendingItem);
-  attachTreeTo(currentNode);
-  mPendingItem->appendChild(currentNode);
+  LibraryItem* currentNode = new LibraryItem(LibraryItem::LibPack, itemData, mPendingItem);
+  attachFullTreeTo(currentNode);
+  mPendingItem->prependChild(currentNode);
 
   endInsertRows();
 }
 
-void nsSettingSpider::LibraryModel::attachTreeTo(nsSettingSpider::LibraryItem* parent) const {
+void nsSettingSpider::LibraryModel::attachFullTreeTo(nsSettingSpider::LibraryItem* parent) const {
 
   QList<LibraryItem*> parents;
   parents.push_back(parent);
@@ -109,11 +111,29 @@ QVariant nsSettingSpider::LibraryModel::data(const QModelIndex& index, int role)
 
 Qt::ItemFlags nsSettingSpider::LibraryModel::flags(const QModelIndex& index) const {
 
-  if ( ! index.isValid()) {
-    return 0;
+  Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
+
+  return index.isValid() ? Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags
+                         : Qt::ItemIsDropEnabled | defaultFlags;
+
+}
+
+QMimeData* nsSettingSpider::LibraryModel::mimeData(const QModelIndexList& indexes) const {
+
+  QMimeData* mimeData = new QMimeData();
+
+  QString data;
+  QTextStream stream(&data, QIODevice::WriteOnly);
+
+  foreach (const QModelIndex& index, indexes) {
+    if (index.isValid()) {
+      LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
+      stream << item->name() << ";";
+    }
   }
 
-  return QAbstractItemModel::flags(index);
+  mimeData->setText(data);
+  return mimeData;
 }
 
 QVariant nsSettingSpider::LibraryModel::headerData(int section, Qt::Orientation orientation, int role) const {

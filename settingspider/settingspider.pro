@@ -23,7 +23,8 @@ SOURCES += \
     src/import/LibraryViewWidget.cpp \
     src/import/LibraryModel.cpp \
     src/import/LibraryItem.cpp \
-    src/import/LibraryItemData.cpp
+    src/import/LibraryItemData.cpp \
+    src/world/VectorMath.cpp
 
 HEADERS  += \
     src/cplusplus11.h \
@@ -40,4 +41,5 @@ HEADERS  += \
     src/import/LibraryViewWidget.h \
     src/import/LibraryModel.h \
     src/import/LibraryItem.h \
-    src/import/LibraryItemData.h
+    src/import/LibraryItemData.h \
+    src/world/VectorMath.h

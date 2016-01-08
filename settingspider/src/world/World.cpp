@@ -79,8 +79,18 @@ void nsSettingSpider::World::emptyTouch(const QPoint& pos) {
 }
 
 void nsSettingSpider::World::createEntityAt(const QPoint& center) {
-  Entity* entity = new Entity(withOrigin(center));
+  Entity* entity = new Entity(withOrigin(center), "unnamed");
   mEntityList.push_front(entity);
+}
+
+void nsSettingSpider::World::createEntityAt(const QPoint& center, const QString& data) {
+
+  QStringList list = data.split(";", QString::SkipEmptyParts);
+
+  foreach(const QString& path, list) {
+    Entity* entity = new Entity(withOrigin(center), path);
+    mEntityList.push_front(entity);
+  }
 }
 
 void nsSettingSpider::World::activateMode(const QPoint& pos) {

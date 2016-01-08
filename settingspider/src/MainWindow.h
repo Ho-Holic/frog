@@ -16,8 +16,7 @@ namespace nsSettingSpider {
     MainWindow(QWidget* parent = 0);
   private:
     void connectParts(World* world,
-                      GraphWidget* graphWidget,
-                      LibraryImportWidget* libraryImport);
+                      GraphWidget* graphWidget);
   };
 
 }

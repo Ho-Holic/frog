@@ -18,7 +18,7 @@ namespace nsSettingSpider {
     typedef QList<Entity*> RelationList;
     typedef QMap<RelationType, RelationList> RelationBinding;
   public:
-    Entity(const QPoint& center);
+    Entity(const QPoint& center, const QString& shortPath);
   public:
     IntegerIdGenerator::id_type sequentialId() const;
     void inAttach(const RelationType& type, Entity* from);
@@ -48,8 +48,7 @@ namespace nsSettingSpider {
     RelationBinding mInRelation;
     RelationBinding mOutRelation;
   private:
-    static QSize fromName(const QString& name, const QFont& usedFont);
-    static QRect fromCenterPoint(const QPoint& center, const QSize& entitySize);
+    static QSize fromName(const QString& name, const QFont& usedFont);    
   private:
     static IntegerIdGenerator s_idGenerator;
   };

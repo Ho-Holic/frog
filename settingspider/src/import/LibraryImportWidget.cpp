@@ -14,6 +14,8 @@ nsSettingSpider::LibraryImportWidget::LibraryImportWidget(QWidget* parent)
 
   LibraryViewWidget* libView = new LibraryViewWidget(this);
   libView->setModel(mModel);
+  libView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  libView->setDragEnabled(true);
 
   connect(libView, SIGNAL(onLibraryAddClicked()),
           this,    SLOT(switchToLibraryAddMode()));

@@ -1,21 +1,19 @@
 // self
 #include "Entity.h"
+#include "VectorMath.h"
 
 // qt
 #include <QRect>
 #include <QFontMetrics>
 
-// tmp
-#include <QDateTime>
-
 nsSettingSpider::IntegerIdGenerator
 nsSettingSpider::Entity::s_idGenerator = nsSettingSpider::IntegerIdGenerator();
 
-nsSettingSpider::Entity::Entity(const QPoint& center)
+nsSettingSpider::Entity::Entity(const QPoint& center, const QString& shortPath)
 : mId(s_idGenerator.next())
-, mLibraryName(QString("object_").repeated(QDateTime::currentDateTime().time().second() % 5))
+, mLibraryName(shortPath)
 , mFont()
-, mRect(fromCenterPoint(center, fromName(mLibraryName, mFont)))
+, mRect(VectorMath::fromCenterPoint(center, fromName(mLibraryName, mFont)))
 , mInRelation()
 , mOutRelation() {
   //
@@ -24,7 +22,6 @@ nsSettingSpider::Entity::Entity(const QPoint& center)
 nsSettingSpider::IntegerIdGenerator::id_type nsSettingSpider::Entity::sequentialId() const {
   return mId;
 }
-
 
 void nsSettingSpider::Entity::inAttach(const nsSettingSpider::RelationType& type,
                                        nsSettingSpider::Entity* from) {
@@ -114,7 +111,7 @@ const QString& nsSettingSpider::Entity::libraryName() const {
   return mLibraryName;
 }
 
-const QFont&nsSettingSpider::Entity::font() const {
+const QFont& nsSettingSpider::Entity::font() const {
   return mFont;
 }
 
@@ -126,10 +123,4 @@ QSize nsSettingSpider::Entity::fromName(const QString& name, const QFont& usedFo
   QFontMetrics metrics(usedFont);
   int w = metrics.boundingRect(name).width() + (metrics.averageCharWidth() * 4);
   return QSize(w, 50);
-}
-
-QRect nsSettingSpider::Entity::fromCenterPoint(const QPoint& center, const QSize& entitySize) {
-  QPoint sizeVec = QPoint(entitySize.width(), - entitySize.height());
-  QPoint pos = center + (sizeVec / 2) - QPoint(entitySize.width(), 0);
-  return QRect(pos, entitySize);
 }

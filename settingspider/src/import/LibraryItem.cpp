@@ -31,6 +31,10 @@ nsSettingSpider::LibraryItem::~LibraryItem() {
   qDeleteAll(mChildItems);
 }
 
+void nsSettingSpider::LibraryItem::prependChild(nsSettingSpider::LibraryItem* child) {
+  mChildItems.prepend(child);
+}
+
 void nsSettingSpider::LibraryItem::appendChild(LibraryItem* child) {
   mChildItems.append(child);  
 }

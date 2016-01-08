@@ -19,6 +19,7 @@ namespace nsSettingSpider {
   signals:
     void updateScene();
     void onDoubleClick(const QPoint&);    
+    void onDrop(const QPoint&, const QString&);
     void onMouseMove(const QPoint&, const QPoint&);
     void onMousePress(const QPoint&);
     void onMouseRelease(const QPoint&);
@@ -35,6 +36,10 @@ namespace nsSettingSpider {
     virtual void mouseMoveEvent(QMouseEvent* e);
     virtual void mousePressEvent(QMouseEvent* e);
     virtual void mouseReleaseEvent(QMouseEvent* e);
+    virtual void dragEnterEvent(QDragEnterEvent* e);
+    virtual void dragLeaveEvent(QDragLeaveEvent* e);
+    virtual void dragMoveEvent(QDragMoveEvent* e);
+    virtual void dropEvent(QDropEvent* e);
   private:
     QRect withOrigin(const QRect& r) const;
     QPoint withOrigin(const QPoint& p) const;
@@ -42,6 +47,8 @@ namespace nsSettingSpider {
     QPoint mOrigin;
     QPoint mClickedPosition;
     bool mIsHolding;
+    QPoint mDragPosition;
+    bool mIsDragging;
   };
 }
 

@@ -20,6 +20,8 @@ nsSettingSpider::MainWindow::MainWindow(QWidget* parent)
 
   World* world = new World(splitter);
   GraphWidget* graphWidget = new GraphWidget(splitter);
+  graphWidget->setAcceptDrops(true);
+
   LibraryImportWidget* libraryImport = new LibraryImportWidget(splitter);
 
   splitter->addWidget(graphWidget);
@@ -30,12 +32,11 @@ nsSettingSpider::MainWindow::MainWindow(QWidget* parent)
 
   setCentralWidget(widget);
 
-  connectParts(world, graphWidget, libraryImport);
+  connectParts(world, graphWidget);
 }
 
 void nsSettingSpider::MainWindow::connectParts(nsSettingSpider::World* world,
-                                               nsSettingSpider::GraphWidget* graphWidget,
-                                               LibraryImportWidget* libraryImport) {
+                                               nsSettingSpider::GraphWidget* graphWidget) {
   connect(world,       SIGNAL(entityChanged(Entity*)),
           graphWidget, SLOT(drawEntity(Entity*)));
 
@@ -53,6 +54,9 @@ void nsSettingSpider::MainWindow::connectParts(nsSettingSpider::World* world,
 
   connect(graphWidget, SIGNAL(onDoubleClick(const QPoint&)),
           world,       SLOT(createEntityAt(const QPoint&)));
+
+  connect(graphWidget, SIGNAL(onDrop(const QPoint&, const QString&)),
+          world,       SLOT(createEntityAt(const QPoint&, const QString&)));
 
   connect(graphWidget, SIGNAL(onMousePress(const QPoint&)),
           world,       SLOT(activateMode(const QPoint&)));

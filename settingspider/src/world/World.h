@@ -39,6 +39,7 @@ namespace nsSettingSpider {
     void originChanged(const QPoint& origin);
   public slots:
     void createEntityAt(const QPoint& center);
+    void createEntityAt(const QPoint& center, const QString& data);
     void activateMode(const QPoint& pos);
     void deactivateMode(const QPoint& pos);    
     void moveInWorld(const QPoint& from, const QPoint& to);

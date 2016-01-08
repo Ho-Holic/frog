@@ -4,6 +4,8 @@
 // qt
 #include <QAbstractItemModel>
 
+class QMimeData;
+
 namespace nsSettingSpider {
 
   class LibraryItem;
@@ -22,16 +24,17 @@ namespace nsSettingSpider {
     virtual QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
     virtual QModelIndex parent(const QModelIndex & index) const;
     virtual int rowCount(const QModelIndex & parent = QModelIndex()) const;
-    virtual Qt::ItemFlags flags(const QModelIndex& index) const;
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const;
+    virtual Qt::ItemFlags flags(const QModelIndex& index) const;
+    virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
   private:
-    void attachTreeTo(LibraryItem* parent) const;
+    void attachFullTreeTo(LibraryItem* parent) const;
     void attachDirectoriesTo(QList<LibraryItem*>& parents, LibraryItem* parent) const;
     void attachFilesTo(LibraryItem* parent) const;
   private:
     LibraryItem* mRootItem;
-    LibraryItem* mActiveItem;
+    LibraryItem* mSceneItem;
     LibraryItem* mPendingItem;
   };
 }

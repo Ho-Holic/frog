@@ -14,7 +14,14 @@ namespace nsSettingSpider {
 
   class LibraryItem {
   public:
-    enum Type { Header, Pending, Active, Directory, File };
+    enum Type {
+      Header,
+      Pending,
+      Scene,
+      LibPack,
+      Directory,
+      File
+    };
   public:    
     LibraryItem(Type type,
                 const QString& name,
@@ -24,6 +31,7 @@ namespace nsSettingSpider {
                 LibraryItem* parentItem);
     ~LibraryItem();
   public:
+    void prependChild(LibraryItem* child);
     void appendChild(LibraryItem* child);
     LibraryItem* childItem(int row) const;
     LibraryItem* parentItem() const;
