@@ -31,6 +31,8 @@ namespace nsSettingSpider {
     void attachFilesTo(LibraryItem* parent) const;
   private:
     LibraryItem* mRootItem;
+    LibraryItem* mActiveItem;
+    LibraryItem* mPendingItem;
   };
 }
 

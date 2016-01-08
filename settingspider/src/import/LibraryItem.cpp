@@ -1,9 +1,6 @@
 // self
 #include "LibraryItem.h"
 
-// common
-#include "cplusplus11.h"
-
 // qt
 #include <QtAlgorithms>
 
@@ -20,10 +17,12 @@ nsSettingSpider::LibraryItem::LibraryItem(Type type,
   //
 }
 
-nsSettingSpider::LibraryItem::LibraryItem()
-: mItemType(Root)
-, mItemData(QString(), "Libraries")
-, mParentItem(nullptr)
+nsSettingSpider::LibraryItem::LibraryItem(Type type,
+                                          const QString& name,
+                                          LibraryItem* parentItem)
+: mItemType(type)
+, mItemData(QString(), name)
+, mParentItem(parentItem)
 , mChildItems() {
   //
 }

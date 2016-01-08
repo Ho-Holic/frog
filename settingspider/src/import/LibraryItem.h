@@ -4,6 +4,9 @@
 // self
 #include "LibraryItemData.h"
 
+// common
+#include "cplusplus11.h"
+
 // qt
 #include <QVariant>
 
@@ -11,9 +14,11 @@ namespace nsSettingSpider {
 
   class LibraryItem {
   public:
-    enum Type { Root, Directory, File };
+    enum Type { Header, Pending, Active, Directory, File };
   public:    
-    LibraryItem();
+    LibraryItem(Type type,
+                const QString& name,
+                LibraryItem* parentItem = nullptr);
     LibraryItem(Type type,
                 const LibraryItemData& itemData,
                 LibraryItem* parentItem);

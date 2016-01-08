@@ -16,8 +16,11 @@
 
 nsSettingSpider::LibraryModel::LibraryModel(QObject* parent)
 : QAbstractItemModel(parent)
-, mRootItem(new LibraryItem()) {
-  //  
+, mRootItem(new LibraryItem(LibraryItem::Header, "Libraries"))
+, mActiveItem(new LibraryItem(LibraryItem::Active, "Active", mRootItem))
+, mPendingItem(new LibraryItem(LibraryItem::Pending, "Pending", mRootItem)) {
+  mRootItem->appendChild(mActiveItem);
+  mRootItem->appendChild(mPendingItem);
 }
 
 nsSettingSpider::LibraryModel::~LibraryModel() {
@@ -28,10 +31,9 @@ void nsSettingSpider::LibraryModel::addPath(const LibraryItemData& itemData) {
 
   beginInsertRows(QModelIndex(), mRootItem->childCount(), mRootItem->childCount());
 
-  LibraryItem* currentNode = new LibraryItem(LibraryItem::Directory, itemData, mRootItem);
+  LibraryItem* currentNode = new LibraryItem(LibraryItem::Directory, itemData, mPendingItem);
   attachTreeTo(currentNode);
-
-  mRootItem->appendChild(currentNode);
+  mPendingItem->appendChild(currentNode);
 
   endInsertRows();
 }
