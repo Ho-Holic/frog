@@ -81,3 +81,7 @@ QString nsSettingSpider::LibraryItem::path() const {
 QString nsSettingSpider::LibraryItem::name() const {
   return mItemData.name();
 }
+
+nsSettingSpider::LibraryItem::Type nsSettingSpider::LibraryItem::type() const {
+  return mItemType;
+}

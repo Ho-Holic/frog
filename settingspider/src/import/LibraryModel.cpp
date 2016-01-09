@@ -131,9 +131,14 @@ QMimeData* nsSettingSpider::LibraryModel::mimeData(const QModelIndexList& indexe
   QTextStream stream(&data, QIODevice::WriteOnly);
 
   foreach (const QModelIndex& index, indexes) {
+
     if (index.isValid()) {
+
       LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-      stream << item->name() << ";";
+
+      if (item->type() == LibraryItem::File) {
+        stream << item->name() << ";";
+      }
     }
   }
 

@@ -42,6 +42,7 @@ namespace nsSettingSpider {
     bool isRootItem() const;
     QString path() const;
     QString name() const;
+    Type type() const;
   private:
     Type mItemType;
     LibraryItemData mItemData;
