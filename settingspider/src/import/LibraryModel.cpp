@@ -66,8 +66,10 @@ void nsSettingSpider::LibraryModel::attachDirectoriesTo(QList<LibraryItem*>& par
   while (it.hasNext()) {
     it.next();
 
+    QString name = parent->name().isEmpty() ? it.fileName()
+                                            : parent->name() + "/" + it.fileName();
     LibraryItem* child = new LibraryItem(LibraryItem::Directory,
-                                        LibraryItemData(it.filePath(), it.fileName()),
+                                        LibraryItemData(it.filePath(), name),
                                         parent);
     parent->appendChild(child);
     parents.push_front(child);
@@ -80,8 +82,11 @@ void nsSettingSpider::LibraryModel::attachFilesTo(nsSettingSpider::LibraryItem* 
 
   while (it.hasNext()) {
     it.next();
+
+    QString name = parent->name().isEmpty() ? it.fileName()
+                                            : parent->name() + "/" + it.fileName();
     LibraryItem* child = new LibraryItem(LibraryItem::File,
-                                        LibraryItemData(it.filePath(), it.fileName()),
+                                        LibraryItemData(it.filePath(), name),
                                         parent);
     parent->appendChild(child);
 

@@ -3,6 +3,7 @@
 
 // qt
 #include <QtAlgorithms>
+#include <QDir>
 
 // tmp
 #include <QDebug>
@@ -63,6 +64,9 @@ nsSettingSpider::LibraryItem* nsSettingSpider::LibraryItem::childItem(int row) c
 
 QVariant nsSettingSpider::LibraryItem::data(int column) const {
   Q_UNUSED(column);
+  if (mItemType == Directory || mItemType == File) {
+    return QDir(mItemData.name()).dirName();
+  }
   return mItemData.name();
 }
 
