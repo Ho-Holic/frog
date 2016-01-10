@@ -39,9 +39,10 @@ void nsSettingSpider::GraphWidget::paintEvent(QPaintEvent* e) {
   if (mIsDragging) drawDragArea();
 
   bool isDelete = mIsDeleteAllowed && (mMousePosition.y() < DeleteRectHeight);
-  if (isDelete) drawDeleteArea();
 
-  emit updateScene();
+  emit onSceneUpdate();
+
+  if (isDelete) drawDeleteArea();
 }
 
 void nsSettingSpider::GraphWidget::drawBackground() {

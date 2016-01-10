@@ -22,7 +22,7 @@ namespace nsSettingSpider {
     void onSetWorldAcceptDeletes(bool);
   private slots:
     void onSaveClicked();
-    void onModeChange(World::Mode mode);
+    void dispatchWorldMode(World::Mode mode);
   private:
     void connectParts(World* world,
                       GraphWidget* graphWidget);      

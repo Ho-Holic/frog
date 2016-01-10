@@ -17,7 +17,7 @@ namespace nsSettingSpider {
   public:
     GraphWidget(QWidget* parent = 0);
   signals:
-    void updateScene();
+    void onSceneUpdate();
     void onDoubleClick(const QPoint&);    
     void onDrop(const QPoint&, const QString&);
     void onMouseMove(const QPoint&, const QPoint&);

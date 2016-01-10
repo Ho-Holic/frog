@@ -33,10 +33,10 @@ namespace nsSettingSpider {
     World(QObject* parent = 0);
     ~World();
   signals:
-    void entityChanged(Entity*);
-    void connectionChanged(Connection*);    
-    void originChanged(const QPoint& origin);
-    void modeChanged(World::Mode);
+    void onEntityChanged(Entity*);
+    void onConnectionChanged(Connection*);
+    void onOriginChanged(const QPoint& origin);
+    void onModeChange(World::Mode);
   public slots:
     void createEntityAt(const QPoint& center);
     void createEntityAt(const QPoint& center, const QString& data);

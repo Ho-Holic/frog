@@ -35,7 +35,7 @@ void nsSettingSpider::World::reportStatus() {
   // send entities
   for (EntityList::const_iterator i = mEntityList.begin(); i != mEntityList.end(); ++i) {
     Entity* entity = *i;
-    emit entityChanged(entity);       
+    emit onEntityChanged(entity);
   }
 
   // send connections. must be after entities or draw would paint block over connections
@@ -47,7 +47,7 @@ void nsSettingSpider::World::reportStatus() {
 
   // send pending
   if ((mMode == PendingConnection || mMode == EditConnection) && ! mPendingConnection.isNull()) {
-    emit connectionChanged(&mPendingConnection);
+    emit onConnectionChanged(&mPendingConnection);
   }
 }
 
@@ -72,7 +72,7 @@ void nsSettingSpider::World::reportRelations(const nsSettingSpider::Entity* from
       Connection connection = Connection(relation.key(),
                                          from->rect().bottomLeft() + QPoint(from->rect().width()/2, 0),
                                          to->connectionSlotRect());
-      emit connectionChanged(&connection);
+      emit onConnectionChanged(&connection);
     }
   }
 
@@ -154,7 +154,7 @@ void nsSettingSpider::World::activateMode(const QPoint& pos) {
     originMode();
   }
 
-  emit modeChanged(mMode);
+  emit onModeChange(mMode);
 
   touchCall(withoutOrigin(pos));
 }
@@ -162,7 +162,7 @@ void nsSettingSpider::World::activateMode(const QPoint& pos) {
 void nsSettingSpider::World::deactivateMode(const QPoint& pos) {
   finalizeCall(withoutOrigin(pos));
   idleMode();
-  emit modeChanged(mMode);
+  emit onModeChange(mMode);
 }
 
 void nsSettingSpider::World::moveInWorld(const QPoint& from, const QPoint& to) {
@@ -241,7 +241,7 @@ void nsSettingSpider::World::emptyMove(const QPoint& from, const QPoint& to) {
 
 void nsSettingSpider::World::moveOrigin(const QPoint& from, const QPoint& to) {
   mOrigin += to - from;
-  emit originChanged(mOrigin);
+  emit onOriginChanged(mOrigin);
 }
 
 void nsSettingSpider::World::moveEntity(const QPoint& from, const QPoint& to) {
@@ -283,7 +283,7 @@ void nsSettingSpider::World::moveConnectEdit(const QPoint& from, const QPoint& t
   entity->outDetach(mRelationType, mActiveEntity);
 
   connectMode(entity);
-  emit modeChanged(mMode);
+  emit onModeChange(mMode);
 }
 
 int nsSettingSpider::World::withoutOriginY(int y) const {

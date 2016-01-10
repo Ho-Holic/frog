@@ -38,14 +38,26 @@ nsSettingSpider::MainWindow::MainWindow(QWidget* parent)
 
   QMenuBar* menu = new QMenuBar(this);
   QMenu* fileMenu = menu->addMenu(tr("&File"));
-  fileMenu->addAction(tr("&Save As..."), this, SLOT(onSaveClicked()), QKeySequence(Qt::CTRL + Qt::Key_S));
+
+  fileMenu->addAction(tr("&Save As..."),
+                      this, SLOT(onSaveClicked()),
+                      QKeySequence(Qt::CTRL + Qt::Key_S));
 
   QMenu* exportMenu = fileMenu->addMenu(tr("&Export"));
-  exportMenu->addAction(tr("&Graphviz"), this, SLOT(onSaveClicked()), QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_G));
-  exportMenu->addAction(tr("&PostgreSQL"), this, SLOT(onSaveClicked()), QKeySequence(Qt::CTRL + Qt::SHIFT +  Qt::Key_Q));
+
+  exportMenu->addAction(tr("&Graphviz"),
+                        this, SLOT(onSaveClicked()),
+                        QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_G));
+
+  exportMenu->addAction(tr("&PostgreSQL"),
+                        this, SLOT(onSaveClicked()),
+                        QKeySequence(Qt::CTRL + Qt::SHIFT +  Qt::Key_Q));
 
   QMenu* libraryMenu = menu->addMenu(tr("&Library"));
-  libraryMenu->addAction(tr("&Add library folder"), libraryImport, SLOT(switchToLibraryAddMode()), QKeySequence(Qt::CTRL + Qt::Key_L));
+
+  libraryMenu->addAction(tr("&Add library folder"),
+                         libraryImport, SLOT(switchToLibraryAddMode()),
+                         QKeySequence(Qt::CTRL + Qt::Key_L));
 
   setMenuBar(menu);
 
@@ -60,23 +72,23 @@ void nsSettingSpider::MainWindow::onSaveClicked() {
   }
 }
 
-void nsSettingSpider::MainWindow::onModeChange(World::Mode mode) {
+void nsSettingSpider::MainWindow::dispatchWorldMode(World::Mode mode) {
 
   emit onSetWorldAcceptDeletes(mode == World::EntityMove);
 }
 
 void nsSettingSpider::MainWindow::connectParts(nsSettingSpider::World* world,
                                                nsSettingSpider::GraphWidget* graphWidget) {
-  connect(world,       SIGNAL(entityChanged(Entity*)),
+  connect(world,       SIGNAL(onEntityChanged(Entity*)),
           graphWidget, SLOT(drawEntity(Entity*)));
 
-  connect(world,       SIGNAL(connectionChanged(Connection*)),
+  connect(world,       SIGNAL(onConnectionChanged(Connection*)),
           graphWidget, SLOT(drawConnection(Connection*)));  
 
-  connect(world,       SIGNAL(originChanged(const QPoint&)),
+  connect(world,       SIGNAL(onOriginChanged(const QPoint&)),
           graphWidget, SLOT(setOrigin(const QPoint&)));    
 
-  connect(graphWidget, SIGNAL(updateScene()),
+  connect(graphWidget, SIGNAL(onSceneUpdate()),
           world,       SLOT(reportStatus()));
 
   connect(graphWidget, SIGNAL(onDoubleClick(const QPoint&)),
@@ -100,14 +112,15 @@ void nsSettingSpider::MainWindow::connectParts(nsSettingSpider::World* world,
   connect(graphWidget, SIGNAL(onRelationTypeChange(const RelationType&)),
           world,       SLOT(changeRelationType(const RelationType&)));
 
+  connect(this,        SIGNAL(onSetWorldAcceptDeletes(bool)),
+          graphWidget, SLOT(setAcceptDeletes(bool)));
+
 //  connect(this,  SIGNAL(onSaveTo(const QString&)),
 //          world, SLOT());
 
-  connect(world, SIGNAL(modeChanged(World::Mode)),
-          this,  SLOT(onModeChange(World::Mode)));
+  connect(world, SIGNAL(onModeChange(World::Mode)),
+          this,  SLOT(dispatchWorldMode(World::Mode)));
 
-  connect(this,        SIGNAL(onSetWorldAcceptDeletes(bool)),
-          graphWidget, SLOT(setAcceptDeletes(bool)));
 }
 
 
