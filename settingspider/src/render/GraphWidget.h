@@ -24,7 +24,7 @@ namespace nsSettingSpider {
     void onMousePress(const QPoint&);
     void onMouseRelease(const QPoint&);
     void onRelationTypeChange(const RelationType&);
-    void onDeleteActiveEntity(const QPoint&);
+    void onInDeleteArea(const QPoint&);
   public slots:
     void drawEntity(Entity* entity);
     void drawConnection(Connection* connection);

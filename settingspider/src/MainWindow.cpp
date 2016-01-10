@@ -82,7 +82,7 @@ void nsSettingSpider::MainWindow::connectParts(nsSettingSpider::World* world,
   connect(graphWidget, SIGNAL(onDoubleClick(const QPoint&)),
           world,       SLOT(createEntityAt(const QPoint&)));
 
-  connect(graphWidget, SIGNAL(onDeleteActiveEntity(const QPoint&)),
+  connect(graphWidget, SIGNAL(onInDeleteArea(const QPoint&)),
           world,       SLOT(destroyActiveEntity(const QPoint&)));
 
   connect(graphWidget, SIGNAL(onDrop(const QPoint&, const QString&)),

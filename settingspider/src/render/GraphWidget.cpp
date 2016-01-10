@@ -108,7 +108,7 @@ void nsSettingSpider::GraphWidget::mouseReleaseEvent(QMouseEvent* e) {
   bool isDelete = mIsDeleteAllowed && (e->pos().y() < DeleteRectHeight);
 
   if (isDelete) {
-    emit onDeleteActiveEntity(e->pos());
+    emit onInDeleteArea(e->pos());
   }
 
   emit onMouseRelease(e->pos());
