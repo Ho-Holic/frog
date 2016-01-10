@@ -4,6 +4,9 @@
 // qt
 #include <QMainWindow>
 
+// self
+#include "world/World.h"
+
 namespace nsSettingSpider {
 
   class World;
@@ -14,9 +17,15 @@ namespace nsSettingSpider {
     Q_OBJECT
   public:
     MainWindow(QWidget* parent = 0);
+  signals:
+    void onSaveTo(const QString&);
+    void onSetWorldAcceptDeletes(bool);
+  private slots:
+    void onSaveClicked();
+    void onModeChange(World::Mode mode);
   private:
     void connectParts(World* world,
-                      GraphWidget* graphWidget);
+                      GraphWidget* graphWidget);      
   };
 
 }

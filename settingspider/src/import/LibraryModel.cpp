@@ -18,9 +18,9 @@
 
 nsSettingSpider::LibraryModel::LibraryModel(QObject* parent)
 : QAbstractItemModel(parent)
-, mRootItem(new LibraryItem(LibraryItem::Header, "Libraries"))
-, mSceneItem(new LibraryItem(LibraryItem::Scene, "Scene", mRootItem))
-, mPendingItem(new LibraryItem(LibraryItem::Pending, "Pending", mRootItem)) {
+, mRootItem(new LibraryItem(LibraryItem::Header, tr("Libraries")))
+, mSceneItem(new LibraryItem(LibraryItem::Scene, tr("Scene"), mRootItem))
+, mPendingItem(new LibraryItem(LibraryItem::Pending, tr("Pending"), mRootItem)) {
   mRootItem->appendChild(mSceneItem);
   mRootItem->appendChild(mPendingItem);
 }

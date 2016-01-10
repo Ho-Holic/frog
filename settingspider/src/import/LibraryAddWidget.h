@@ -1,5 +1,5 @@
-#ifndef LIBRARYADDWIDGET_H
-#define LIBRARYADDWIDGET_H
+#ifndef SETTINGSPIDER_LIBRARYADDWIDGET_H
+#define SETTINGSPIDER_LIBRARYADDWIDGET_H
 
 // qt
 #include <QWidget>
@@ -32,4 +32,4 @@ namespace nsSettingSpider {
   };
 }
 
-#endif // LIBRARYADDWIDGET_H
+#endif // SETTINGSPIDER_LIBRARYADDWIDGET_H

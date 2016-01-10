@@ -1,5 +1,8 @@
 // self
 #include "Relation.h"
 
-QString nsSettingSpider::Relation::Needed = "Needed";
-QString nsSettingSpider::Relation::Absorb = "Absorb";
+// qt
+#include <QObject>
+
+QString nsSettingSpider::Relation::Needed = QObject::tr("Needed");
+QString nsSettingSpider::Relation::Absorb = QObject::tr("Absorb");

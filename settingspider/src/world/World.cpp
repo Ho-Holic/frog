@@ -38,7 +38,8 @@ void nsSettingSpider::World::reportStatus() {
     emit entityChanged(entity);       
   }
 
-  // send connections
+  // send connections. must be after entities or draw would paint block over connections
+  // also this separeta processing of entities and connections
   for (EntityList::const_iterator i = mEntityList.begin(); i != mEntityList.end(); ++i) {
     Entity* entity = *i;
     reportRelations(entity);
@@ -48,11 +49,14 @@ void nsSettingSpider::World::reportStatus() {
   if ((mMode == PendingConnection || mMode == EditConnection) && ! mPendingConnection.isNull()) {
     emit connectionChanged(&mPendingConnection);
   }
+}
 
-  // send delete area
-  bool isDeleteCandidate = (mMode == EntityMove)
-                           && (mActiveEntity->rect().y() < withOriginY(0));
-  emit deleteAreaChanged(isDeleteCandidate);
+void nsSettingSpider::World::saveTo(const QString& path) const {
+  //
+}
+
+void nsSettingSpider::World::loadFrom(const QString& path) {
+  //
 }
 
 void nsSettingSpider::World::reportRelations(const nsSettingSpider::Entity* from) {
@@ -79,7 +83,7 @@ void nsSettingSpider::World::emptyTouch(const QPoint& pos) {
 }
 
 void nsSettingSpider::World::createEntityAt(const QPoint& center) {
-  Entity* entity = new Entity(withOrigin(center), "unnamed");
+  Entity* entity = new Entity(withoutOrigin(center), tr("unnamed"));
   mEntityList.push_front(entity);
 }
 
@@ -88,48 +92,88 @@ void nsSettingSpider::World::createEntityAt(const QPoint& center, const QString&
   QStringList list = data.split(";", QString::SkipEmptyParts);
 
   foreach(const QString& path, list) {
-    Entity* entity = new Entity(withOrigin(center), path);
+    Entity* entity = new Entity(withoutOrigin(center), path);
     mEntityList.push_front(entity);
   }
 }
 
+void nsSettingSpider::World::destroyActiveEntity(const QPoint& pos) {
+
+  bool isDelete = mActiveEntity && mActiveEntity->rect().contains(withoutOrigin(pos));
+  if (isDelete) {
+    destroyEntity(mActiveEntity);
+  }
+}
+
+void nsSettingSpider::World::destroyEntity(nsSettingSpider::Entity* entity) {
+
+  const nsSettingSpider::Entity::RelationBinding& inRelations = entity->inRelations();
+  for (Entity::RelationBinding::const_iterator relation = inRelations.begin(); relation != inRelations.end(); ++relation) {
+
+    const Entity::RelationList& list = relation.value();
+
+    for (Entity::RelationList::const_iterator i = list.begin(); i != list.end(); ++i) {
+      Entity* parent = *i;
+      parent->outDetach(relation.key(), entity);
+    }
+  }
+
+  const nsSettingSpider::Entity::RelationBinding& outRelations = entity->outRelations();
+  for (Entity::RelationBinding::const_iterator relation = outRelations.begin(); relation != outRelations.end(); ++relation) {
+
+    const Entity::RelationList& list = relation.value();
+
+    for (Entity::RelationList::const_iterator i = list.begin(); i != list.end(); ++i) {
+      Entity* child = *i;
+      child->inDetach(relation.key(), entity);
+    }
+  }
+
+  int removed = mEntityList.removeAll(entity);
+  Q_ASSERT(removed == 1 || removed == 0);
+  Q_UNUSED(removed);
+}
+
 void nsSettingSpider::World::activateMode(const QPoint& pos) {
   for (EntityList::iterator i = mEntityList.begin(); i != mEntityList.end(); ++i) {
-    Entity* entity = *i;    
-    if ( entity->hasInRelations(mRelationType) && entity->connectionSlotRect().contains(withOrigin(pos))) {
+    Entity* entity = *i;
+    if ( entity->hasInRelations(mRelationType) && entity->connectionSlotRect().contains(withoutOrigin(pos))) {
       connectEditMode(entity);
       break;
     }
-    else if (entity->connectionRect().contains(withOrigin(pos))) {
+    else if (entity->connectionRect().contains(withoutOrigin(pos))) {
       connectMode(entity);
       break;
     }
-    else if (entity->rect().contains(withOrigin(pos))) {
+    else if (entity->rect().contains(withoutOrigin(pos))) {
       moveMode(entity);
       break;
     }
   }
-  if (mMode == Idle) { // если ничего не осталось
+  if (mMode == Idle) { // if no other mode was selected use move origin
     originMode();
   }
 
-  touchCall(withOrigin(pos));
+  emit modeChanged(mMode);
+
+  touchCall(withoutOrigin(pos));
 }
 
 void nsSettingSpider::World::deactivateMode(const QPoint& pos) {
-  finalizeCall(withOrigin(pos));
+  finalizeCall(withoutOrigin(pos));
   idleMode();
+  emit modeChanged(mMode);
 }
 
 void nsSettingSpider::World::moveInWorld(const QPoint& from, const QPoint& to) {
-  moveCall(withOrigin(from), withOrigin(to));
+  moveCall(withoutOrigin(from), withoutOrigin(to));
 }
 
 void nsSettingSpider::World::moveMode(Entity* entity) {
   mMode = EntityMove;
   mTouchFunction = &emptyTouch;
   mMoveFunction = &moveEntity;
-  mFinalizeFunction = &moveEntityFinalize;
+  mFinalizeFunction = &emptyFinalize;
   mActiveEntity = entity;
   mPendingConnection = Connection();
 }
@@ -170,34 +214,7 @@ void nsSettingSpider::World::originMode() {
   mPendingConnection = Connection();
 }
 
-void nsSettingSpider::World::destroyEntity(nsSettingSpider::Entity* entity) {
 
-  const nsSettingSpider::Entity::RelationBinding& inRelations = entity->inRelations();
-  for (Entity::RelationBinding::const_iterator relation = inRelations.begin(); relation != inRelations.end(); ++relation) {
-
-    const Entity::RelationList& list = relation.value();
-
-    for (Entity::RelationList::const_iterator i = list.begin(); i != list.end(); ++i) {
-      Entity* parent = *i;
-      parent->outDetach(relation.key(), entity);
-    }
-  }
-
-  const nsSettingSpider::Entity::RelationBinding& outRelations = entity->outRelations();
-  for (Entity::RelationBinding::const_iterator relation = outRelations.begin(); relation != outRelations.end(); ++relation) {
-
-    const Entity::RelationList& list = relation.value();
-
-    for (Entity::RelationList::const_iterator i = list.begin(); i != list.end(); ++i) {
-      Entity* child = *i;
-      child->inDetach(relation.key(), entity);
-    }
-  }
-
-  int removed = mEntityList.removeAll(entity);
-  Q_ASSERT(removed == 1 || removed == 0);
-  Q_UNUSED(removed);
-}
 
 
 void nsSettingSpider::World::touchCall(const QPoint& pos) {
@@ -266,35 +283,19 @@ void nsSettingSpider::World::moveConnectEdit(const QPoint& from, const QPoint& t
   entity->outDetach(mRelationType, mActiveEntity);
 
   connectMode(entity);
-
+  emit modeChanged(mMode);
 }
 
-void nsSettingSpider::World::moveEntityFinalize(const QPoint& pos) {
-  Q_UNUSED(pos);
-  if (mActiveEntity->rect().y() < withOriginY(0)) {
-    destroyEntity(mActiveEntity);
-    mActiveEntity = nullptr;
-  }
-}
-
-int nsSettingSpider::World::withOriginY(int y) const {
+int nsSettingSpider::World::withoutOriginY(int y) const {
   return y - mOrigin.y();
 }
 
-QRect nsSettingSpider::World::withOrigin(const QRect& r) const {
+QRect nsSettingSpider::World::withoutOrigin(const QRect& r) const {
   return QRect(r.topLeft() - mOrigin, r.size());
 }
 
-QPoint nsSettingSpider::World::withOrigin(const QPoint& p) const {
+QPoint nsSettingSpider::World::withoutOrigin(const QPoint& p) const {
   return p - mOrigin;
-}
-
-void nsSettingSpider::World::saveTo() const {
-  //
-}
-
-void nsSettingSpider::World::loadFrom() {
-  //
 }
 
 nsSettingSpider::World::EntityList::size_type

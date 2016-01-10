@@ -40,11 +40,11 @@ nsSettingSpider::LibraryAddWidget::LibraryAddWidget(QWidget* parent)
     tree->hideColumn(i);
   }
 
-  QLabel* pathCaption = new QLabel("<b>Part of the path:</b>", this);
+  QLabel* pathCaption = new QLabel("<b>" + tr("Part of the path") + ":</b>", this);
   QLabel* pathText = new QLabel(mPath, this);
 
-  QPushButton* add = new QPushButton("Add", this);
-  QPushButton* cancel = new QPushButton("Cancel", this);
+  QPushButton* add = new QPushButton(tr("Add"), this);
+  QPushButton* cancel = new QPushButton(tr("Cancel"), this);
   QSlider* slider = new QSlider(Qt::Horizontal, this);
   slider->setRange(0, 0);
 

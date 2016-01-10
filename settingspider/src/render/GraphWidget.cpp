@@ -18,10 +18,11 @@
 nsSettingSpider::GraphWidget::GraphWidget(QWidget* parent)
 : QWidget(parent)
 , mOrigin(0, 0)
-, mClickedPosition(0, 0)
+, mMousePosition(0, 0)
 , mIsHolding(false)
 , mDragPosition(0, 0)
-, mIsDragging(false) {
+, mIsDragging(false)
+, mIsDeleteAllowed(false) {
   //
 }
 
@@ -30,7 +31,20 @@ void nsSettingSpider::GraphWidget::resizeEvent(QResizeEvent* e) {
 }
 
 void nsSettingSpider::GraphWidget::paintEvent(QPaintEvent* e) {
+
   QWidget::paintEvent(e);
+
+  drawBackground();
+
+  if (mIsDragging) drawDragArea();
+
+  bool isDelete = mIsDeleteAllowed && (mMousePosition.y() < DeleteRectHeight);
+  if (isDelete) drawDeleteArea();
+
+  emit updateScene();
+}
+
+void nsSettingSpider::GraphWidget::drawBackground() {
   QPainter p(this);
   p.setPen(Qt::NoPen);
   p.setBrush(ColorScheme::background());
@@ -38,19 +52,26 @@ void nsSettingSpider::GraphWidget::paintEvent(QPaintEvent* e) {
 
   p.setBrush(QBrush(ColorScheme::backgroundDecoration(), Qt::BDiagPattern));
   p.drawRect(this->rect());
+}
 
-  // TODO: draw some grid
-//  p.setPen(QColor(0, 0, 0));
-//  for (int i = 0; i < height(); i += 20) {
-//    p.drawText(QRect(0, i, 200, 200), QString::number(mOrigin.y() + i));
-//  }
-  if (mIsDragging) {
-    p.setPen(QPen(ColorScheme::entity(), 1, Qt::DashLine));
-    p.setBrush(Qt::NoBrush);
-    p.drawRect(VectorMath::fromCenterPoint(mDragPosition, QSize(100, 100))); // TODO: calculate normal size
-  }
-  emit updateScene();
+void nsSettingSpider::GraphWidget::drawDragArea() {
+  QPainter p(this);
+  p.setPen(QPen(ColorScheme::entity(), 1, Qt::DashLine));
+  p.setBrush(Qt::NoBrush);
+  p.drawRect(VectorMath::fromCenterPoint(mDragPosition, QSize(100, 100))); // TODO: calculate normal size
+}
 
+void nsSettingSpider::GraphWidget::drawDeleteArea() {
+
+  QPainter p(this);
+  QRect rect(QPoint(0, 0), QSize(width(), DeleteRectHeight));
+
+  p.setPen(Qt::NoPen);
+  p.setBrush(ColorScheme::deleteArea());
+  p.drawRect(rect);
+
+  p.setPen(QPen(ColorScheme::deleteAreaText(), Qt::SolidLine));
+  p.drawText(rect, Qt::AlignCenter, tr("Delete"));
 }
 
 void nsSettingSpider::GraphWidget::mouseDoubleClickEvent(QMouseEvent* e) {  
@@ -61,8 +82,8 @@ void nsSettingSpider::GraphWidget::mouseDoubleClickEvent(QMouseEvent* e) {
 
 void nsSettingSpider::GraphWidget::mouseMoveEvent(QMouseEvent* e) {
   if (mIsHolding) {
-    emit onMouseMove(mClickedPosition, e->pos());
-    mClickedPosition = e->pos();
+    emit onMouseMove(mMousePosition, e->pos());
+    mMousePosition = e->pos();
     update();
   }
 }
@@ -77,12 +98,19 @@ void nsSettingSpider::GraphWidget::mousePressEvent(QMouseEvent* e) {
   }
 
   mIsHolding = true;
-  mClickedPosition = e->pos();
-  emit onMousePress(mClickedPosition);
+  mMousePosition = e->pos();
+  emit onMousePress(mMousePosition);
   update();
 }
 
-void nsSettingSpider::GraphWidget::mouseReleaseEvent(QMouseEvent* e) {  
+void nsSettingSpider::GraphWidget::mouseReleaseEvent(QMouseEvent* e) {    
+
+  bool isDelete = mIsDeleteAllowed && (e->pos().y() < DeleteRectHeight);
+
+  if (isDelete) {
+    emit onDeleteActiveEntity(e->pos());
+  }
+
   emit onMouseRelease(e->pos());
   mIsHolding = false;
   update();
@@ -159,23 +187,12 @@ void nsSettingSpider::GraphWidget::drawConnection(nsSettingSpider::Connection* c
   //p.drawText(QRect(withOrigin(connection->to() - QPoint(-20, 20)), QSize(20, 20)), "123");
 }
 
-void nsSettingSpider::GraphWidget::drawDeleteArea(bool enabled) {
-  if ( ! enabled) return;
-
-
-  QPainter p(this);
-  QRect rect(QPoint(0, 0), QSize(width(), 40));
-
-  p.setPen(Qt::NoPen);
-  p.setBrush(ColorScheme::deleteArea());
-  p.drawRect(rect);
-
-  p.setPen(QPen(ColorScheme::deleteAreaText(), Qt::SolidLine));
-  p.drawText(rect, Qt::AlignCenter, "Удалить");
-}
-
 void nsSettingSpider::GraphWidget::setOrigin(const QPoint& origin) {
   mOrigin = origin;
+}
+
+void nsSettingSpider::GraphWidget::setAcceptDeletes(bool allow) {
+  mIsDeleteAllowed = allow;
 }
 
 

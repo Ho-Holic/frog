@@ -24,7 +24,8 @@ SOURCES += \
     src/import/LibraryModel.cpp \
     src/import/LibraryItem.cpp \
     src/import/LibraryItemData.cpp \
-    src/world/VectorMath.cpp
+    src/world/VectorMath.cpp \
+    src/convert/Convertor.cpp
 
 HEADERS  += \
     src/cplusplus11.h \
@@ -42,4 +43,5 @@ HEADERS  += \
     src/import/LibraryModel.h \
     src/import/LibraryItem.h \
     src/import/LibraryItemData.h \
-    src/world/VectorMath.h
+    src/world/VectorMath.h \
+    src/convert/Convertor.h

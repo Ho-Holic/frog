@@ -10,7 +10,6 @@
 nsSettingSpider::LibraryViewWidget::LibraryViewWidget(QWidget* parent)
 : QTreeView(parent)  {
 
-  //setHeaderLabel("Libraries");
   setContextMenuPolicy(Qt::CustomContextMenu);
 
   connect(this, SIGNAL(customContextMenuRequested(const QPoint&)),
@@ -20,11 +19,7 @@ nsSettingSpider::LibraryViewWidget::LibraryViewWidget(QWidget* parent)
 void nsSettingSpider::LibraryViewWidget::createMenuAt(const QPoint& pos) {
 
   QMenu* menu = new QMenu(this);
-  QAction* addAction = new QAction("Add library folder", this);
 
-  connect(addAction, SIGNAL(triggered()),
-          this,      SIGNAL(onLibraryAddClicked()));
-
-  menu->addAction(addAction);
+  menu->addAction(tr("Add library folder"), this, SIGNAL(onLibraryAddClicked()));
   menu->popup(viewport()->mapToGlobal(pos));
 }

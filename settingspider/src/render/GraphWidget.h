@@ -24,11 +24,12 @@ namespace nsSettingSpider {
     void onMousePress(const QPoint&);
     void onMouseRelease(const QPoint&);
     void onRelationTypeChange(const RelationType&);
+    void onDeleteActiveEntity(const QPoint&);
   public slots:
     void drawEntity(Entity* entity);
     void drawConnection(Connection* connection);
-    void drawDeleteArea(bool enabled);
     void setOrigin(const QPoint& origin);
+    void setAcceptDeletes(bool allow);
   public:
     virtual void resizeEvent(QResizeEvent* e);
     virtual void paintEvent(QPaintEvent* e);
@@ -41,14 +42,20 @@ namespace nsSettingSpider {
     virtual void dragMoveEvent(QDragMoveEvent* e);
     virtual void dropEvent(QDropEvent* e);
   private:
+    enum { DeleteRectHeight = 40 };
+  private:
+    void drawBackground();
+    void drawDragArea();
+    void drawDeleteArea();
     QRect withOrigin(const QRect& r) const;
     QPoint withOrigin(const QPoint& p) const;
   private:
     QPoint mOrigin;
-    QPoint mClickedPosition;
+    QPoint mMousePosition;
     bool mIsHolding;
     QPoint mDragPosition;
     bool mIsDragging;
+    bool mIsDeleteAllowed;
   };
 }
 
