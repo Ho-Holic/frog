@@ -12,6 +12,7 @@ namespace nsSettingSpider {
   class World;
   class GraphWidget;
   class LibraryImportWidget;
+  class Convertor;
 
   class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -25,7 +26,8 @@ namespace nsSettingSpider {
     void dispatchWorldMode(World::Mode mode);
   private:
     void connectParts(World* world,
-                      GraphWidget* graphWidget);      
+                      GraphWidget* graphWidget,
+                      nsSettingSpider::Convertor* convertor);
   };
 
 }

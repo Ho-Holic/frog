@@ -17,7 +17,7 @@ namespace nsSettingSpider {
   public:
     GraphWidget(QWidget* parent = 0);
   signals:
-    void onSceneUpdate();
+    void onSceneUpdate(const QString&);
     void onDoubleClick(const QPoint&);    
     void onDrop(const QPoint&, const QString&);
     void onMouseMove(const QPoint&, const QPoint&);
@@ -26,8 +26,8 @@ namespace nsSettingSpider {
     void onRelationTypeChange(const RelationType&);
     void onInDeleteArea(const QPoint&);
   public slots:
-    void drawEntity(Entity* entity);
-    void drawConnection(Connection* connection);
+    void drawEntity(const QString& replyId, Entity* entity);
+    void drawConnection(const QString& replyId, Connection* connection);
     void setOrigin(const QPoint& origin);
     void setAcceptDeletes(bool allow);
   public:
@@ -50,6 +50,7 @@ namespace nsSettingSpider {
     QRect withOrigin(const QRect& r) const;
     QPoint withOrigin(const QPoint& p) const;
   private:
+    QString mId;
     QPoint mOrigin;
     QPoint mMousePosition;
     bool mIsHolding;

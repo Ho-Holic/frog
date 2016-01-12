@@ -8,8 +8,10 @@
 #include <QFileDialog>
 
 // self
+#include "world/World.h"
 #include "render/GraphWidget.h"
 #include "import/LibraryImportWidget.h"
+#include "convert/Convertor.h"
 
 // tmp
 #include <QDebug>
@@ -23,6 +25,7 @@ nsSettingSpider::MainWindow::MainWindow(QWidget* parent)
   QSplitter* splitter = new QSplitter(widget);
 
   World* world = new World(splitter);
+  Convertor* convertor = new Convertor(splitter);
   GraphWidget* graphWidget = new GraphWidget(splitter);
   graphWidget->setAcceptDrops(true);
 
@@ -41,7 +44,7 @@ nsSettingSpider::MainWindow::MainWindow(QWidget* parent)
 
   fileMenu->addAction(tr("&Save As..."),
                       this, SLOT(onSaveClicked()),
-                      QKeySequence(Qt::CTRL + Qt::Key_S));
+                      QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_S));
 
   QMenu* exportMenu = fileMenu->addMenu(tr("&Export"));
 
@@ -61,7 +64,7 @@ nsSettingSpider::MainWindow::MainWindow(QWidget* parent)
 
   setMenuBar(menu);
 
-  connectParts(world, graphWidget);
+  connectParts(world, graphWidget, convertor);
 }
 
 void nsSettingSpider::MainWindow::onSaveClicked() {
@@ -78,18 +81,19 @@ void nsSettingSpider::MainWindow::dispatchWorldMode(World::Mode mode) {
 }
 
 void nsSettingSpider::MainWindow::connectParts(nsSettingSpider::World* world,
-                                               nsSettingSpider::GraphWidget* graphWidget) {
-  connect(world,       SIGNAL(onEntityChanged(Entity*)),
-          graphWidget, SLOT(drawEntity(Entity*)));
+                                               nsSettingSpider::GraphWidget* graphWidget,
+                                               nsSettingSpider::Convertor* convertor) {
+  connect(world,       SIGNAL(onEntityChanged(const QString&, Entity*)),
+          graphWidget, SLOT(drawEntity(const QString&, Entity*)));
 
-  connect(world,       SIGNAL(onConnectionChanged(Connection*)),
-          graphWidget, SLOT(drawConnection(Connection*)));  
+  connect(world,       SIGNAL(onConnectionChanged(const QString&, Connection*)),
+          graphWidget, SLOT(drawConnection(const QString&, Connection*)));
 
   connect(world,       SIGNAL(onOriginChanged(const QPoint&)),
           graphWidget, SLOT(setOrigin(const QPoint&)));    
 
-  connect(graphWidget, SIGNAL(onSceneUpdate()),
-          world,       SLOT(reportStatus()));
+  connect(graphWidget, SIGNAL(onSceneUpdate(const QString&)),
+          world,       SLOT(reportStatus(const QString&)));
 
   connect(graphWidget, SIGNAL(onDoubleClick(const QPoint&)),
           world,       SLOT(createEntityAt(const QPoint&)));
@@ -115,8 +119,17 @@ void nsSettingSpider::MainWindow::connectParts(nsSettingSpider::World* world,
   connect(this,        SIGNAL(onSetWorldAcceptDeletes(bool)),
           graphWidget, SLOT(setAcceptDeletes(bool)));
 
-//  connect(this,  SIGNAL(onSaveTo(const QString&)),
-//          world, SLOT());
+  connect(this,      SIGNAL(onSaveTo(const QString&)),
+          convertor, SLOT(saveTo(const QString&)));
+
+  connect(convertor, SIGNAL(onSaveRequestInformation(const QString&)),
+          world,     SLOT(reportStatus(const QString&)));
+
+  connect(world,     SIGNAL(onEntityChanged(const QString&, Entity*)),
+          convertor, SLOT(saveEntity(const QString&, Entity*)));
+
+  connect(world,     SIGNAL(onConnectionChanged(const QString&, Connection*)),
+          convertor, SLOT(saveConnection(const QString&, Connection*)));
 
   connect(world, SIGNAL(onModeChange(World::Mode)),
           this,  SLOT(dispatchWorldMode(World::Mode)));

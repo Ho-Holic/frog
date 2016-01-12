@@ -64,6 +64,9 @@ nsSettingSpider::LibraryItem* nsSettingSpider::LibraryItem::childItem(int row) c
 
 QVariant nsSettingSpider::LibraryItem::data(int column) const {
   Q_UNUSED(column);
+  if (mItemType == LibPack && mItemData.name().isEmpty()) {
+    return QObject::tr("[ no folder ]");
+  }
   if (mItemType == Directory || mItemType == File) {
     return QDir(mItemData.name()).dirName();
   }

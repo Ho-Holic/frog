@@ -30,36 +30,29 @@ nsSettingSpider::World::~World() {
   mEntityList.clear();
 }
 
-void nsSettingSpider::World::reportStatus() {
+void nsSettingSpider::World::reportStatus(const QString& replyId) {
 
   // send entities
   for (EntityList::const_iterator i = mEntityList.begin(); i != mEntityList.end(); ++i) {
     Entity* entity = *i;
-    emit onEntityChanged(entity);
+    emit onEntityChanged(replyId, entity);
   }
 
   // send connections. must be after entities or draw would paint block over connections
   // also this separeta processing of entities and connections
   for (EntityList::const_iterator i = mEntityList.begin(); i != mEntityList.end(); ++i) {
     Entity* entity = *i;
-    reportRelations(entity);
+    reportRelations(replyId, entity);
   }
 
   // send pending
   if ((mMode == PendingConnection || mMode == EditConnection) && ! mPendingConnection.isNull()) {
-    emit onConnectionChanged(&mPendingConnection);
+    emit onConnectionChanged(replyId, &mPendingConnection);
   }
 }
 
-void nsSettingSpider::World::saveTo(const QString& path) const {
-  //
-}
 
-void nsSettingSpider::World::loadFrom(const QString& path) {
-  //
-}
-
-void nsSettingSpider::World::reportRelations(const nsSettingSpider::Entity* from) {
+void nsSettingSpider::World::reportRelations(const QString& replyId, const nsSettingSpider::Entity* from) {
 
   const Entity::RelationBinding& allRelations = from->outRelations();
 
@@ -72,7 +65,7 @@ void nsSettingSpider::World::reportRelations(const nsSettingSpider::Entity* from
       Connection connection = Connection(relation.key(),
                                          from->rect().bottomLeft() + QPoint(from->rect().width()/2, 0),
                                          to->connectionSlotRect());
-      emit onConnectionChanged(&connection);
+      emit onConnectionChanged(replyId, &connection);
     }
   }
 

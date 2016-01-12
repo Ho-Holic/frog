@@ -11,12 +11,14 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QMimeData>
+#include <QUuid>
 
 // tmp
 #include <QDebug>
 
 nsSettingSpider::GraphWidget::GraphWidget(QWidget* parent)
 : QWidget(parent)
+, mId(QUuid::createUuid().toString())
 , mOrigin(0, 0)
 , mMousePosition(0, 0)
 , mIsHolding(false)
@@ -40,7 +42,7 @@ void nsSettingSpider::GraphWidget::paintEvent(QPaintEvent* e) {
 
   bool isDelete = mIsDeleteAllowed && (mMousePosition.y() < DeleteRectHeight);
 
-  emit onSceneUpdate();
+  emit onSceneUpdate(mId);
 
   if (isDelete) drawDeleteArea();
 }
@@ -155,7 +157,10 @@ QPoint nsSettingSpider::GraphWidget::withOrigin(const QPoint& p) const {
   return mOrigin + p;
 }
 
-void nsSettingSpider::GraphWidget::drawEntity(nsSettingSpider::Entity* entity) {
+void nsSettingSpider::GraphWidget::drawEntity(const QString& replyId, nsSettingSpider::Entity* entity) {
+
+  if (replyId != mId) return;
+
   QPainter p(this);
   p.setPen(Qt::NoPen);
   p.setBrush(ColorScheme::entity());
@@ -168,7 +173,10 @@ void nsSettingSpider::GraphWidget::drawEntity(nsSettingSpider::Entity* entity) {
   p.drawText(withOrigin(entity->captionRect()), Qt::AlignCenter, entity->libraryName());
 }
 
-void nsSettingSpider::GraphWidget::drawConnection(nsSettingSpider::Connection* connection) {
+void nsSettingSpider::GraphWidget::drawConnection(const QString& replyId, nsSettingSpider::Connection* connection) {
+
+  if (replyId != mId) return;
+
   QPainter p(this);
 
   if (connection->relationType() == Relation::Needed) {

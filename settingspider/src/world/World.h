@@ -33,8 +33,8 @@ namespace nsSettingSpider {
     World(QObject* parent = 0);
     ~World();
   signals:
-    void onEntityChanged(Entity*);
-    void onConnectionChanged(Connection*);
+    void onEntityChanged(const QString&, Entity*);
+    void onConnectionChanged(const QString&, Connection*);
     void onOriginChanged(const QPoint& origin);
     void onModeChange(World::Mode);
   public slots:
@@ -45,9 +45,8 @@ namespace nsSettingSpider {
     void deactivateMode(const QPoint& pos);    
     void moveInWorld(const QPoint& from, const QPoint& to);
     void changeRelationType(const RelationType& relationType);
-    void reportStatus();    
-    void saveTo(const QString& path) const;
-    void loadFrom(const QString& path);
+    void reportStatus(const QString& replyId);
+    void reportRelations(const QString& replyId, const Entity* from);
   public:
     EntityList::size_type entityCount() const;
     Entity* entityAt(EntityList::size_type index) const;
@@ -55,14 +54,12 @@ namespace nsSettingSpider {
     void touchCall(const QPoint& pos);
     void moveCall(const QPoint& from, const QPoint& to);
     void finalizeCall(const QPoint& pos);
-
     void moveMode(Entity* entity);
     void connectMode(Entity* entity);
     void connectEditMode(Entity* entity);
     void idleMode();
     void originMode();
 
-    void reportRelations(const Entity* from);
   private:
     void emptyTouch(const QPoint& pos);
     void emptyMove(const QPoint& from, const QPoint& to);
