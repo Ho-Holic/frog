@@ -87,6 +87,10 @@ const QRect& nsSettingSpider::Entity::rect() const {
   return mRect;
 }
 
+QString nsSettingSpider::Entity::idString() const {
+  return QString::number(mId);
+}
+
 QRect nsSettingSpider::Entity::connectionRect() const {
   QPoint topLeft = mRect.center() - QPoint(mRect.width() / 2, -(mRect.height() / 4));
   QPoint fixedTopLeft = QPoint(mRect.topLeft().x(), topLeft.y());

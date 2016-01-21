@@ -33,6 +33,7 @@ namespace nsSettingSpider {
     bool hasInRelations(const RelationType& type) const;
     bool hasOutRelations(const RelationType& type) const;
   public:
+    QString idString() const;
     const QRect& rect() const;
     QRect connectionRect() const;
     QRect connectionSlotRect() const;

@@ -1,5 +1,6 @@
 // self
 #include "Convertor.h"
+#include "world/Entity.h"
 
 // qt
 #include <QUuid>
@@ -40,12 +41,29 @@ void nsSettingSpider::Convertor::saveTo(const QString& path) {
 }
 
 void nsSettingSpider::Convertor::saveEntity(const QString& replyId, nsSettingSpider::Entity* entity) {
-  if (replyId != mId) return;
+
+  if (replyId != mId) {
+    return;
+  }
+
   Q_ASSERT(isActive() && mFile.isOpen());
-  mFileOut << 1;
+
+  QPoint pos = entity->rect().center();
+  mFileOut << tr("entity")       << " "
+           << entity->idString() << " "
+           << pos.x()            << " "
+           << pos.y()            << " "
+           << "\"" + entity->libraryName() << "\"" << " "
+           << endl;
 }
 
 void nsSettingSpider::Convertor::saveConnection(const QString& replyId, nsSettingSpider::Connection* connection) {
-  if (replyId != mId) return;
+
+  if (replyId != mId) {
+    return;
+  }
+
   Q_ASSERT(isActive() && mFile.isOpen());
+
+  mFileOut << 2 << endl;
 }

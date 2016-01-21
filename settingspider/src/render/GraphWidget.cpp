@@ -40,10 +40,9 @@ void nsSettingSpider::GraphWidget::paintEvent(QPaintEvent* e) {
 
   if (mIsDragging) drawDragArea();
 
-  bool isDelete = mIsDeleteAllowed && (mMousePosition.y() < DeleteRectHeight);
-
   emit onSceneUpdate(mId);
 
+  bool isDelete = mIsDeleteAllowed && (mMousePosition.y() < DeleteRectHeight);
   if (isDelete) drawDeleteArea();
 }
 
@@ -77,7 +76,8 @@ void nsSettingSpider::GraphWidget::drawDeleteArea() {
   p.drawText(rect, Qt::AlignCenter, tr("Delete"));
 }
 
-void nsSettingSpider::GraphWidget::mouseDoubleClickEvent(QMouseEvent* e) {  
+void nsSettingSpider::GraphWidget::mouseDoubleClickEvent(QMouseEvent* e) {      
+
   emit onDoubleClick(e->pos());
   // TODO: start event own loop with timer to call update with some rate and remove update calls?
   update();

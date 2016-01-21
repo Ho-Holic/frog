@@ -25,7 +25,7 @@ namespace nsSettingSpider {
 
   // integer id generator
 
-  template<> struct InitialId<int> { static int value() { return 3; } };
+  template<> struct InitialId<int> { static int value() { return 0; } };
 
   typedef IdGenerator<int> IntegerIdGenerator;
 }
