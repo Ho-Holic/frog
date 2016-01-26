@@ -75,22 +75,18 @@ void nsSettingSpider::MainWindow::onSaveClicked() {
   }
 }
 
-void nsSettingSpider::MainWindow::dispatchWorldMode(World::Mode mode) {
-
-  emit onSetWorldAcceptDeletes(mode == World::EntityMove);
-}
-
 void nsSettingSpider::MainWindow::connectParts(nsSettingSpider::World* world,
                                                nsSettingSpider::GraphWidget* graphWidget,
                                                nsSettingSpider::Convertor* convertor) {
+
   connect(world,       SIGNAL(onEntityChanged(const QString&, Entity*)),
           graphWidget, SLOT(drawEntity(const QString&, Entity*)));
 
   connect(world,       SIGNAL(onConnectionChanged(const QString&, Connection*)),
           graphWidget, SLOT(drawConnection(const QString&, Connection*)));
 
-  connect(world,       SIGNAL(onOriginChanged(const QPoint&)),
-          graphWidget, SLOT(setOrigin(const QPoint&)));    
+  connect(world,       SIGNAL(onWorldInspectEvent(WorldEvent*)),
+          graphWidget, SLOT(setModeDependOn(WorldEvent*)));
 
   connect(graphWidget, SIGNAL(onSceneUpdate(const QString&)),
           world,       SLOT(reportStatus(const QString&)));
@@ -98,26 +94,17 @@ void nsSettingSpider::MainWindow::connectParts(nsSettingSpider::World* world,
   connect(graphWidget, SIGNAL(onDoubleClick(const QPoint&)),
           world,       SLOT(createEntityAt(const QPoint&)));
 
-  connect(graphWidget, SIGNAL(onInDeleteArea(const QPoint&)),
-          world,       SLOT(destroyActiveEntity(const QPoint&)));
-
   connect(graphWidget, SIGNAL(onDrop(const QPoint&, const QString&)),
           world,       SLOT(createEntityAt(const QPoint&, const QString&)));
 
+  connect(graphWidget, SIGNAL(onDestroyRequest(Entity*)),
+          world,       SLOT(destroyEntity(Entity*)));
+
   connect(graphWidget, SIGNAL(onMousePress(const QPoint&)),
-          world,       SLOT(activateMode(const QPoint&)));
+          world,       SLOT(inspectWorldAt(const QPoint&)));
 
   connect(graphWidget, SIGNAL(onMouseRelease(const QPoint&)),
-          world,       SLOT(deactivateMode(const QPoint&)));
-
-  connect(graphWidget, SIGNAL(onMouseMove(const QPoint&, const QPoint&)),
-          world,       SLOT(moveInWorld(const QPoint&, const QPoint&)));
-
-  connect(graphWidget, SIGNAL(onRelationTypeChange(const RelationType&)),
-          world,       SLOT(changeRelationType(const RelationType&)));
-
-  connect(this,        SIGNAL(onSetWorldAcceptDeletes(bool)),
-          graphWidget, SLOT(setAcceptDeletes(bool)));
+          world,       SLOT(inspectWorldAt(const QPoint&)));
 
   connect(this,      SIGNAL(onSaveTo(const QString&)),
           convertor, SLOT(saveTo(const QString&)));
@@ -130,9 +117,6 @@ void nsSettingSpider::MainWindow::connectParts(nsSettingSpider::World* world,
 
   connect(world,     SIGNAL(onConnectionChanged(const QString&, Connection*)),
           convertor, SLOT(saveConnection(const QString&, Connection*)));
-
-  connect(world, SIGNAL(onModeChange(World::Mode)),
-          this,  SLOT(dispatchWorldMode(World::Mode)));
 
 }
 

@@ -22,8 +22,7 @@ namespace nsSettingSpider {
     void onSaveTo(const QString&);
     void onSetWorldAcceptDeletes(bool);
   private slots:
-    void onSaveClicked();
-    void dispatchWorldMode(World::Mode mode);
+    void onSaveClicked();    
   private:
     void connectParts(World* world,
                       GraphWidget* graphWidget,

@@ -11,80 +11,38 @@
 #include "Relation.h"
 
 namespace nsSettingSpider {
+
+  class WorldEvent;
+
   class World : public QObject {
     Q_OBJECT
   private:
     Q_DISABLE_COPY(World)
   public:
     typedef QList<Entity*> EntityList;
-
-    enum Mode {
-      Idle,
-      OriginMove,
-      EntityMove,
-      PendingConnection,
-      EditConnection
-    };
-
-    typedef void (World::*TouchFunction)(const QPoint&);
-    typedef void (World::*MoveFunction)(const QPoint&, const QPoint&);
-    typedef void (World::*FinalizeFunction)(const QPoint&);
   public:
     World(QObject* parent = 0);
     ~World();
   signals:
+    void onWorldInspectEvent(WorldEvent*);
     void onEntityChanged(const QString&, Entity*);
     void onConnectionChanged(const QString&, Connection*);
-    void onOriginChanged(const QPoint& origin);
-    void onModeChange(World::Mode);
   public slots:
+    void inspectWorldAt(const QPoint& pos);
     void createEntityAt(const QPoint& center);
-    void createEntityAt(const QPoint& center, const QString& data);
-    void destroyActiveEntity(const QPoint& pos);
-    void activateMode(const QPoint& pos);
-    void deactivateMode(const QPoint& pos);    
-    void moveInWorld(const QPoint& from, const QPoint& to);
-    void changeRelationType(const RelationType& relationType);
+    void createEntityAt(const QPoint& center, const QString& data);    
+    void destroyEntity(Entity* entity);
+
     void reportStatus(const QString& replyId);
     void reportRelations(const QString& replyId, const Entity* from);
   public:
     EntityList::size_type entityCount() const;
     Entity* entityAt(EntityList::size_type index) const;
   private:
-    void touchCall(const QPoint& pos);
-    void moveCall(const QPoint& from, const QPoint& to);
-    void finalizeCall(const QPoint& pos);
-    void moveMode(Entity* entity);
-    void connectMode(Entity* entity);
-    void connectEditMode(Entity* entity);
-    void idleMode();
-    void originMode();
-
+    WorldEvent* selectApropriateEventFor(const QPoint& pos);
   private:
-    void emptyTouch(const QPoint& pos);
-    void emptyMove(const QPoint& from, const QPoint& to);
-    void emptyFinalize(const QPoint& pos);
-    void moveOrigin(const QPoint& from, const QPoint& to);
-    void moveEntity(const QPoint& from, const QPoint& to);    
-    void connectEntity(const QPoint& from, const QPoint& to);
-    void connectFinalize(const QPoint& pos);
-    void moveConnectEdit(const QPoint& from, const QPoint& to);
-  private:
-    void destroyEntity(Entity* entity);
-    int withoutOriginY(int y) const;
-    QRect withoutOrigin(const QRect& r) const;
-    QPoint withoutOrigin(const QPoint& p) const;
-  private:
-    QPoint mOrigin;
-    RelationType mRelationType;
-    Mode mMode;
   private:
     EntityList mEntityList;
-    TouchFunction mTouchFunction;
-    MoveFunction mMoveFunction;
-    FinalizeFunction mFinalizeFunction;
-    Entity* mActiveEntity;
-    Connection mPendingConnection;
   };    
 }
 
