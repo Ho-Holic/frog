@@ -88,9 +88,7 @@ void nsRelation::World::reportRelations(const QString& replyId, const nsRelation
 
     for (Entity::RelationList::const_iterator i = list.begin(); i != list.end(); ++i) {
       const Entity* to = *i;
-      Connection connection = Connection(relation.key(),
-                                         from->rect().bottomLeft() + QPoint(from->rect().width()/2, 0),
-                                         to->connectionSlotRect());
+      Connection connection = Connection(relation.key(), from, to);
       emit onConnectionChanged(replyId, &connection);
     }
   }

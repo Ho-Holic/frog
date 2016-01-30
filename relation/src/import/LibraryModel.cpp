@@ -14,8 +14,6 @@
 // tmp
 #include <QDebug>
 
-// TODO: two subtrees "active" and "pending"
-
 nsRelation::LibraryModel::LibraryModel(QObject* parent)
 : QAbstractItemModel(parent)
 , mRootItem(new LibraryItem(LibraryItem::Header, tr("Libraries")))

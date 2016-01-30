@@ -8,19 +8,23 @@
 
 namespace nsRelation {
 
+  class Entity;
+
   class Connection {
   public:
-    Connection();
-    Connection(const QString& relationType, const QPoint& from, const QRect& to);
+    Connection(); // no connection
+    Connection(const QString& relationType, const Entity* from); // pending
+    Connection(const QString& relationType, const Entity* from, const Entity* to); // connected
   public:
-    bool isNull() const;
+    bool isDisconnected() const;
+    bool isPending() const;
     const QString& relationType() const;
-    const QPoint& from() const;
-    const QRect& to() const;
+    const Entity* from() const;
+    const Entity* to() const;
   private:
     QString mRelationType;
-    QPoint mFrom;
-    QRect mTo;
+    const Entity* mFrom;
+    const Entity* mTo;
   };
 }
 

@@ -195,14 +195,13 @@ void nsRelation::GraphWidget::connectFinalize(const QPoint& pos) {
 
 void nsRelation::GraphWidget::connectEntity(const QPoint& from, const QPoint& to) {
 
-  Q_ASSERT( ! mSelectedEntities.empty());
-  Entity* current = mSelectedEntities.front();
-
   Q_UNUSED(from);
-  QRect connectionRect = current->connectionRect();
-  mPendingConnection = Connection(mRelationType,
-                                  connectionRect.bottomLeft() + QPoint(connectionRect.width() / 2, 0),
-                                  QRect(to, QSize(10, 10)));
+  Q_UNUSED(to);
+
+  Q_ASSERT( ! mSelectedEntities.empty());
+
+  Entity* current = mSelectedEntities.front();  
+  mPendingConnection = Connection(mRelationType, current);
 }
 
 void nsRelation::GraphWidget::moveConnectEdit(const QPoint& from, const QPoint& to) {
@@ -346,7 +345,7 @@ void nsRelation::GraphWidget::paintEvent(QPaintEvent* e) {
   emit onSceneUpdate(mId);
 
   // send pending
-  if ((mMode == PendingConnection || mMode == EditConnection) && ! mPendingConnection.isNull()) {
+  if ((mMode == PendingConnection || mMode == EditConnection) && ! mPendingConnection.isDisconnected()) {
     drawConnection(mId, &mPendingConnection);
   }
 
@@ -403,6 +402,7 @@ void nsRelation::GraphWidget::drawEntity(const QString& replyId, nsRelation::Ent
 
 void nsRelation::GraphWidget::drawConnection(const QString& replyId, nsRelation::Connection* connection) {
 
+  if (connection->isDisconnected()) return;
   if (replyId != mId) return;
 
   QPainter p(this);
@@ -412,12 +412,21 @@ void nsRelation::GraphWidget::drawConnection(const QString& replyId, nsRelation:
   }
   else if (connection->relationType() == Relation::Absorb) {
     p.setPen(QPen(ColorScheme::connection(), 1, Qt::DashLine));
-  }
-  p.drawLine(withOrigin(connection->from()), withOrigin(connection->to().center()));
+  } 
+
+  QPoint fromPos = connection->from()->rect().bottomLeft() + QPoint(connection->from()->rect().width()/2, 0);
+  QPoint toPos = connection->isPending() ? mMousePosition
+                                         : connection->to()->connectionSlotRect().center();
+
+  p.drawLine(withOrigin(fromPos), withOrigin(toPos));
 
   p.setPen(QPen(ColorScheme::connection(), Qt::SolidLine));
   p.setBrush(ColorScheme::connection());
-  p.drawEllipse(withOrigin(connection->to()));
+
+  // TODO: draw connection pot for pending connection, maybe arrow?
+  if ( ! connection->isPending()) {
+    p.drawEllipse(withOrigin(connection->to()->connectionSlotRect()));
+  }
 
   // TODO: draw some text
   //p.setPen(QPen(QColor(240, 173, 109), Qt::SolidLine));

@@ -49,11 +49,11 @@ void nsRelation::Convertor::saveEntity(const QString& replyId, nsRelation::Entit
   Q_ASSERT(isActive() && mFile.isOpen());
 
   QPoint pos = entity->rect().center();
-  mFileOut << tr("entity")       << " "
+  mFileOut << "entity"           << " "
            << entity->idString() << " "
            << pos.x()            << " "
            << pos.y()            << " "
-           << "\"" + entity->libraryName() << "\"" << " "
+           << "\"" << entity->libraryName() << "\"" << " "
            << endl;
 }
 
