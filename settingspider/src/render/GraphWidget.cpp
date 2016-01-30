@@ -59,6 +59,7 @@ void nsSettingSpider::GraphWidget::moveMode(Entity* entity) {
     mFinalizeFunction = &connectFinalize;
     mSelectedEntities.push_back(entity);
     mPendingConnection = Connection();
+    mIsDeleteAllowed = false;
   }
   else {
     mMode = EntityMove;
@@ -67,6 +68,7 @@ void nsSettingSpider::GraphWidget::moveMode(Entity* entity) {
     mFinalizeFunction = &moveFinalize;
     mSelectedEntities.push_back(entity);
     mPendingConnection = Connection();
+    mIsDeleteAllowed = true;
   }
 }
 
@@ -77,6 +79,7 @@ void nsSettingSpider::GraphWidget::connectMode(Entity* entity) {
   mFinalizeFunction = &connectFinalize;
   mSelectedEntities.push_back(entity);
   mPendingConnection = Connection();
+  mIsDeleteAllowed = false;
 }
 
 void nsSettingSpider::GraphWidget::connectEditMode(nsSettingSpider::Entity* entity) {
@@ -87,6 +90,7 @@ void nsSettingSpider::GraphWidget::connectEditMode(nsSettingSpider::Entity* enti
     mFinalizeFunction = &emptyFinalize;
     mSelectedEntities.push_back(entity);
     mPendingConnection = Connection();
+    mIsDeleteAllowed = false;
   }
   else {
     idleMode();
@@ -100,6 +104,7 @@ void nsSettingSpider::GraphWidget::idleMode() {
   mFinalizeFunction = &emptyFinalize;
   mSelectedEntities.clear();
   mPendingConnection = Connection();
+  mIsDeleteAllowed = false;
 }
 
 void nsSettingSpider::GraphWidget::originMode() {
@@ -109,6 +114,7 @@ void nsSettingSpider::GraphWidget::originMode() {
   mFinalizeFunction = &emptyFinalize;
   mSelectedEntities.clear();
   mPendingConnection = Connection();
+  mIsDeleteAllowed = false;
 }
 
 void nsSettingSpider::GraphWidget::touchCall(const QPoint& pos) {
@@ -212,6 +218,8 @@ void nsSettingSpider::GraphWidget::moveConnectEdit(const QPoint& from, const QPo
   current->inDetach(mRelationType, entity);
   entity->outDetach(mRelationType, current);
 
+  idleMode(); // clean up and go as if we just connect entities
+
   connectMode(entity);
 
 }
@@ -235,10 +243,6 @@ QRect nsSettingSpider::GraphWidget::withOrigin(const QRect& r) const {
 QPoint nsSettingSpider::GraphWidget::withOrigin(const QPoint& p) const {
   return mOrigin + p;
 }
-
-//----------------------------------------------------------
-
-
 
 void nsSettingSpider::GraphWidget::mouseDoubleClickEvent(QMouseEvent* e) {      
 
