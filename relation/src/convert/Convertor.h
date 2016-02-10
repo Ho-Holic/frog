@@ -22,10 +22,12 @@ namespace nsRelation {
     bool isActive() const;
   signals:
     void onSaveRequestInformation(const QString&);
+    void onItemLoaded(const QString&);
   public slots:
     void saveTo(const QString& path);
     void saveEntity(const QString& replyId, Entity* entity);
     void saveConnection(const QString& replyId, Connection* connection);
+    void loadFrom(const QString& path);
   private:
     QString mId;
     Mode mMode;

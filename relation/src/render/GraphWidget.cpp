@@ -5,6 +5,7 @@
 #include "world/Connection.h"
 #include "world/VectorMath.h"
 #include "world/WorldEvent.h"
+#include "world/Header.h"
 
 // qt
 #include <QPainter>
@@ -48,8 +49,6 @@ void nsRelation::GraphWidget::setModeDependOn(WorldEvent* event) {
   case WorldEvent::Nothing:             originMode(); break;
   }
 }
-
-//----------------------------------------------------------
 
 void nsRelation::GraphWidget::moveMode(Entity* entity) {
   if (mMode == PendingConnection) {
@@ -130,9 +129,6 @@ void nsRelation::GraphWidget::finalizeCall(const QPoint& pos) {
   (*this.*mFinalizeFunction)(pos);
 }
 
-
-//---------------------------------------------------------------------------
-
 void nsRelation::GraphWidget::emptyTouch(const QPoint& pos) {
   // TODO: class with interface: touch, move, finalize. Finalize or better concept???
   // maybe enter, move, leave ?
@@ -156,7 +152,7 @@ void nsRelation::GraphWidget::moveOrigin(const QPoint& from, const QPoint& to) {
 void nsRelation::GraphWidget::moveEntity(const QPoint& from, const QPoint& to) {
   Q_ASSERT( ! mSelectedEntities.empty());
   Entity* current = mSelectedEntities.front();
-  current->setTopLeft(to - from + current->rect().topLeft());
+  current->setTopLeft(withoutOrigin(to) - withoutOrigin(from) + current->rect().topLeft());
 }
 
 void nsRelation::GraphWidget::moveFinalize(const QPoint& pos) {
@@ -169,7 +165,7 @@ void nsRelation::GraphWidget::moveFinalize(const QPoint& pos) {
                 && (current)
                 && (current->rect().contains(withoutOrigin(pos)));
 
-  if (isDelete) {
+  if (isDelete) {    
     emit onDestroyRequest(current);
     //QString stringData = QString("removeById %1").arg(mActiveEntity->idString());
     //emit onDestroyRequest(stringData);
@@ -186,7 +182,7 @@ void nsRelation::GraphWidget::connectFinalize(const QPoint& pos) {
 
   if (parent == child) return; // skip self
 
-  if (child->rect().contains(pos)) {
+  if (child->rect().contains(withoutOrigin(pos))) {
     child->inAttach(mRelationType, parent);
     parent->outAttach(mRelationType, child);
   }
@@ -245,13 +241,16 @@ QPoint nsRelation::GraphWidget::withOrigin(const QPoint& p) const {
 
 void nsRelation::GraphWidget::mouseDoubleClickEvent(QMouseEvent* e) {
 
-  emit onDoubleClick(withoutOrigin(e->pos()));
-  // TODO: later update w/ dataString algo
-//  QString dataString = QString("entity %1 %2 unnamed")
-//                       .arg(e->pos().x())
-//                       .arg(e->pos.y());
+  QPoint p = withoutOrigin(e->pos());
+  QString name = tr("unnamed");
+  QString dataString = QString("%1 %2 %3 %4 \"%5\"")
+                       .arg(Header::entity)
+                       .arg(Header::generate)
+                       .arg(p.x())
+                       .arg(p.y())
+                       .arg(name);
 
-//  emit onCreateRequest(dataString);
+  emit onCreateRequest(dataString);
   // TODO: start event own loop with timer to call update with some rate and remove update calls?
   update();
 }
@@ -262,7 +261,7 @@ void nsRelation::GraphWidget::mouseMoveEvent(QMouseEvent* e) {
 
     QPoint from = mMousePosition;
     QPoint to = e->pos();
-    moveCall(withoutOrigin(from), withoutOrigin(to));
+    moveCall(from, to);
 
     mMousePosition = e->pos();
     update();
@@ -283,16 +282,17 @@ void nsRelation::GraphWidget::mousePressEvent(QMouseEvent* e) {
 
   emit onMousePress(withoutOrigin(mMousePosition));
 
-  touchCall(withoutOrigin(mMousePosition));
+  touchCall(mMousePosition);
 
   update();
 }
 
 void nsRelation::GraphWidget::mouseReleaseEvent(QMouseEvent* e) {
 
+  // TODO: remove candidate
   emit onMouseRelease(withoutOrigin(e->pos()));
 
-  finalizeCall(withoutOrigin(e->pos()));
+  finalizeCall(e->pos());
   idleMode();  
 
   mIsHolding = false;
@@ -322,9 +322,26 @@ void nsRelation::GraphWidget::dragLeaveEvent(QDragLeaveEvent* e) {
 }
 
 void nsRelation::GraphWidget::dropEvent(QDropEvent* e) {
+
   mIsDragging = false;
+
   if (e->mimeData()->hasText()) {
-    emit onDrop(withoutOrigin(e->pos()), e->mimeData()->text());
+
+    QStringList list = e->mimeData()->text().split(";", QString::SkipEmptyParts);
+
+    foreach(const QString& path, list) {
+
+      QString dataString = QString("%1 %2 %3 %4 \"%5\"")
+                           .arg(Header::entity)
+                           .arg(Header::generate)
+                           // TODO: calculate correct positions
+                           .arg(e->pos().x())
+                           .arg(e->pos().y())
+                           .arg(path);
+
+      emit onCreateRequest(dataString);
+    }
+
     update();
   }
 }
@@ -415,7 +432,7 @@ void nsRelation::GraphWidget::drawConnection(const QString& replyId, nsRelation:
   } 
 
   QPoint fromPos = connection->from()->rect().bottomLeft() + QPoint(connection->from()->rect().width()/2, 0);
-  QPoint toPos = connection->isPending() ? mMousePosition
+  QPoint toPos = connection->isPending() ? withoutOrigin(mMousePosition)
                                          : connection->to()->connectionSlotRect().center();
 
   p.drawLine(withOrigin(fromPos), withOrigin(toPos));

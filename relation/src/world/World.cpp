@@ -1,6 +1,7 @@
 // self
 #include "World.h"
 #include "WorldEvent.h"
+#include "Header.h"
 
 // qt
 #include <QRect>
@@ -60,18 +61,15 @@ nsRelation::WorldEvent* nsRelation::World::selectApropriateEventFor(const QPoint
 void nsRelation::World::reportStatus(const QString& replyId) {
 
   // send entities
-  for (EntityList::const_iterator i = mEntityList.begin(); i != mEntityList.end(); ++i) {
-    Entity* entity = *i;
+  foreach (Entity* entity, mEntityList) {
     emit onEntityChanged(replyId, entity);
   }
 
   // send connections. must be after entities or draw would paint block over connections
   // also this separeta processing of entities and connections
-  for (EntityList::const_iterator i = mEntityList.begin(); i != mEntityList.end(); ++i) {
-    Entity* entity = *i;
+  foreach (Entity* entity, mEntityList) {
     reportRelations(replyId, entity);
   }
-
 
 }
 
@@ -95,19 +93,46 @@ void nsRelation::World::reportRelations(const QString& replyId, const nsRelation
 
 }
 
-void nsRelation::World::createEntityAt(const QPoint& center) {
-  Entity* entity = new Entity(center, tr("unnamed"));
+void nsRelation::World::createEntity(const QString& data) {
+
+  QStringList list = data.split(" ", QString::SkipEmptyParts);
+  enum { command_index, id_index, x_index, y_index, name_index, elements_size };
+
+  if (list.size() < elements_size || list.at(command_index) != Header::entity) return;
+
+  QPoint center(list.at(x_index).toInt(), list.at(y_index).toInt());
+  Entity* entity = new Entity(center, list.at(name_index));
   mEntityList.push_front(entity);
 }
 
-void nsRelation::World::createEntityAt(const QPoint& center, const QString& data) {
+void nsRelation::World::createConnection(const QString& data) {
 
-  QStringList list = data.split(";", QString::SkipEmptyParts);
+  QStringList list = data.split(" ", QString::SkipEmptyParts);
+  enum { command_index, relation_type_index, id_from_index, id_to_index, elements_size };
 
-  foreach(const QString& path, list) {
-    Entity* entity = new Entity(center, path);
-    mEntityList.push_front(entity);
-  }
+  if (list.size() < elements_size || list.at(command_index) != Header::connection) return;
+
+  QString relationType = list.at(relation_type_index);
+  QString parentId = list.at(id_from_index);
+  QString childId = list.at(id_to_index);
+
+    foreach (Entity* parent, mEntityList) {
+
+      if (parent->idString() == parentId) {
+
+        foreach (Entity* child, mEntityList) {
+
+          if (child->idString() == childId) {
+
+            child->inAttach(relationType, parent);
+            parent->outAttach(relationType, child);
+            break;
+          }
+        }
+
+        break;
+      }
+    }
 }
 
 void nsRelation::World::destroyEntity(nsRelation::Entity* entity) {

@@ -20,8 +20,10 @@ namespace nsRelation {
     MainWindow(QWidget* parent = 0);
   signals:
     void onSaveTo(const QString&);
+    void onLoadFrom(const QString&);
     void onSetWorldAcceptDeletes(bool);
   private slots:
+    void onOpenClicked();
     void onSaveClicked();    
   private:
     void connectParts(World* world,

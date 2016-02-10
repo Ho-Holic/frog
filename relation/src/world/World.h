@@ -29,8 +29,9 @@ namespace nsRelation {
     void onConnectionChanged(const QString&, Connection*);
   public slots:
     void inspectWorldAt(const QPoint& pos);
-    void createEntityAt(const QPoint& center);
-    void createEntityAt(const QPoint& center, const QString& data);    
+    void createEntity(const QString& data);
+    void createConnection(const QString& data);
+
     void destroyEntity(Entity* entity);
 
     void reportStatus(const QString& replyId);

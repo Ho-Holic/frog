@@ -1,12 +1,15 @@
 // self
 #include "Convertor.h"
 #include "world/Entity.h"
+#include "world/Connection.h"
+#include "world/Header.h"
 
 // qt
 #include <QUuid>
 
 // common
 #include "cplusplus11.h"
+#include <frog/io/src/io.hpp>
 
 nsRelation::Convertor::Convertor(QObject* parent)
 : QObject(parent)
@@ -49,7 +52,7 @@ void nsRelation::Convertor::saveEntity(const QString& replyId, nsRelation::Entit
   Q_ASSERT(isActive() && mFile.isOpen());
 
   QPoint pos = entity->rect().center();
-  mFileOut << "entity"           << " "
+  mFileOut << Header::entity     << " "
            << entity->idString() << " "
            << pos.x()            << " "
            << pos.y()            << " "
@@ -65,5 +68,17 @@ void nsRelation::Convertor::saveConnection(const QString& replyId, nsRelation::C
 
   Q_ASSERT(isActive() && mFile.isOpen());
 
-  mFileOut << 2 << endl;
+  mFileOut << Header::connection             << " "
+           << connection->relationType()     << " "
+           << connection->from()->idString() << " "
+           << connection->to()->idString()   << " "
+           << endl;
+}
+
+void nsRelation::Convertor::loadFrom(const QString& path) {
+
+  QStringList list = io::getFileAsStringList(path);
+  foreach (const QString& item, list) {
+    emit onItemLoaded(item);
+  }
 }

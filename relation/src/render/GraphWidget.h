@@ -37,8 +37,8 @@ namespace nsRelation {
     void onSceneUpdate(const QString&);
     void onMousePress(const QPoint&);
     void onMouseRelease(const QPoint&);
-    void onDoubleClick(const QPoint&); // replace with onCreateRequest(dataString) w/ coorditanes
-    void onDrop(const QPoint&, const QString&); // replace with onCreateRequest(dataString) w/ coordinates
+
+    void onCreateRequest(const QString&);
     void onDestroyRequest(Entity*);
 
   public slots:
@@ -84,6 +84,8 @@ namespace nsRelation {
     void drawDragArea();
     void drawDeleteArea();
 
+    // TODO: replace withOrigin --> toGraphWidgetCoordinates
+    // TODO: replace withoutOrigin --> toWorldCoordinates
     int withoutOriginY(int y) const;
     QRect withoutOrigin(const QRect& r) const;
     QPoint withoutOrigin(const QPoint& p) const;

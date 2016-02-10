@@ -8,6 +8,9 @@ TEMPLATE = app
 
 INCLUDEPATH += src/
 
+#temporary
+INCLUDEPATH += ../../
+
 SOURCES += \
     src/main.cpp\
     src/MainWindow.cpp \
@@ -26,7 +29,8 @@ SOURCES += \
     src/import/LibraryItemData.cpp \
     src/world/VectorMath.cpp \
     src/convert/Convertor.cpp \
-    src/world/WorldEvent.cpp
+    src/world/WorldEvent.cpp \
+    src/world/Header.cpp
 
 HEADERS  += \
     src/cplusplus11.h \
@@ -46,4 +50,5 @@ HEADERS  += \
     src/import/LibraryItemData.h \
     src/world/VectorMath.h \
     src/convert/Convertor.h \
-    src/world/WorldEvent.h
+    src/world/WorldEvent.h \
+    src/world/Header.h
