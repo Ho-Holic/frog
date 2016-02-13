@@ -73,7 +73,7 @@ nsRelation::MainWindow::MainWindow(QWidget* parent)
 
 void nsRelation::MainWindow::onOpenClicked() {
 
-  QString path = QFileDialog::getSaveFileName(this, tr("Open"), QString(), tr("Relation Files (*.rel)"));
+  QString path = QFileDialog::getOpenFileName(this, tr("Open"), QString(), tr("Relation Files (*.rel)"));
   if ( ! path.isEmpty()) {
     emit onLoadFrom(path);
   }
@@ -104,7 +104,7 @@ void nsRelation::MainWindow::connectParts(nsRelation::World* world,
           world,       SLOT(reportStatus(const QString&)));
 
   connect(graphWidget, SIGNAL(onCreateRequest(const QString&)),
-          world,       SLOT(createEntity(const QString&)));
+          world,       SLOT(morphWorld(const QString&)));
 
   connect(graphWidget, SIGNAL(onDestroyRequest(Entity*)),
           world,       SLOT(destroyEntity(Entity*)));
@@ -116,16 +116,16 @@ void nsRelation::MainWindow::connectParts(nsRelation::World* world,
           world,       SLOT(inspectWorldAt(const QPoint&)));
 
   connect(this,      SIGNAL(onSaveTo(const QString&)),
-          convertor, SLOT(loadFrom(const QString&)));
+          convertor, SLOT(saveTo(const QString&)));
 
   connect(this,      SIGNAL(onLoadFrom(const QString&)),
-          convertor, SLOT(saveTo(const QString&)));
+          convertor, SLOT(loadFrom(const QString&)));
 
   connect(convertor, SIGNAL(onSaveRequestInformation(const QString&)),
           world,     SLOT(reportStatus(const QString&)));
 
   connect(convertor, SIGNAL(onItemLoaded(const QString&)),
-          world,     SLOT(createEntity(const QString&)));
+          world,     SLOT(morphWorld(const QString&)));
 
   connect(world,     SIGNAL(onEntityChanged(const QString&, Entity*)),
           convertor, SLOT(saveEntity(const QString&, Entity*)));

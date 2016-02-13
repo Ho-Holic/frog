@@ -19,6 +19,7 @@
 // and save from "in memory" to one of selected
 
 int main(int argc, char* argv[]) {
+  // TODO: set locale
   QApplication a(argc, argv);
   nsRelation::MainWindow w;
   w.resize(1000, 500);

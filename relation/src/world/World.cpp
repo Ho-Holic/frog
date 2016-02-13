@@ -10,6 +10,9 @@
 // common
 #include "cplusplus11.h"
 
+// tmp
+#include <QDebug>
+
 nsRelation::World::World(QObject* parent)
 : QObject(parent)
 , mEntityList() {
@@ -24,7 +27,18 @@ nsRelation::World::~World() {
 void nsRelation::World::inspectWorldAt(const QPoint& pos) {
 
   QScopedPointer<WorldEvent> event(selectApropriateEventFor(pos));
-  emit onWorldInspectEvent(event.data()); 
+  emit onWorldInspectEvent(event.data());
+}
+
+void nsRelation::World::morphWorld(const QString& transformation) {
+
+    // TODO: read to first space, Header::getHeader()
+    QStringList list = transformation.split(" ", QString::SkipEmptyParts);
+
+    if (list.isEmpty()) return;
+
+    if (list.at(0) == Header::entity)          createEntity(transformation);
+    else if (list.at(0) == Header::connection) createConnection(transformation);
 }
 
 nsRelation::WorldEvent* nsRelation::World::selectApropriateEventFor(const QPoint& pos) {
@@ -95,18 +109,23 @@ void nsRelation::World::reportRelations(const QString& replyId, const nsRelation
 
 void nsRelation::World::createEntity(const QString& data) {
 
+#warning bug with spilt, when any arg like path contain spaces, replace with ArgumentList algo
+
   QStringList list = data.split(" ", QString::SkipEmptyParts);
   enum { command_index, id_index, x_index, y_index, name_index, elements_size };
 
   if (list.size() < elements_size || list.at(command_index) != Header::entity) return;
 
+  IntegerId::id_type id = list.at(id_index).toInt();
+
   QPoint center(list.at(x_index).toInt(), list.at(y_index).toInt());
-  Entity* entity = new Entity(center, list.at(name_index));
+  Entity* entity = new Entity(center, list.at(name_index), id);
   mEntityList.push_front(entity);
 }
 
 void nsRelation::World::createConnection(const QString& data) {
 
+#warning bug with spilt, when any arg like path contain spaces, replace with ArgumentList algo
   QStringList list = data.split(" ", QString::SkipEmptyParts);
   enum { command_index, relation_type_index, id_from_index, id_to_index, elements_size };
 
@@ -114,7 +133,7 @@ void nsRelation::World::createConnection(const QString& data) {
 
   QString relationType = list.at(relation_type_index);
   QString parentId = list.at(id_from_index);
-  QString childId = list.at(id_to_index);
+  QString childId = list.at(id_to_index);  
 
     foreach (Entity* parent, mEntityList) {
 

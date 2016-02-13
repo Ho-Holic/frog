@@ -5,7 +5,9 @@ TARGET = io
 TEMPLATE = lib
 
 SOURCES += \
-  io.cpp   \
+  src/io.cpp   \
+    src/ArgumentList.cpp
 
 HEADERS += \
-  io.hpp   \
+  src/io.hpp   \
+    src/ArgumentList.h

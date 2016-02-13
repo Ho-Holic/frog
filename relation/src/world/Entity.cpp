@@ -6,11 +6,34 @@
 #include <QRect>
 #include <QFontMetrics>
 
-nsRelation::IntegerIdGenerator
-nsRelation::Entity::s_idGenerator = nsRelation::IntegerIdGenerator();
+// common
+#include <cplusplus11.h>
 
-nsRelation::Entity::Entity(const QPoint& center, const QString& shortPath)
-: mId(s_idGenerator.next())
+nsRelation::Entity* nsRelation::Entity::create(const QPoint& center,
+                                               const QString& shortPath,
+                                               nsRelation::IntegerId::id_type id) {
+  static IntegerId s_idGenerator;
+
+  if (id.isValid()) {
+
+    if (s_idGenerator.isFree(id)) {
+
+      s_idGenerator.take(id);
+      return new Entity(center, shortPath, id);
+    }
+    else {
+      return nullptr;
+    }
+  }
+  else {
+    return new Entity(center, shortPath, s_idGenerator.next());
+  }
+}
+
+nsRelation::Entity::Entity(const QPoint& center,
+                           const QString& shortPath,
+                           IntegerId::id_type id)
+: mId(id)
 , mLibraryName(shortPath)
 , mFont()
 , mRect(VectorMath::fromCenterPoint(center, fromName(mLibraryName, mFont)))
@@ -19,7 +42,7 @@ nsRelation::Entity::Entity(const QPoint& center, const QString& shortPath)
   //
 }
 
-nsRelation::IntegerIdGenerator::id_type nsRelation::Entity::sequentialId() const {
+nsRelation::IntegerId::id_type nsRelation::Entity::sequentialId() const {
   return mId;
 }
 

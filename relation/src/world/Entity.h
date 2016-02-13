@@ -18,9 +18,14 @@ namespace nsRelation {
     typedef QList<Entity*> RelationList;
     typedef QMap<RelationType, RelationList> RelationBinding;
   public:
-    Entity(const QPoint& center, const QString& shortPath);
+    static Entity* create(const QPoint& center,
+                          const QString& shortPath,
+                          IntegerId::id_type id = IntegerId::id_type());
   public:
-    IntegerIdGenerator::id_type sequentialId() const;
+    Entity(const QPoint& center,
+           const QString& shortPath,
+           IntegerId::id_type id);
+  public:
     void inAttach(const RelationType& type, Entity* from);
     void outAttach(const RelationType& type, Entity* to);
     void inDetach(const RelationType& type, Entity* from);
@@ -33,7 +38,8 @@ namespace nsRelation {
     bool hasInRelations(const RelationType& type) const;
     bool hasOutRelations(const RelationType& type) const;
   public:
-    QString idString() const;
+    IntegerId::id_type sequentialId() const;
+    QString idString() const;    
     const QRect& rect() const;
     QRect connectionRect() const;
     QRect connectionSlotRect() const;
@@ -42,7 +48,7 @@ namespace nsRelation {
     const QFont& font() const;
     void setTopLeft(const QPoint& pos);
   private:
-    IntegerIdGenerator::id_type mId;
+    IntegerId::id_type mId;
     QString mLibraryName;
     QFont mFont;
     QRect mRect;
@@ -50,9 +56,7 @@ namespace nsRelation {
     RelationBinding mOutRelation;
   private:
     static QSize fromName(const QString& name, const QFont& usedFont);    
-  private:
-    static IntegerIdGenerator s_idGenerator;
-  };
+  };    
 
 }
 

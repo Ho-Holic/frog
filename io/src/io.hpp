@@ -27,7 +27,7 @@ namespace io {
       while ( ! in.atEnd()) {
         QString line = in.readLine();
         if (mode == WithoutEmptyLines && line.trimmed().isEmpty()) {
-          continue; // пропускаем пустые строки
+          continue; // skip empty lines
         }
         result << line;
       }
@@ -42,7 +42,7 @@ namespace io {
 
     if (isOpen) {
       QTextStream in(&file);
-      return in.readAll(); // оптимизация возвращаемого значения
+      return in.readAll(); // rvo
     }
     return QString();
   }
