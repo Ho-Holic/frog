@@ -12,7 +12,7 @@ namespace nsRelation {
 
   class Entity;
   class Connection;
-  class WorldEvent;
+  class WorldEvent;  
 
   class GraphWidget : public QWidget {
     Q_OBJECT
@@ -52,8 +52,8 @@ namespace nsRelation {
     void drawEntity(const QString& replyId, Entity* entity);
     void drawConnection(const QString& replyId, Connection* connection);
 
-  public:
-    virtual void resizeEvent(QResizeEvent* e);
+  public:    
+    virtual void wheelEvent(QWheelEvent* e);
     virtual void paintEvent(QPaintEvent* e);
     virtual void mouseDoubleClickEvent(QMouseEvent* e);
     virtual void mouseMoveEvent(QMouseEvent* e);

@@ -12,6 +12,7 @@
 #include <QMouseEvent>
 #include <QDragEnterEvent>
 #include <QDropEvent>
+#include <QWheelEvent>
 #include <QMimeData>
 #include <QUuid>
 
@@ -270,11 +271,9 @@ void nsRelation::GraphWidget::mouseMoveEvent(QMouseEvent* e) {
 
 void nsRelation::GraphWidget::mousePressEvent(QMouseEvent* e) {
 
-  if (e->button() == Qt::LeftButton) {
-    mRelationType = Relation::Needed;
-  }
-  else if (e->button() == Qt::RightButton) {    
-    mRelationType = Relation::Absorb;
+  if (e->button() == Qt::RightButton) {
+    // TODO: menu
+    return;
   }
 
   mIsHolding = true;
@@ -347,8 +346,12 @@ void nsRelation::GraphWidget::dropEvent(QDropEvent* e) {
 }
 
 
-void nsRelation::GraphWidget::resizeEvent(QResizeEvent* e) {
-  QWidget::resizeEvent(e);
+void nsRelation::GraphWidget::wheelEvent(QWheelEvent* e) {
+
+  // TODO: temporary, take cyclic history collection from work
+  mRelationType = (mRelationType == Relation::Needed) ? Relation::Absorb
+                                                      : Relation::Needed;
+  QWidget::wheelEvent(e);
 }
 
 void nsRelation::GraphWidget::paintEvent(QPaintEvent* e) {
