@@ -21,7 +21,7 @@ namespace nsRelation {
     static Entity* create(const QPoint& center,
                           const QString& shortPath,
                           IntegerId::id_type id = IntegerId::id_type());
-  public:
+  private:
     Entity(const QPoint& center,
            const QString& shortPath,
            IntegerId::id_type id);

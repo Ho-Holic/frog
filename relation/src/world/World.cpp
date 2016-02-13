@@ -116,11 +116,20 @@ void nsRelation::World::createEntity(const QString& data) {
 
   if (list.size() < elements_size || list.at(command_index) != Header::entity) return;
 
-  IntegerId::id_type id = list.at(id_index).toInt();
+  IntegerId::id_type id = list.at(id_index) == Header::generate ? IntegerId::id_type()
+                                                                : IntegerId::id_type(list.at(id_index).toInt());
 
   QPoint center(list.at(x_index).toInt(), list.at(y_index).toInt());
-  Entity* entity = new Entity(center, list.at(name_index), id);
-  mEntityList.push_front(entity);
+  Entity* entity = Entity::create(center, list.at(name_index), id);
+
+  if (entity != nullptr) {
+
+    mEntityList.push_front(entity);
+  }
+  else {
+
+    emit onErrorMessage(tr("Can't create entity with id = %1. Id already taken."));
+  }
 }
 
 void nsRelation::World::createConnection(const QString& data) {

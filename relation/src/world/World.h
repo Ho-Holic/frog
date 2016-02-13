@@ -27,6 +27,7 @@ namespace nsRelation {
     void onWorldInspectEvent(WorldEvent*);
     void onEntityChanged(const QString&, Entity*);
     void onConnectionChanged(const QString&, Connection*);
+    void onErrorMessage(const QString&);
   public slots:
     void inspectWorldAt(const QPoint& pos);
 
