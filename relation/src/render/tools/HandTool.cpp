@@ -6,14 +6,8 @@ nsRelation::HandTool::HandTool()
   //
 }
 
-void nsRelation::HandTool::beginTouch(const QPoint& pos) {
-
-}
-
 void nsRelation::HandTool::move(const QPoint& from, const QPoint& to) {
-
+  mOrigin += to - from;
 }
 
-void nsRelation::HandTool::endTouch(const QPoint& pos) {
 
-}

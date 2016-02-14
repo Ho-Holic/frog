@@ -9,10 +9,8 @@ namespace nsRelation {
   class HandTool : public Tool {
   public:
     HandTool();
-  public:
-    virtual void beginTouch(const QPoint& pos);
-    virtual void move(const QPoint& from, const QPoint& to);
-    virtual void endTouch(const QPoint& pos);
+  public:    
+    virtual void move(const QPoint& from, const QPoint& to);    
   };
 }
 

@@ -33,7 +33,8 @@ SOURCES += \
     src/world/Header.cpp \
     src/render/tools/Tool.cpp \
     src/render/tools/HandTool.cpp \
-    src/render/tools/ConnectTool.cpp
+    src/render/tools/ConnectTool.cpp \
+    src/render/tools/MoveTool.cpp
 
 HEADERS  += \
     src/cplusplus11.h \
@@ -57,4 +58,5 @@ HEADERS  += \
     src/world/Header.h \
     src/render/tools/Tool.h \
     src/render/tools/HandTool.h \
-    src/render/tools/ConnectTool.h
+    src/render/tools/ConnectTool.h \
+    src/render/tools/MoveTool.h
