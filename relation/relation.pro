@@ -30,7 +30,10 @@ SOURCES += \
     src/world/VectorMath.cpp \
     src/convert/Convertor.cpp \
     src/world/WorldEvent.cpp \
-    src/world/Header.cpp
+    src/world/Header.cpp \
+    src/render/tools/Tool.cpp \
+    src/render/tools/HandTool.cpp \
+    src/render/tools/ConnectTool.cpp
 
 HEADERS  += \
     src/cplusplus11.h \
@@ -51,4 +54,7 @@ HEADERS  += \
     src/world/VectorMath.h \
     src/convert/Convertor.h \
     src/world/WorldEvent.h \
-    src/world/Header.h
+    src/world/Header.h \
+    src/render/tools/Tool.h \
+    src/render/tools/HandTool.h \
+    src/render/tools/ConnectTool.h
