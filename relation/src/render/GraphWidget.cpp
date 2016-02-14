@@ -51,6 +51,7 @@ void nsRelation::GraphWidget::setModeDependOn(WorldEvent* event) {
   }
 }
 
+// TODO: for moveMode, connectMode and etc. create class hierarchy with abstract functions
 void nsRelation::GraphWidget::moveMode(Entity* entity) {
   if (mMode == PendingConnection) {
     mMode = Connect;
@@ -117,6 +118,16 @@ void nsRelation::GraphWidget::originMode() {
   mIsDeleteAllowed = false;
 }
 
+void nsRelation::GraphWidget::entityShapeMenuMode() {
+  mMode = EntityShapeMenu;
+  mTouchFunction = &emptyTouch;
+  mMoveFunction = &emptyMove;
+  mFinalizeFunction = &emptyFinalize;
+  mSelectedEntities.clear();
+  mPendingConnection = Connection();
+  mIsDeleteAllowed = false;
+}
+
 void nsRelation::GraphWidget::touchCall(const QPoint& pos) {
   (*this.*mTouchFunction)(pos);
 }
@@ -131,8 +142,6 @@ void nsRelation::GraphWidget::finalizeCall(const QPoint& pos) {
 }
 
 void nsRelation::GraphWidget::emptyTouch(const QPoint& pos) {
-  // TODO: class with interface: touch, move, finalize. Finalize or better concept???
-  // maybe enter, move, leave ?
   Q_UNUSED(pos);
 }
 
@@ -271,17 +280,20 @@ void nsRelation::GraphWidget::mouseMoveEvent(QMouseEvent* e) {
 
 void nsRelation::GraphWidget::mousePressEvent(QMouseEvent* e) {
 
-  if (e->button() == Qt::RightButton) {
-    // TODO: menu
-    return;
-  }
 
   mIsHolding = true;
   mMousePosition = e->pos();
 
-  emit onMousePress(withoutOrigin(mMousePosition));
+  if (e->button() == Qt::RightButton) {
+    // TODO: menu
+    entityShapeMenuMode();
+  }
+  else if (e->button() == Qt::LeftButton) {
 
-  touchCall(mMousePosition);
+    emit onMousePress(withoutOrigin(mMousePosition));
+
+    touchCall(mMousePosition);
+  }
 
   update();
 }
@@ -362,6 +374,8 @@ void nsRelation::GraphWidget::paintEvent(QPaintEvent* e) {
 
   if (mIsDragging) drawDragArea();
 
+  if (mMode == EntityShapeMenu) drawEntityShapeMenu();
+
   emit onSceneUpdate(mId);
 
   // send pending
@@ -372,6 +386,23 @@ void nsRelation::GraphWidget::paintEvent(QPaintEvent* e) {
 
   bool isDelete = mIsDeleteAllowed && (mMousePosition.y() < DeleteRectHeight);
   if (isDelete) drawDeleteArea();
+}
+
+void nsRelation::GraphWidget::drawEntityShapeMenu() {
+
+  //QStringList mEntityShapes = (QStringList() << "Module" << "Bridge");
+
+  QPainter p(this);
+
+  // draw body
+  QRect box = VectorMath::fromCenterPoint(mMousePosition, ColorScheme::boxForText(tr("Shape"), ColorScheme::itemTextFont()));
+  p.setPen(Qt::NoPen);
+  p.setBrush(ColorScheme::entity());
+  p.drawRect(box);
+
+  // draw text
+  p.setPen(ColorScheme::entityText());
+  p.drawText(box, Qt::AlignCenter, tr("Shape"));
 }
 
 void nsRelation::GraphWidget::drawBackground() {

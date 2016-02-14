@@ -23,7 +23,8 @@ namespace nsRelation {
       EntityMove,
       PendingConnection,
       Connect,
-      EditConnection
+      EditConnection,
+      EntityShapeMenu
     };
 
     typedef QList<Entity*> SelectionList;
@@ -48,7 +49,9 @@ namespace nsRelation {
     void connectEditMode(Entity* entity);
     void idleMode();
     void originMode();
+    void entityShapeMenuMode();
 
+    void drawEntityShapeMenu();
     void drawEntity(const QString& replyId, Entity* entity);
     void drawConnection(const QString& replyId, Connection* connection);
 

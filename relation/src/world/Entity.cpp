@@ -2,12 +2,12 @@
 #include "Entity.h"
 #include "VectorMath.h"
 
-// qt
-#include <QRect>
-#include <QFontMetrics>
-
 // common
 #include <cplusplus11.h>
+
+// move from this class
+#include <QFontMetrics>
+#include <render/ColorScheme.h>
 
 nsRelation::Entity* nsRelation::Entity::create(const QPoint& center,
                                                const QString& shortPath,
@@ -35,11 +35,12 @@ nsRelation::Entity::Entity(const QPoint& center,
                            IntegerId::id_type id)
 : mId(id)
 , mLibraryName(shortPath)
-, mFont()
-, mRect(VectorMath::fromCenterPoint(center, fromName(mLibraryName, mFont)))
+, mRect()
 , mInRelation()
 , mOutRelation() {
-  //
+  QRect bodyRect = VectorMath::fromCenterPoint(center, ColorScheme::boxForText(mLibraryName, ColorScheme::itemTextFont()));
+  bodyRect.setHeight(bodyRect.height() * 2);
+  mRect = bodyRect;
 }
 
 nsRelation::IntegerId::id_type nsRelation::Entity::sequentialId() const {
@@ -130,7 +131,7 @@ QRect nsRelation::Entity::connectionSlotRect() const {
 }
 
 QRect nsRelation::Entity::captionRect() const {
-  QFontMetrics metrics(mFont);
+  QFontMetrics metrics(ColorScheme::itemTextFont());
   return QRect(mRect.topLeft(), QSize(mRect.width(), metrics.height() * 2));
 }
 
@@ -138,16 +139,6 @@ const QString& nsRelation::Entity::libraryName() const {
   return mLibraryName;
 }
 
-const QFont& nsRelation::Entity::font() const {
-  return mFont;
-}
-
 void nsRelation::Entity::setTopLeft(const QPoint& pos) {
   mRect = QRect(pos, mRect.size());
-}
-
-QSize nsRelation::Entity::fromName(const QString& name, const QFont& usedFont) {
-  QFontMetrics metrics(usedFont);
-  int w = metrics.boundingRect(name).width() + (metrics.averageCharWidth() * 4);
-  return QSize(w, 50);
 }

@@ -44,18 +44,14 @@ namespace nsRelation {
     QRect connectionRect() const;
     QRect connectionSlotRect() const;
     QRect captionRect() const;
-    const QString& libraryName() const;
-    const QFont& font() const;
+    const QString& libraryName() const;    
     void setTopLeft(const QPoint& pos);
   private:
     IntegerId::id_type mId;
-    QString mLibraryName;
-    QFont mFont;
+    QString mLibraryName;    
     QRect mRect;
     RelationBinding mInRelation;
     RelationBinding mOutRelation;
-  private:
-    static QSize fromName(const QString& name, const QFont& usedFont);    
   };    
 
 }

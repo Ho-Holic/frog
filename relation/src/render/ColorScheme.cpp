@@ -2,6 +2,8 @@
 #include "ColorScheme.h"
 
 // qt
+#include <QRect>
+#include <QFontMetrics>
 #include <QColor>
 
 QColor nsRelation::ColorScheme::background() {
@@ -30,4 +32,18 @@ QColor nsRelation::ColorScheme::deleteArea() {
 
 QColor nsRelation::ColorScheme::deleteAreaText() {
   return QColor(55, 17, 21);
+}
+
+QFont nsRelation::ColorScheme::itemTextFont() {
+  return QFont();
+}
+
+QSize nsRelation::ColorScheme::boxForText(const QString& name, const QFont& usedFont) {
+
+  static int twoSpacesFromEachSide = 4;
+  static int twoLines = 2;
+
+  QFontMetrics metrics(usedFont);
+  int w = metrics.boundingRect(name).width() + (metrics.averageCharWidth() * twoSpacesFromEachSide);
+  return QSize(w, metrics.height() * twoLines);
 }
