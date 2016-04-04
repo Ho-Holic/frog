@@ -7,6 +7,7 @@
 // self
 #include "world/Relation.h"
 #include "world/Connection.h"
+#include "Tools.h"
 
 namespace nsRelation {
 
@@ -69,19 +70,19 @@ namespace nsRelation {
   private:
     enum { DeleteRectHeight = 40 };
   private:    
-    void touchCall(const QPoint& pos);
-    void moveCall(const QPoint& from, const QPoint& to);
-    void finalizeCall(const QPoint& pos);
+//    void touchCall(const QPoint& pos);
+//    void moveCall(const QPoint& from, const QPoint& to);
+//    void finalizeCall(const QPoint& pos);
 
-    void emptyTouch(const QPoint& pos);
-    void emptyMove(const QPoint& from, const QPoint& to);
-    void emptyFinalize(const QPoint& pos);
-    void moveOrigin(const QPoint& from, const QPoint& to);
-    void moveEntity(const QPoint& from, const QPoint& to);
-    void moveFinalize(const QPoint& pos);
-    void connectEntity(const QPoint& from, const QPoint& to);
-    void connectFinalize(const QPoint& pos);
-    void moveConnectEdit(const QPoint& from, const QPoint& to);    
+//    void emptyTouch(const QPoint& pos);
+//    void emptyMove(const QPoint& from, const QPoint& to);
+//    void emptyFinalize(const QPoint& pos);
+//    void moveOrigin(const QPoint& from, const QPoint& to);
+//    void moveEntity(const QPoint& from, const QPoint& to);
+//    void moveFinalize(const QPoint& pos);
+//    void connectEntity(const QPoint& from, const QPoint& to);
+//    void connectFinalize(const QPoint& pos);
+//    void moveConnectEdit(const QPoint& from, const QPoint& to);
   private:
     void drawBackground();
     void drawDragArea();
@@ -97,18 +98,28 @@ namespace nsRelation {
   private:
     QString mId;
     QPoint mOrigin;
-    QPoint mMousePosition; // TODO: replace this bunch of variables with Cursor class
+
+    // TODO: replace this bunch of variables with Cursor class
+    QPoint mMousePosition;
     bool mIsHolding;
     QPoint mDragPosition;
     bool mIsDragging;
+    // Cursor class allow to create different cursors
+    // and you can check what type of cursor you have
+    // cursor.type() == Cursor::Dragging
+
+
     bool mIsDeleteAllowed;
 
     RelationType mRelationType;
 
+    Tools mTools;
+
+    // this would be killed
     Mode mMode;
-    TouchFunction mTouchFunction;
-    MoveFunction mMoveFunction;
-    FinalizeFunction mFinalizeFunction;
+//    TouchFunction mTouchFunction;
+//    MoveFunction mMoveFunction;
+//    FinalizeFunction mFinalizeFunction;
     SelectionList mSelectedEntities;
     Connection mPendingConnection;
   };

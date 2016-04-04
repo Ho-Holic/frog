@@ -1,6 +1,8 @@
 // self
 #include "GraphWidget.h"
 #include "ColorScheme.h"
+#include "tools/Tool.h"
+
 #include "world/Entity.h"
 #include "world/Connection.h"
 #include "world/VectorMath.h"
@@ -26,17 +28,20 @@ nsRelation::GraphWidget::GraphWidget(QWidget* parent)
 : QWidget(parent)
 , mId(QUuid::createUuid().toString())
 , mOrigin(0, 0)
+// cursor
 , mMousePosition(0, 0)
 , mIsHolding(false)
 , mDragPosition(0, 0)
 , mIsDragging(false)
+// other
 , mIsDeleteAllowed(false)
 
 , mRelationType(Relation::Needed)
+, mTools()
 , mMode(Idle)
-, mTouchFunction(&emptyTouch)
-, mMoveFunction(&emptyMove)
-, mFinalizeFunction(&emptyFinalize)
+//, mTouchFunction(&emptyTouch)
+//, mMoveFunction(&emptyMove)
+//, mFinalizeFunction(&emptyFinalize)
 , mSelectedEntities()
 , mPendingConnection() {
   //
@@ -53,47 +58,23 @@ void nsRelation::GraphWidget::setModeDependOn(WorldEvent* event) {
   }
 }
 
-// TODO: for moveMode, connectMode and etc. create class hierarchy with abstract functions
 void nsRelation::GraphWidget::moveMode(Entity* entity) {
   if (mMode == PendingConnection) {
     mMode = Connect;
-    mTouchFunction = &emptyTouch;
-    mMoveFunction = &emptyMove;
-    mFinalizeFunction = &connectFinalize;
-    mSelectedEntities.push_back(entity);
-    mPendingConnection = Connection();
-    mIsDeleteAllowed = false;
   }
   else {
     mMode = EntityMove;
-    mTouchFunction = &emptyTouch;
-    mMoveFunction = &moveEntity;
-    mFinalizeFunction = &moveFinalize;
-    mSelectedEntities.push_back(entity);
-    mPendingConnection = Connection();
-    mIsDeleteAllowed = true;
+
   }
 }
 
 void nsRelation::GraphWidget::connectMode(Entity* entity) {
   mMode = PendingConnection;
-  mTouchFunction = &emptyTouch;
-  mMoveFunction = &connectEntity;
-  mFinalizeFunction = &connectFinalize;
-  mSelectedEntities.push_back(entity);
-  mPendingConnection = Connection();
-  mIsDeleteAllowed = false;
 }
 
 void nsRelation::GraphWidget::connectEditMode(nsRelation::Entity* entity) {
   if (entity->hasInRelations(mRelationType)) {
     mMode = EditConnection;
-    mTouchFunction = &emptyTouch;
-    mMoveFunction = &moveConnectEdit;
-    mFinalizeFunction = &emptyFinalize;
-    mSelectedEntities.push_back(entity);
-    mPendingConnection = Connection();
-    mIsDeleteAllowed = false;
   }
   else {
     idleMode();
@@ -102,59 +83,120 @@ void nsRelation::GraphWidget::connectEditMode(nsRelation::Entity* entity) {
 
 void nsRelation::GraphWidget::idleMode() {
   mMode = Idle;
-  mTouchFunction = &emptyTouch;
-  mMoveFunction = &emptyMove;
-  mFinalizeFunction = &emptyFinalize;
-  mSelectedEntities.clear();
-  mPendingConnection = Connection();
-  mIsDeleteAllowed = false;
+
 }
 
 void nsRelation::GraphWidget::originMode() {
   mMode = OriginMove;
-  mTouchFunction = &emptyTouch;
-  mMoveFunction = &moveOrigin;
-  mFinalizeFunction = &emptyFinalize;
-  mSelectedEntities.clear();
-  mPendingConnection = Connection();
-  mIsDeleteAllowed = false;
 }
 
 void nsRelation::GraphWidget::entityShapeMenuMode() {
   mMode = EntityShapeMenu;
-  mTouchFunction = &emptyTouch;
-  mMoveFunction = &emptyMove;
-  mFinalizeFunction = &emptyFinalize;
-  mSelectedEntities.clear();
-  mPendingConnection = Connection();
-  mIsDeleteAllowed = false;
+
 }
 
-void nsRelation::GraphWidget::touchCall(const QPoint& pos) {
-  (*this.*mTouchFunction)(pos);
-}
+// TODO: for moveMode, connectMode and etc. create class hierarchy with abstract functions
+//void nsRelation::GraphWidget::moveMode(Entity* entity) {
+//  if (mMode == PendingConnection) {
+//    mMode = Connect;
+//    mTouchFunction = &emptyTouch;
+//    mMoveFunction = &emptyMove;
+//    mFinalizeFunction = &connectFinalize;
+//    mSelectedEntities.push_back(entity);
+//    mPendingConnection = Connection();
+//    mIsDeleteAllowed = false;
+//  }
+//  else {
+//    mMode = EntityMove;
+//    mTouchFunction = &emptyTouch;
+//    mMoveFunction = &moveEntity;
+//    mFinalizeFunction = &moveFinalize;
+//    mSelectedEntities.push_back(entity);
+//    mPendingConnection = Connection();
+//    mIsDeleteAllowed = true;
+//  }
+//}
 
-void nsRelation::GraphWidget::moveCall(const QPoint& from, const QPoint& to) {
-  (*this.*mMoveFunction)(from,to);
-}
+//void nsRelation::GraphWidget::connectMode(Entity* entity) {
+//  mMode = PendingConnection;
+//  mTouchFunction = &emptyTouch;
+//  mMoveFunction = &connectEntity;
+//  mFinalizeFunction = &connectFinalize;
+//  mSelectedEntities.push_back(entity);
+//  mPendingConnection = Connection();
+//  mIsDeleteAllowed = false;
+//}
+
+//void nsRelation::GraphWidget::connectEditMode(nsRelation::Entity* entity) {
+//  if (entity->hasInRelations(mRelationType)) {
+//    mMode = EditConnection;
+//    mTouchFunction = &emptyTouch;
+//    mMoveFunction = &moveConnectEdit;
+//    mFinalizeFunction = &emptyFinalize;
+//    mSelectedEntities.push_back(entity);
+//    mPendingConnection = Connection();
+//    mIsDeleteAllowed = false;
+//  }
+//  else {
+//    idleMode();
+//  }
+//}
+
+//void nsRelation::GraphWidget::idleMode() {
+//  mMode = Idle;
+//  mTouchFunction = &emptyTouch;
+//  mMoveFunction = &emptyMove;
+//  mFinalizeFunction = &emptyFinalize;
+//  mSelectedEntities.clear();
+//  mPendingConnection = Connection();
+//  mIsDeleteAllowed = false;
+//}
+
+//void nsRelation::GraphWidget::originMode() {
+//  mMode = OriginMove;
+//  mTouchFunction = &emptyTouch;
+//  mMoveFunction = &moveOrigin;
+//  mFinalizeFunction = &emptyFinalize;
+//  mSelectedEntities.clear();
+//  mPendingConnection = Connection();
+//  mIsDeleteAllowed = false;
+//}
+
+//void nsRelation::GraphWidget::entityShapeMenuMode() {
+//  mMode = EntityShapeMenu;
+//  mTouchFunction = &emptyTouch;
+//  mMoveFunction = &emptyMove;
+//  mFinalizeFunction = &emptyFinalize;
+//  mSelectedEntities.clear();
+//  mPendingConnection = Connection();
+//  mIsDeleteAllowed = false;
+//}
+
+//void nsRelation::GraphWidget::touchCall(const QPoint& pos) {
+//  (*this.*mTouchFunction)(pos);
+//}
+
+//void nsRelation::GraphWidget::moveCall(const QPoint& from, const QPoint& to) {
+//  (*this.*mMoveFunction)(from,to);
+//}
 
 
-void nsRelation::GraphWidget::finalizeCall(const QPoint& pos) {
-  (*this.*mFinalizeFunction)(pos);
-}
+//void nsRelation::GraphWidget::finalizeCall(const QPoint& pos) {
+//  (*this.*mFinalizeFunction)(pos);
+//}
 
-void nsRelation::GraphWidget::emptyTouch(const QPoint& pos) {
-  Q_UNUSED(pos);
-}
+//void nsRelation::GraphWidget::emptyTouch(const QPoint& pos) {
+//  Q_UNUSED(pos);
+//}
 
-void nsRelation::GraphWidget::emptyMove(const QPoint& from, const QPoint& to) {
-  Q_UNUSED(from);
-  Q_UNUSED(to);
-}
+//void nsRelation::GraphWidget::emptyMove(const QPoint& from, const QPoint& to) {
+//  Q_UNUSED(from);
+//  Q_UNUSED(to);
+//}
 
-void nsRelation::GraphWidget::emptyFinalize(const QPoint& pos) {
-  Q_UNUSED(pos);
-}
+//void nsRelation::GraphWidget::emptyFinalize(const QPoint& pos) {
+//  Q_UNUSED(pos);
+//}
 
 
 //void nsRelation::GraphWidget::moveOrigin(const QPoint& from, const QPoint& to) {
@@ -273,7 +315,7 @@ void nsRelation::GraphWidget::mouseMoveEvent(QMouseEvent* e) {
 
     QPoint from = mMousePosition;
     QPoint to = e->pos();
-    moveCall(from, to);
+    mTools.move(from, to);
 
     mMousePosition = e->pos();
     update();
@@ -293,8 +335,7 @@ void nsRelation::GraphWidget::mousePressEvent(QMouseEvent* e) {
   else if (e->button() == Qt::LeftButton) {
 
     emit onMousePress(withoutOrigin(mMousePosition));
-
-    touchCall(mMousePosition);
+    mTools.beginTouch(mMousePosition);
   }
 
   update();
@@ -305,7 +346,9 @@ void nsRelation::GraphWidget::mouseReleaseEvent(QMouseEvent* e) {
   // TODO: remove candidate
   emit onMouseRelease(withoutOrigin(e->pos()));
 
-  finalizeCall(e->pos());
+  mTools.endTouch(e->pos());
+
+  // seems we can remove idleMode from here via clever tool deactivation
   idleMode();  
 
   mIsHolding = false;
