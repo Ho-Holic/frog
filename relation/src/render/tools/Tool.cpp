@@ -1,6 +1,19 @@
 // self
 #include "Tool.h"
 
+nsRelation::Tool::Tool()
+: mSelectedEntities() {
+  //
+}
+
+nsRelation::Tool::~Tool() {
+  // this intentionally left blank
+}
+
+const nsRelation::Tool::SelectionList& nsRelation::Tool::selection() const {
+  return mSelectedEntities;
+}
+
 void nsRelation::Tool::addToSelection(nsRelation::Entity* newOne) {
   Q_UNUSED(newOne);
 }
@@ -29,6 +42,4 @@ void nsRelation::Tool::endTouch(const QPoint& pos) {
   // default implementation do nothing
 }
 
-nsRelation::Tool::~Tool() {
-  // this intentionally left blank
-}
+

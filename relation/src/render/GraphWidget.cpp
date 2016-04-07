@@ -2,6 +2,8 @@
 #include "GraphWidget.h"
 #include "ColorScheme.h"
 #include "tools/Tool.h"
+#include "tools/HandTool.h"
+#include "tools/ConnectTool.h"
 
 #include "world/Entity.h"
 #include "world/Connection.h"
@@ -27,7 +29,7 @@
 nsRelation::GraphWidget::GraphWidget(QWidget* parent)
 : QWidget(parent)
 , mId(QUuid::createUuid().toString())
-, mOrigin(0, 0)
+//, mOrigin(0, 0)
 // cursor
 , mMousePosition(0, 0)
 , mIsHolding(false)
@@ -36,13 +38,13 @@ nsRelation::GraphWidget::GraphWidget(QWidget* parent)
 // other
 , mIsDeleteAllowed(false)
 
-, mRelationType(Relation::Needed)
+//, mRelationType(Relation::Needed)
 , mTools()
 , mMode(Idle)
 //, mTouchFunction(&emptyTouch)
 //, mMoveFunction(&emptyMove)
 //, mFinalizeFunction(&emptyFinalize)
-, mSelectedEntities()
+//, mSelectedEntities()
 , mPendingConnection() {
   //
 }
@@ -73,7 +75,7 @@ void nsRelation::GraphWidget::connectMode(Entity* entity) {
 }
 
 void nsRelation::GraphWidget::connectEditMode(nsRelation::Entity* entity) {
-  if (entity->hasInRelations(mRelationType)) {
+  if (entity->hasInRelations(mTools.connectTool()->relationType())) {
     mMode = EditConnection;
   }
   else {
@@ -274,23 +276,23 @@ void nsRelation::GraphWidget::entityShapeMenuMode() {
 //}
 
 int nsRelation::GraphWidget::withoutOriginY(int y) const {
-  return y - mOrigin.y();
+  return y - mTools.origin().y();
 }
 
 QRect nsRelation::GraphWidget::withoutOrigin(const QRect& r) const {
-  return QRect(r.topLeft() - mOrigin, r.size());
+  return QRect(r.topLeft() - mTools.origin(), r.size());
 }
 
 QPoint nsRelation::GraphWidget::withoutOrigin(const QPoint& p) const {
-  return p - mOrigin;
+  return p - mTools.origin();
 }
 
 QRect nsRelation::GraphWidget::withOrigin(const QRect& r) const {
-  return QRect(mOrigin + r.topLeft(), r.size());
+  return QRect(mTools.origin() + r.topLeft(), r.size());
 }
 
 QPoint nsRelation::GraphWidget::withOrigin(const QPoint& p) const {
-  return mOrigin + p;
+  return mTools.origin() + p;
 }
 
 void nsRelation::GraphWidget::mouseDoubleClickEvent(QMouseEvent* e) {
@@ -405,9 +407,13 @@ void nsRelation::GraphWidget::dropEvent(QDropEvent* e) {
 
 void nsRelation::GraphWidget::wheelEvent(QWheelEvent* e) {
 
-  // TODO: temporary, take cyclic history collection from work
-  mRelationType = (mRelationType == Relation::Needed) ? Relation::Absorb
-                                                      : Relation::Needed;
+  // TODO: temporary, take cyclic history collection from work project
+  RelationType type = (mTools.connectTool()->relationType() == Relation::Needed)
+                      ? Relation::Absorb
+                      : Relation::Needed;
+
+  mTools.connectTool()->setRelationType(type);
+
   QWidget::wheelEvent(e);
 }
 

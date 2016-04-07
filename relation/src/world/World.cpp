@@ -6,6 +6,7 @@
 // qt
 #include <QRect>
 #include <QtAlgorithms>
+#include <QStringList>
 
 // common
 #include "cplusplus11.h"

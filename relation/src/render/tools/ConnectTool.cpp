@@ -1,16 +1,26 @@
 // self
 #include "ConnectTool.h"
+#include "world/Entity.h"
 
 nsRelation::ConnectTool::ConnectTool()
-: Tool() {
+: Tool()
+, mRelationType(Relation::Needed) {
   //
+}
+
+nsRelation::RelationType nsRelation::ConnectTool::relationType() const {
+  return mRelationType;
+}
+
+void nsRelation::ConnectTool::setRelationType(const nsRelation::RelationType& type) {
+  mRelationType = type;
 }
 
 void nsRelation::ConnectTool::beginTouch(const QPoint& pos) {
   Q_UNUSED(pos);
 
-  Q_ASSERT( ! mSelectedEntities.empty());
-  Entity* current = mSelectedEntities.front();
+  Q_ASSERT( ! selection().empty());
+  Entity* current = selection().front();
 
   Q_ASSERT( ! current->inRelations(mRelationType).empty());
 
@@ -27,20 +37,21 @@ void nsRelation::ConnectTool::move(const QPoint& from, const QPoint& to) {
   Q_UNUSED(from);
   Q_UNUSED(to);
 
-  Q_ASSERT( ! mSelectedEntities.empty());
+  Q_ASSERT( ! selection().empty());
 
-  Entity* current = mSelectedEntities.front();
+  Entity* current = selection().front();
   mPendingConnection = Connection(mRelationType, current);
 }
 
 void nsRelation::ConnectTool::endTouch(const QPoint& pos) {
-  Q_ASSERT(mSelectedEntities.size() > 1); // we need two to perform connection
+  Q_ASSERT(selection().size() > 1); // we need two to perform connection
 
-  Entity* parent = mSelectedEntities.at(0);
-  Entity* child = mSelectedEntities.at(1);
+  Entity* parent = selection().at(0);
+  Entity* child = selection().at(1);
 
-  if (parent == child) return; // skip self
+  if (parent == child) return; // skip self  
 
+#warning "if (child->rect().contains(withoutOrigin(pos))) {"
   if (child->rect().contains(withoutOrigin(pos))) {
     child->inAttach(mRelationType, parent);
     parent->outAttach(mRelationType, child);

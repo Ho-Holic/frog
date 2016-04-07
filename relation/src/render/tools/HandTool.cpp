@@ -2,7 +2,8 @@
 #include "HandTool.h"
 
 nsRelation::HandTool::HandTool()
-: Tool() {
+: Tool()
+, mOrigin(0, 0) {
   //
 }
 

@@ -22,6 +22,24 @@ nsRelation::Tools::~Tools() {
   qDeleteAll(mTools);
 }
 
+nsRelation::HandTool* nsRelation::Tools::handTool() const {
+
+  Q_ASSERT(dynamic_cast<HandTool*>(mTools[HandType]) != nullptr);
+
+  return static_cast<HandTool*>(mTools[HandType]);
+}
+
+nsRelation::ConnectTool *nsRelation::Tools::connectTool() const {
+
+  Q_ASSERT(dynamic_cast<ConnectTool*>(mTools[ConnectType]) != nullptr);
+
+  return static_cast<ConnectTool*>(mTools[ConnectType]);
+}
+
+QPoint nsRelation::Tools::origin() const {
+  return handTool()->origin();
+}
+
 void nsRelation::Tools::beginTouch(const QPoint& pos) {
   mIsLocked = true;
   currentTool()->beginTouch(pos);

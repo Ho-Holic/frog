@@ -14,6 +14,10 @@ namespace nsRelation {
   public:
     typedef QList<Entity*> SelectionList; // TODO: rename Selection
   public:
+    Tool();
+    virtual ~Tool();
+  public:
+    const SelectionList& selection() const;
     void addToSelection(Entity* newOne);
     void subtractFromSelection(Entity* oldOne);
     void clearSelection();
@@ -21,10 +25,8 @@ namespace nsRelation {
     virtual void beginTouch(const QPoint& pos);
     virtual void move(const QPoint& from, const QPoint& to);
     virtual void endTouch(const QPoint& pos);
-  public:
-    virtual ~Tool();
   private:
-    // SelectionList mSelectedEntities; // TODO: rename mSelection
+    SelectionList mSelectedEntities; // TODO: rename mSelection
   };
 }
 

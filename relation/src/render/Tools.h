@@ -8,6 +8,8 @@
 namespace nsRelation {
 
   class Tool;
+  class HandTool;
+  class ConnectTool;
 
   class Tools {
   public:
@@ -21,6 +23,11 @@ namespace nsRelation {
   public:
     Tools();
     ~Tools();
+  public:
+    HandTool* handTool() const;
+    ConnectTool* connectTool() const;
+  public:
+    QPoint origin() const;
   public:
     void beginTouch(const QPoint& pos);
     void move(const QPoint& from, const QPoint& to);

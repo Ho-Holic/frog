@@ -4,6 +4,9 @@
 // self
 #include "Tool.h"
 
+// qt
+#include <QPoint>
+
 namespace nsRelation {
 
   class HandTool : public Tool {
@@ -11,6 +14,8 @@ namespace nsRelation {
     HandTool();
   public:    
     virtual void move(const QPoint& from, const QPoint& to);    
+  private:
+    QPoint mOrigin;
   };
 }
 

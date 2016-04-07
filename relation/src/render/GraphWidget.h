@@ -97,8 +97,8 @@ namespace nsRelation {
     QPoint withOrigin(const QPoint& p) const;
   private:
     QString mId;
-    QPoint mOrigin;
 
+//    QPoint mOrigin;
     // TODO: replace this bunch of variables with Cursor class
     QPoint mMousePosition;
     bool mIsHolding;
@@ -111,7 +111,7 @@ namespace nsRelation {
 
     bool mIsDeleteAllowed;
 
-    RelationType mRelationType;
+//    RelationType mRelationType;
 
     Tools mTools;
 
@@ -120,7 +120,7 @@ namespace nsRelation {
 //    TouchFunction mTouchFunction;
 //    MoveFunction mMoveFunction;
 //    FinalizeFunction mFinalizeFunction;
-    SelectionList mSelectedEntities;
+//    SelectionList mSelectedEntities;
     Connection mPendingConnection;
   };
 }
