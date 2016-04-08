@@ -4,7 +4,8 @@
 
 nsRelation::ConnectTool::ConnectTool()
 : Tool()
-, mRelationType(Relation::Needed) {
+, mRelationType(Relation::Needed)
+, mPendingConnection() {
   //
 }
 
@@ -14,6 +15,10 @@ nsRelation::RelationType nsRelation::ConnectTool::relationType() const {
 
 void nsRelation::ConnectTool::setRelationType(const nsRelation::RelationType& type) {
   mRelationType = type;
+}
+
+nsRelation::Connection nsRelation::ConnectTool::pendingConnection() const {
+  return mPendingConnection;
 }
 
 void nsRelation::ConnectTool::beginTouch(const QPoint& pos) {
@@ -29,7 +34,6 @@ void nsRelation::ConnectTool::beginTouch(const QPoint& pos) {
   entity->outDetach(mRelationType, current);
 
   idleMode(); // clean up and go as if we just connect entities
-
   connectMode(entity);
 }
 
@@ -52,7 +56,7 @@ void nsRelation::ConnectTool::endTouch(const QPoint& pos) {
   if (parent == child) return; // skip self  
 
 #warning "if (child->rect().contains(withoutOrigin(pos))) {"
-  if (child->rect().contains(withoutOrigin(pos))) {
+  if (child->rect().contains(pos)) {
     child->inAttach(mRelationType, parent);
     parent->outAttach(mRelationType, child);
   }

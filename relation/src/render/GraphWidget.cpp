@@ -45,7 +45,8 @@ nsRelation::GraphWidget::GraphWidget(QWidget* parent)
 //, mMoveFunction(&emptyMove)
 //, mFinalizeFunction(&emptyFinalize)
 //, mSelectedEntities()
-, mPendingConnection() {
+//, mPendingConnection()
+{
   //
 }
 
@@ -430,8 +431,9 @@ void nsRelation::GraphWidget::paintEvent(QPaintEvent* e) {
   emit onSceneUpdate(mId);
 
   // send pending
-  if ((mMode == PendingConnection || mMode == EditConnection) && ! mPendingConnection.isDisconnected()) {
-    drawConnection(mId, &mPendingConnection);
+  Connection pendingConnection = mTools.connectTool()->pendingConnection();
+  if ((mMode == PendingConnection || mMode == EditConnection) && ! pendingConnection.isDisconnected()) {
+    drawConnection(mId, &pendingConnection);
   }
 
 

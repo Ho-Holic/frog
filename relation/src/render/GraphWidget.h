@@ -121,7 +121,7 @@ namespace nsRelation {
 //    MoveFunction mMoveFunction;
 //    FinalizeFunction mFinalizeFunction;
 //    SelectionList mSelectedEntities;
-    Connection mPendingConnection;
+//    Connection mPendingConnection;
   };
 }
 
