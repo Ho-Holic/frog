@@ -1,8 +1,8 @@
 // self
 #include "HandTool.h"
 
-nsRelation::HandTool::HandTool()
-: Tool()
+nsRelation::HandTool::HandTool(QObject* parent)
+: Tool(parent)
 , mOrigin(0, 0) {
   //
 }

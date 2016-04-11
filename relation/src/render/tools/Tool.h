@@ -3,18 +3,29 @@
 
 // qt
 #include <QList>
+#include <QObject>
 
 class QPoint;
 
 namespace nsRelation {
 
+  enum ToolType {
+    HandType,
+    MoveType,
+    ConnectType,
+    ToolTypeSize
+  };
+
   class Entity;
 
-  class Tool {
+  class Tool : public QObject {
+    Q_OBJECT
+  signals:
+    void changeTool(ToolType, Entity*);
   public:
     typedef QList<Entity*> SelectionList; // TODO: rename Selection
   public:
-    Tool();
+    Tool(QObject* parent = 0);
     virtual ~Tool();
   public:
     const SelectionList& selection() const;

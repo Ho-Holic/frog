@@ -1,8 +1,9 @@
 // self
 #include "Tool.h"
 
-nsRelation::Tool::Tool()
-: mSelectedEntities() {
+nsRelation::Tool::Tool(QObject* parent)
+: QObject(parent)
+, mSelectedEntities() {
   //
 }
 

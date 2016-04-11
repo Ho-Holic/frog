@@ -10,7 +10,7 @@ namespace nsRelation {
 
   class ConnectTool  : public Tool {
   public:
-    ConnectTool();
+    ConnectTool(QObject* parent = 0);
   public:
     RelationType relationType() const;
     void setRelationType(const RelationType& type);

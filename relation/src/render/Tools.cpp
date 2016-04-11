@@ -1,11 +1,6 @@
 // self
 #include "Tools.h"
 
-// tools
-#include "tools/ConnectTool.h"
-#include "tools/HandTool.h"
-#include "tools/MoveTool.h"
-
 // tmp
 #include <QDebug>
 

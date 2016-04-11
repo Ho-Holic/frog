@@ -5,21 +5,14 @@
 #include <QVector>
 #include <QPoint>
 
+// tools
+#include "tools/ConnectTool.h"
+#include "tools/HandTool.h"
+#include "tools/MoveTool.h"
+
 namespace nsRelation {
 
-  class Tool;
-  class HandTool;
-  class ConnectTool;
-
   class Tools {
-  public:
-    enum ToolType {
-      HandType,
-      MoveType,
-      ConnectType,
-      ToolTypeSize
-    };
-
   public:
     Tools();
     ~Tools();

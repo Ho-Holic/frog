@@ -2,8 +2,8 @@
 #include "ConnectTool.h"
 #include "world/Entity.h"
 
-nsRelation::ConnectTool::ConnectTool()
-: Tool()
+nsRelation::ConnectTool::ConnectTool(QObject* parent)
+: Tool(parent)
 , mRelationType(Relation::Needed)
 , mPendingConnection() {
   //
@@ -33,8 +33,9 @@ void nsRelation::ConnectTool::beginTouch(const QPoint& pos) {
   current->inDetach(mRelationType, entity);
   entity->outDetach(mRelationType, current);
 
-  idleMode(); // clean up and go as if we just connect entities
-  connectMode(entity);
+#warning idleMode(); // clean up and go as if we just connect entities
+#warning connectMode(entity);
+  emit changeTool(ConnectType, entity);
 }
 
 void nsRelation::ConnectTool::move(const QPoint& from, const QPoint& to) {

@@ -11,7 +11,7 @@ namespace nsRelation {
 
   class HandTool : public Tool {
   public:
-    HandTool();
+    HandTool(QObject* parent = 0);
   public:    
     virtual void move(const QPoint& from, const QPoint& to);    
   private:

@@ -1,8 +1,8 @@
 // self
 #include "MoveTool.h"
 
-nsRelation::MoveTool::MoveTool()
-: Tool() {
+nsRelation::MoveTool::MoveTool(QObject* parent)
+: Tool(parent) {
   //
 }
 
