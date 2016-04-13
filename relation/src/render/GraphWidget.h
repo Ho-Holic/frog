@@ -68,7 +68,7 @@ namespace nsRelation {
     virtual void dragMoveEvent(QDragMoveEvent* e);
     virtual void dropEvent(QDropEvent* e);
   private:
-    enum { DeleteRectHeight = 40 };
+//    enum { DeleteRectHeight = 40 };
   private:    
 //    void touchCall(const QPoint& pos);
 //    void moveCall(const QPoint& from, const QPoint& to);
@@ -109,7 +109,7 @@ namespace nsRelation {
     // cursor.type() == Cursor::Dragging
 
 
-    bool mIsDeleteAllowed;
+//    bool mIsDeleteAllowed;
 
 //    RelationType mRelationType;
 

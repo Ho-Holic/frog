@@ -36,7 +36,7 @@ nsRelation::GraphWidget::GraphWidget(QWidget* parent)
 , mDragPosition(0, 0)
 , mIsDragging(false)
 // other
-, mIsDeleteAllowed(false)
+//, mIsDeleteAllowed(false)
 
 //, mRelationType(Relation::Needed)
 , mTools()
@@ -437,8 +437,7 @@ void nsRelation::GraphWidget::paintEvent(QPaintEvent* e) {
   }
 
 
-  bool isDelete = mIsDeleteAllowed && (mMousePosition.y() < DeleteRectHeight);
-  if (isDelete) drawDeleteArea();
+  drawDeleteArea();
 }
 
 void nsRelation::GraphWidget::drawEntityShapeMenu() {
@@ -477,8 +476,15 @@ void nsRelation::GraphWidget::drawDragArea() {
 
 void nsRelation::GraphWidget::drawDeleteArea() {
 
+  // TODO: рассмотреть возможность записи currentToolType() == MoveTool::Type или хотябы MoveToolType
+  bool isDelete = (mTools.currentToolType() == MoveType) && (mMousePosition.y() < MoveTool::DeleteRectHeight);
+
+  if ( ! isDelete) {
+    return;
+  }
+
   QPainter p(this);
-  QRect rect(QPoint(0, 0), QSize(width(), DeleteRectHeight));
+  QRect rect(QPoint(0, 0), QSize(width(), MoveTool::DeleteRectHeight));
 
   p.setPen(Qt::NoPen);
   p.setBrush(ColorScheme::deleteArea());

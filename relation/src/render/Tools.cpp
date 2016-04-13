@@ -4,9 +4,12 @@
 // tmp
 #include <QDebug>
 
+// common
+#include "cplusplus11.h"
+
 nsRelation::Tools::Tools()
 : mTools(ToolTypeSize, nullptr)
-, mCurrentTool(HandTool)
+, mCurrentTool(HandType)
 , mIsLocked(false) {
   mTools[HandType]    = new HandTool();
   mTools[MoveType]    = new MoveTool();
@@ -53,11 +56,11 @@ nsRelation::Tool* nsRelation::Tools::currentTool() const {
   return mTools.at(mCurrentTool);
 }
 
-nsRelation::Tools::ToolType nsRelation::Tools::currentToolType() const {
+nsRelation::ToolType nsRelation::Tools::currentToolType() const {
   return mCurrentTool;
 }
 
-void nsRelation::Tools::changeToolTo(nsRelation::Tools::ToolType tool) {
+void nsRelation::Tools::changeToolTo(nsRelation::ToolType tool) {
   if ( ! isLocked()) {
     mCurrentTool = tool;
   }

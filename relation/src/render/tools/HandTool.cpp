@@ -7,6 +7,10 @@ nsRelation::HandTool::HandTool(QObject* parent)
   //
 }
 
+const QPoint& nsRelation::HandTool::origin() const {
+  return mOrigin;
+}
+
 void nsRelation::HandTool::move(const QPoint& from, const QPoint& to) {
   mOrigin += to - from;
 }
