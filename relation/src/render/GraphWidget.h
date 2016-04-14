@@ -68,22 +68,6 @@ namespace nsRelation {
     virtual void dragMoveEvent(QDragMoveEvent* e);
     virtual void dropEvent(QDropEvent* e);
   private:
-//    enum { DeleteRectHeight = 40 };
-  private:    
-//    void touchCall(const QPoint& pos);
-//    void moveCall(const QPoint& from, const QPoint& to);
-//    void finalizeCall(const QPoint& pos);
-
-//    void emptyTouch(const QPoint& pos);
-//    void emptyMove(const QPoint& from, const QPoint& to);
-//    void emptyFinalize(const QPoint& pos);
-//    void moveOrigin(const QPoint& from, const QPoint& to);
-//    void moveEntity(const QPoint& from, const QPoint& to);
-//    void moveFinalize(const QPoint& pos);
-//    void connectEntity(const QPoint& from, const QPoint& to);
-//    void connectFinalize(const QPoint& pos);
-//    void moveConnectEdit(const QPoint& from, const QPoint& to);
-  private:
     void drawBackground();
     void drawDragArea();
     void drawDeleteArea();
@@ -98,7 +82,6 @@ namespace nsRelation {
   private:
     QString mId;
 
-//    QPoint mOrigin;
     // TODO: replace this bunch of variables with Cursor class
     QPoint mMousePosition;
     bool mIsHolding;
@@ -108,20 +91,10 @@ namespace nsRelation {
     // and you can check what type of cursor you have
     // cursor.type() == Cursor::Dragging
 
-
-//    bool mIsDeleteAllowed;
-
-//    RelationType mRelationType;
-
     Tools mTools;
 
-    // this would be killed
-    Mode mMode;
-//    TouchFunction mTouchFunction;
-//    MoveFunction mMoveFunction;
-//    FinalizeFunction mFinalizeFunction;
-//    SelectionList mSelectedEntities;
-//    Connection mPendingConnection;
+    Mode mMode; // kill me
+
   };
 }
 

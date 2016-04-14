@@ -29,24 +29,14 @@
 nsRelation::GraphWidget::GraphWidget(QWidget* parent)
 : QWidget(parent)
 , mId(QUuid::createUuid().toString())
-//, mOrigin(0, 0)
 // cursor
 , mMousePosition(0, 0)
 , mIsHolding(false)
 , mDragPosition(0, 0)
 , mIsDragging(false)
 // other
-//, mIsDeleteAllowed(false)
-
-//, mRelationType(Relation::Needed)
 , mTools()
-, mMode(Idle)
-//, mTouchFunction(&emptyTouch)
-//, mMoveFunction(&emptyMove)
-//, mFinalizeFunction(&emptyFinalize)
-//, mSelectedEntities()
-//, mPendingConnection()
-{
+, mMode(Idle) {
   //
 }
 
@@ -175,106 +165,6 @@ void nsRelation::GraphWidget::entityShapeMenuMode() {
 //  mIsDeleteAllowed = false;
 //}
 
-//void nsRelation::GraphWidget::touchCall(const QPoint& pos) {
-//  (*this.*mTouchFunction)(pos);
-//}
-
-//void nsRelation::GraphWidget::moveCall(const QPoint& from, const QPoint& to) {
-//  (*this.*mMoveFunction)(from,to);
-//}
-
-
-//void nsRelation::GraphWidget::finalizeCall(const QPoint& pos) {
-//  (*this.*mFinalizeFunction)(pos);
-//}
-
-//void nsRelation::GraphWidget::emptyTouch(const QPoint& pos) {
-//  Q_UNUSED(pos);
-//}
-
-//void nsRelation::GraphWidget::emptyMove(const QPoint& from, const QPoint& to) {
-//  Q_UNUSED(from);
-//  Q_UNUSED(to);
-//}
-
-//void nsRelation::GraphWidget::emptyFinalize(const QPoint& pos) {
-//  Q_UNUSED(pos);
-//}
-
-
-//void nsRelation::GraphWidget::moveOrigin(const QPoint& from, const QPoint& to) {
-//  mOrigin += to - from;
-//}
-
-//void nsRelation::GraphWidget::moveEntity(const QPoint& from, const QPoint& to) {
-//  Q_ASSERT( ! mSelectedEntities.empty());
-//  Entity* current = mSelectedEntities.front();
-//  current->setTopLeft(withoutOrigin(to) - withoutOrigin(from) + current->rect().topLeft());
-//}
-
-//void nsRelation::GraphWidget::moveFinalize(const QPoint& pos) {
-
-//  Q_ASSERT( ! mSelectedEntities.empty());
-//  Entity* current = mSelectedEntities.front();
-
-//  bool isDelete =  (mIsDeleteAllowed)
-//                && (pos.y() < DeleteRectHeight)
-//                && (current)
-//                && (current->rect().contains(withoutOrigin(pos)));
-
-//  if (isDelete) {
-//    emit onDestroyRequest(current);
-//    //QString stringData = QString("removeById %1").arg(mActiveEntity->idString());
-//    //emit onDestroyRequest(stringData);
-//  }
-//}
-
-
-//void nsRelation::GraphWidget::connectFinalize(const QPoint& pos) {
-
-//  Q_ASSERT(mSelectedEntities.size() > 1); // we need two to perform connection
-
-//  Entity* parent = mSelectedEntities.at(0);
-//  Entity* child = mSelectedEntities.at(1);
-
-//  if (parent == child) return; // skip self
-
-//  if (child->rect().contains(withoutOrigin(pos))) {
-//    child->inAttach(mRelationType, parent);
-//    parent->outAttach(mRelationType, child);
-//  }
-
-//}
-
-//void nsRelation::GraphWidget::connectEntity(const QPoint& from, const QPoint& to) {
-
-//  Q_UNUSED(from);
-//  Q_UNUSED(to);
-
-//  Q_ASSERT( ! mSelectedEntities.empty());
-
-//  Entity* current = mSelectedEntities.front();
-//  mPendingConnection = Connection(mRelationType, current);
-//}
-
-//void nsRelation::GraphWidget::moveConnectEdit(const QPoint& from, const QPoint& to) {
-//  Q_UNUSED(to);
-//  Q_UNUSED(from);
-
-//  Q_ASSERT( ! mSelectedEntities.empty());
-//  Entity* current = mSelectedEntities.front();
-
-//  Q_ASSERT( ! current->inRelations(mRelationType).empty());
-
-//  Entity* entity = current->inRelations(mRelationType).front();
-//  current->inDetach(mRelationType, entity);
-//  entity->outDetach(mRelationType, current);
-
-//  idleMode(); // clean up and go as if we just connect entities
-
-//  connectMode(entity);
-
-//}
 
 int nsRelation::GraphWidget::withoutOriginY(int y) const {
   return y - mTools.origin().y();
