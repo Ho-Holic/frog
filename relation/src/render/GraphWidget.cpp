@@ -40,14 +40,30 @@ nsRelation::GraphWidget::GraphWidget(QWidget* parent)
   //
 }
 
-void nsRelation::GraphWidget::setModeDependOn(WorldEvent* event) {
+void nsRelation::GraphWidget::entityIncomingSlotEvent(WorldEvent* event) {
+  // TODO: replace with `connectMode` and
+  // move code from connectEditMode
+  connectEditMode(event->selectedEntity());
+}
+
+void nsRelation::GraphWidget::entityOutcomingSlotEvent(WorldEvent* event) {
+  connectMode(event->selectedEntity());
+}
+
+void nsRelation::GraphWidget::entityBodyEvent(WorldEvent* event) {
+  moveMode(event->selectedEntity());
+}
+
+void nsRelation::GraphWidget::entityNothingEvent(WorldEvent* event) {
+  originMode();
+}
+
+void nsRelation::GraphWidget::dispatchWorldEvent(WorldEvent* event) {
   switch (event->state()) {
-                                        // TODO: replace with `connectMode` and
-                                        // move code from connectEditMode
-  case WorldEvent::EntityIncomingSlot:  connectEditMode(event->selectedEntity()); break;
-  case WorldEvent::EntityOutcomingSlot: connectMode(event->selectedEntity()); break;
-  case WorldEvent::EntityBody:          moveMode(event->selectedEntity()); break;
-  case WorldEvent::Nothing:             originMode(); break;
+  case WorldEvent::EntityIncomingSlot:  entityIncomingSlotEvent(event); break;
+  case WorldEvent::EntityOutcomingSlot: entityOutcomingSlotEvent(event); break;
+  case WorldEvent::EntityBody:          entityBodyEvent(event); break;
+  case WorldEvent::Nothing:             entityNothingEvent(event); break;
   }
 }
 

@@ -98,7 +98,7 @@ void nsRelation::MainWindow::connectParts(nsRelation::World* world,
           graphWidget, SLOT(drawConnection(const QString&, Connection*)));
 
   connect(world,       SIGNAL(onWorldInspectEvent(WorldEvent*)),
-          graphWidget, SLOT(setModeDependOn(WorldEvent*)));
+          graphWidget, SLOT(dispatchWorldEvent(WorldEvent*)));
 
   connect(graphWidget, SIGNAL(onSceneUpdate(const QString&)),
           world,       SLOT(reportStatus(const QString&)));

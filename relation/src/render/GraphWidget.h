@@ -44,7 +44,7 @@ namespace nsRelation {
     void onDestroyRequest(Entity*);
 
   public slots:
-    void setModeDependOn(WorldEvent* event);
+    void dispatchWorldEvent(WorldEvent* event);
     void moveMode(Entity* entity);
     void connectMode(Entity* entity);
     void connectEditMode(Entity* entity);
@@ -55,7 +55,11 @@ namespace nsRelation {
     void drawEntityShapeMenu();
     void drawEntity(const QString& replyId, Entity* entity);
     void drawConnection(const QString& replyId, Connection* connection);
-
+  public:
+    void entityIncomingSlotEvent(WorldEvent* event);
+    void entityOutcomingSlotEvent(WorldEvent* event);
+    void entityBodyEvent(WorldEvent* event);
+    void entityNothingEvent(WorldEvent* event);
   public:    
     virtual void wheelEvent(QWheelEvent* e);
     virtual void paintEvent(QPaintEvent* e);
