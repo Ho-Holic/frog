@@ -4,8 +4,13 @@
 
 nsRelation::MoveTool::MoveTool(QObject* parent)
 : Tool(parent)
-, mIsDeleteAllowed(false) {
+, mIsDeleteAllowed(false)
+, mDeleteArea() {
   //
+}
+
+void nsRelation::MoveTool::setDeleteArea(const QRect& area) {
+  mDeleteArea = area;
 }
 
 void nsRelation::MoveTool::move(const QPoint& from, const QPoint& to) {

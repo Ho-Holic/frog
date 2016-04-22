@@ -19,21 +19,21 @@ namespace nsRelation {
   public:
     HandTool* handTool() const;
     ConnectTool* connectTool() const;
+    MoveTool* moveTool() const;
   public:
     QPoint origin() const;
   public:
     void beginTouch(const QPoint& pos);
     void move(const QPoint& from, const QPoint& to);
     void endTouch(const QPoint& pos);
+    void reset();
   public:
     void changeToolTo(ToolType tool);
     Tool* currentTool() const;
-    ToolType currentToolType() const;
-    bool isLocked() const;
+    ToolType currentToolType() const;    
   private:
     QVector<Tool*> mTools;
-    ToolType mCurrentTool;
-    bool mIsLocked;
+    ToolType mCurrentTool;    
   };
 }
 

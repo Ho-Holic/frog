@@ -45,12 +45,7 @@ namespace nsRelation {
 
   public slots:
     void dispatchWorldEvent(WorldEvent* event);
-    void moveMode(Entity* entity);
-    void connectMode(Entity* entity);
-    void connectEditMode(Entity* entity);
-    void idleMode();
-    void originMode();
-    void entityShapeMenuMode();
+
 
     void drawEntityShapeMenu();
     void drawEntity(const QString& replyId, Entity* entity);
@@ -63,6 +58,7 @@ namespace nsRelation {
   public:    
     virtual void wheelEvent(QWheelEvent* e);
     virtual void paintEvent(QPaintEvent* e);
+    virtual void resizeEvent(QResizeEvent* e);
     virtual void mouseDoubleClickEvent(QMouseEvent* e);
     virtual void mouseMoveEvent(QMouseEvent* e);
     virtual void mousePressEvent(QMouseEvent* e);

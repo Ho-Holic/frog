@@ -4,6 +4,9 @@
 // self
 #include "Tool.h"
 
+// qt
+#include <QRect>
+
 namespace nsRelation {
 
 
@@ -16,10 +19,13 @@ namespace nsRelation {
   public:
     MoveTool(QObject* parent = 0);
   public:
+    void setDeleteArea(const QRect& area);
+  public:
     virtual void move(const QPoint& from, const QPoint& to);
     virtual void endTouch(const QPoint& pos);
   private:
     bool mIsDeleteAllowed;
+    QRect mDeleteArea;
   };
 }
 

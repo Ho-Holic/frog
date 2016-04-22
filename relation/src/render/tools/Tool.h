@@ -9,6 +9,7 @@ class QPoint;
 
 namespace nsRelation {
 
+  // TODO: add Tool word as HandToolType, MoveToolType
   enum ToolType {
     HandType,
     MoveType,
@@ -29,14 +30,16 @@ namespace nsRelation {
     virtual ~Tool();
   public:
     const SelectionList& selection() const;
-    void addToSelection(Entity* newOne);
+    void addToSelection(Entity* selected);
     void subtractFromSelection(Entity* oldOne);
     void clearSelection();
   public:
     virtual void beginTouch(const QPoint& pos);
     virtual void move(const QPoint& from, const QPoint& to);
     virtual void endTouch(const QPoint& pos);
+    virtual void reset();
   private:
+    // you don't need to delete this pointers
     SelectionList mSelectedEntities; // TODO: rename mSelection
   };
 }

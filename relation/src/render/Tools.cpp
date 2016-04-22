@@ -9,8 +9,7 @@
 
 nsRelation::Tools::Tools()
 : mTools(ToolTypeSize, nullptr)
-, mCurrentTool(HandType)
-, mIsLocked(false) {
+, mCurrentTool(HandType) {
   mTools[HandType]    = new HandTool();
   mTools[MoveType]    = new MoveTool();
   mTools[ConnectType] = new ConnectTool();
@@ -27,19 +26,25 @@ nsRelation::HandTool* nsRelation::Tools::handTool() const {
   return static_cast<HandTool*>(mTools[HandType]);
 }
 
-nsRelation::ConnectTool *nsRelation::Tools::connectTool() const {
+nsRelation::ConnectTool* nsRelation::Tools::connectTool() const {
 
   Q_ASSERT(dynamic_cast<ConnectTool*>(mTools[ConnectType]) != nullptr);
 
   return static_cast<ConnectTool*>(mTools[ConnectType]);
 }
 
+nsRelation::MoveTool* nsRelation::Tools::moveTool() const {
+
+  Q_ASSERT(dynamic_cast<MoveTool*>(mTools[MoveType]) != nullptr);
+
+  return static_cast<MoveTool*>(mTools[MoveType]);
+}
+
 QPoint nsRelation::Tools::origin() const {
   return handTool()->origin();
 }
 
-void nsRelation::Tools::beginTouch(const QPoint& pos) {
-  mIsLocked = true;
+void nsRelation::Tools::beginTouch(const QPoint& pos) {  
   currentTool()->beginTouch(pos);
 }
 
@@ -49,7 +54,11 @@ void nsRelation::Tools::move(const QPoint& from, const QPoint& to) {
 
 void nsRelation::Tools::endTouch(const QPoint& pos) {
   currentTool()->endTouch(pos);
-  mIsLocked = false;
+}
+
+void nsRelation::Tools::reset() {
+  currentTool()->reset();
+  changeToolTo(HandType);
 }
 
 nsRelation::Tool* nsRelation::Tools::currentTool() const {
@@ -60,15 +69,7 @@ nsRelation::ToolType nsRelation::Tools::currentToolType() const {
   return mCurrentTool;
 }
 
-void nsRelation::Tools::changeToolTo(nsRelation::ToolType tool) {
-  if ( ! isLocked()) {
-    mCurrentTool = tool;
-  }
-  else {
-    qDebug() << "attempt to change locked tool";
-  }
+void nsRelation::Tools::changeToolTo(nsRelation::ToolType tool) {    
+  mCurrentTool = tool;
 }
 
-bool nsRelation::Tools::isLocked() const {
-  return mIsLocked;
-}
