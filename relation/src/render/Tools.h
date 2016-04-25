@@ -2,6 +2,7 @@
 #define FROG_RELATION_TOOLS_H
 
 // qt
+#include <QObject>
 #include <QVector>
 #include <QPoint>
 
@@ -12,10 +13,9 @@
 
 namespace nsRelation {
 
-  class Tools {
+  class Tools : public QObject {
   public:
-    Tools();
-    ~Tools();
+    explicit Tools(QObject* parent = 0);
   public:
     HandTool* handTool() const;
     ConnectTool* connectTool() const;

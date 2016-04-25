@@ -7,16 +7,13 @@
 // common
 #include "cplusplus11.h"
 
-nsRelation::Tools::Tools()
-: mTools(ToolTypeSize, nullptr)
+nsRelation::Tools::Tools(QObject* parent)
+: QObject(parent)
+, mTools(ToolTypeSize, nullptr)
 , mCurrentTool(HandType) {
-  mTools[HandType]    = new HandTool();
-  mTools[MoveType]    = new MoveTool();
-  mTools[ConnectType] = new ConnectTool();
-}
-
-nsRelation::Tools::~Tools() {
-  qDeleteAll(mTools);
+  mTools[HandType]    = new HandTool(this);
+  mTools[MoveType]    = new MoveTool(this);
+  mTools[ConnectType] = new ConnectTool(this);
 }
 
 nsRelation::HandTool* nsRelation::Tools::handTool() const {

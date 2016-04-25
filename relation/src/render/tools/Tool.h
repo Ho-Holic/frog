@@ -26,8 +26,7 @@ namespace nsRelation {
   public:
     typedef QList<Entity*> SelectionList; // TODO: rename Selection
   public:
-    Tool(QObject* parent = 0);
-    virtual ~Tool();
+    Tool(QObject* parent = 0);    
   public:
     const SelectionList& selection() const;
     void addToSelection(Entity* selected);

@@ -7,10 +7,6 @@ nsRelation::Tool::Tool(QObject* parent)
   //
 }
 
-nsRelation::Tool::~Tool() {
-  // this intentionally left blank
-}
-
 const nsRelation::Tool::SelectionList& nsRelation::Tool::selection() const {
   return mSelectedEntities;
 }

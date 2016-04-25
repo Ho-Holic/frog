@@ -37,8 +37,13 @@ nsRelation::GraphWidget::GraphWidget(QWidget* parent)
 // other
 , mTools()
 , mMode(Idle) {
+
+  connect(mTools.moveTool(), SIGNAL(onDestroyRequest(Entity*)),
+          this,              SIGNAL(onDestroyRequest(Entity*)));
+
   // default tool is "hand tool"
   mTools.changeToolTo(HandType);
+  mTools.moveTool()->setDeleteArea(QRect(mTools.handTool()->origin(), QSize(this->size().width(), MoveTool::DeleteRectHeight)));
 }
 
 void nsRelation::GraphWidget::dispatchWorldEvent(WorldEvent* event) {
@@ -122,8 +127,8 @@ void nsRelation::GraphWidget::mouseMoveEvent(QMouseEvent* e) {
 
   if (mIsHolding) {
 
-    QPoint from = mMousePosition;
-    QPoint to = e->pos();
+    QPoint from = withoutOrigin(mMousePosition);
+    QPoint to = withoutOrigin(e->pos());
     mTools.move(from, to);
 
     mMousePosition = e->pos();
@@ -143,8 +148,9 @@ void nsRelation::GraphWidget::mousePressEvent(QMouseEvent* e) {
   }
   else if (e->button() == Qt::LeftButton) {
 
-    emit onMousePress(withoutOrigin(mMousePosition));
-    mTools.beginTouch(mMousePosition);
+    QPoint p = withoutOrigin(mMousePosition);
+    emit onMousePress(p);
+    mTools.beginTouch(p);
   }
 
   update();
@@ -153,9 +159,10 @@ void nsRelation::GraphWidget::mousePressEvent(QMouseEvent* e) {
 void nsRelation::GraphWidget::mouseReleaseEvent(QMouseEvent* e) {
 
   // TODO: remove candidate
-  emit onMouseRelease(withoutOrigin(e->pos()));
+  QPoint p = withoutOrigin(e->pos());
+  emit onMouseRelease(p);
 
-  mTools.endTouch(e->pos());
+  mTools.endTouch(p);
   mTools.reset();
   // seems we can remove idleMode from here via clever tool deactivation
 #warning idleMode();
@@ -247,7 +254,7 @@ void nsRelation::GraphWidget::paintEvent(QPaintEvent* e) {
 }
 
 void nsRelation::GraphWidget::resizeEvent(QResizeEvent* e) {
-  mTools.moveTool()->setDeleteArea(QRect(mTools.handTool()->origin(), e->size()));
+  mTools.moveTool()->setDeleteArea(QRect(mTools.handTool()->origin(), QSize(e->size().width(), MoveTool::DeleteRectHeight)));
 }
 
 void nsRelation::GraphWidget::drawEntityShapeMenu() {
