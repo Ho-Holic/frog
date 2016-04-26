@@ -46,15 +46,15 @@ namespace nsRelation {
   public slots:
     void dispatchWorldEvent(WorldEvent* event);
 
-
     void drawEntityShapeMenu();
     void drawEntity(const QString& replyId, Entity* entity);
     void drawConnection(const QString& replyId, Connection* connection);
-  public:
+  public slots:
     void entityIncomingSlotEvent(WorldEvent* event);
     void entityOutcomingSlotEvent(WorldEvent* event);
     void entityBodyEvent(WorldEvent* event);
     void entityNothingEvent(WorldEvent* event);
+    void originChangeEvent(const QPoint& origin);
   public:    
     virtual void wheelEvent(QWheelEvent* e);
     virtual void paintEvent(QPaintEvent* e);

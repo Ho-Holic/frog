@@ -23,8 +23,7 @@ namespace nsRelation {
   public:
     virtual void move(const QPoint& from, const QPoint& to);
     virtual void endTouch(const QPoint& pos);
-  private:
-    bool mIsDeleteAllowed;
+  private:    
     QRect mDeleteArea;
   };
 }

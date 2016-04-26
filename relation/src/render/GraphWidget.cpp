@@ -41,9 +41,12 @@ nsRelation::GraphWidget::GraphWidget(QWidget* parent)
   connect(mTools.moveTool(), SIGNAL(onDestroyRequest(Entity*)),
           this,              SIGNAL(onDestroyRequest(Entity*)));
 
+  connect(mTools.handTool(), SIGNAL(onOriginChanged(const QPoint&)),
+          this,              SLOT  (originChangeEvent(const QPoint&)));
+
   // default tool is "hand tool"
   mTools.changeToolTo(HandType);
-  mTools.moveTool()->setDeleteArea(QRect(mTools.handTool()->origin(), QSize(this->size().width(), MoveTool::DeleteRectHeight)));
+  originChangeEvent(mTools.handTool()->origin());
 }
 
 void nsRelation::GraphWidget::dispatchWorldEvent(WorldEvent* event) {
@@ -86,6 +89,14 @@ void nsRelation::GraphWidget::entityNothingEvent(WorldEvent* event) {
   mMode = OriginMove;
 }
 
+void nsRelation::GraphWidget::originChangeEvent(const QPoint& origin) {
+
+  Q_UNUSED(origin);
+  QRect deleteRect = withoutOrigin(QRect(QPoint(0,0),
+                                         QSize(this->size().width(), MoveTool::DeleteRectHeight)));
+  mTools.moveTool()->setDeleteArea(deleteRect);
+}
+
 
 int nsRelation::GraphWidget::withoutOriginY(int y) const {
   return y - mTools.origin().y();
@@ -125,13 +136,14 @@ void nsRelation::GraphWidget::mouseDoubleClickEvent(QMouseEvent* e) {
 
 void nsRelation::GraphWidget::mouseMoveEvent(QMouseEvent* e) {
 
-  if (mIsHolding) {
+  if (mIsHolding) {        
 
     QPoint from = withoutOrigin(mMousePosition);
     QPoint to = withoutOrigin(e->pos());
     mTools.move(from, to);
 
-    mMousePosition = e->pos();
+    mMousePosition = e->pos();    
+
     update();
   }
 }
@@ -254,7 +266,7 @@ void nsRelation::GraphWidget::paintEvent(QPaintEvent* e) {
 }
 
 void nsRelation::GraphWidget::resizeEvent(QResizeEvent* e) {
-  mTools.moveTool()->setDeleteArea(QRect(mTools.handTool()->origin(), QSize(e->size().width(), MoveTool::DeleteRectHeight)));
+  originChangeEvent(mTools.handTool()->origin());
 }
 
 void nsRelation::GraphWidget::drawEntityShapeMenu() {

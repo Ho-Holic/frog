@@ -10,6 +10,9 @@
 namespace nsRelation {
 
   class HandTool : public Tool {
+    Q_OBJECT
+  signals:
+    void onOriginChanged(const QPoint& origin);
   public:
     HandTool(QObject* parent = 0);
   public:

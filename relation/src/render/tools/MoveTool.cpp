@@ -2,9 +2,11 @@
 #include "MoveTool.h"
 #include "world/Entity.h"
 
+// tmp
+#include <QDebug>
+
 nsRelation::MoveTool::MoveTool(QObject* parent)
 : Tool(parent)
-, mIsDeleteAllowed(false)
 , mDeleteArea() {
   //
 }
@@ -24,10 +26,10 @@ void nsRelation::MoveTool::endTouch(const QPoint& pos) {
   Q_ASSERT( ! this->selection().empty());
   Entity* current = this->selection().front();
 
-  bool isDelete =  (mIsDeleteAllowed)
-                && (pos.y() < DeleteRectHeight)
-                && (current)
-                && (current->rect().contains(pos));
+  bool isDelete =  mDeleteArea.contains(pos)
+                && current->rect().contains(pos);
+
+  qDebug() << isDelete << pos << mDeleteArea;
 
   if (isDelete) {
     emit onDestroyRequest(current);

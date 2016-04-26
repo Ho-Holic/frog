@@ -13,6 +13,7 @@ const QPoint& nsRelation::HandTool::origin() const {
 
 void nsRelation::HandTool::move(const QPoint& from, const QPoint& to) {
   mOrigin += to - from;
+  emit onOriginChanged(mOrigin);
 }
 
 
