@@ -71,7 +71,11 @@ void nsRelation::GraphWidget::entityIncomingSlotEvent(WorldEvent* event) {
 }
 
 void nsRelation::GraphWidget::entityOutcomingSlotEvent(WorldEvent* event) {
+
   mMode = PendingConnection;
+
+  mTools.changeToolTo(ConnectType);
+  mTools.currentTool()->addToSelection(event->selectedEntity());
 }
 
 void nsRelation::GraphWidget::entityBodyEvent(WorldEvent* event) {
@@ -79,14 +83,20 @@ void nsRelation::GraphWidget::entityBodyEvent(WorldEvent* event) {
     mMode = Connect;
   }
   else {
+
     mMode = EntityMove;
+
     mTools.changeToolTo(MoveType);
     mTools.currentTool()->addToSelection(event->selectedEntity());
   }
 }
 
 void nsRelation::GraphWidget::entityNothingEvent(WorldEvent* event) {
+
   mMode = OriginMove;
+
+  Q_UNUSED(event);
+  mTools.changeToolTo(HandType);
 }
 
 void nsRelation::GraphWidget::originChangeEvent(const QPoint& origin) {

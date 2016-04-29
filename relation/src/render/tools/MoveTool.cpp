@@ -27,9 +27,7 @@ void nsRelation::MoveTool::endTouch(const QPoint& pos) {
   Entity* current = this->selection().front();
 
   bool isDelete =  mDeleteArea.contains(pos)
-                && current->rect().contains(pos);
-
-  qDebug() << isDelete << pos << mDeleteArea;
+                && current->rect().contains(pos);  
 
   if (isDelete) {
     emit onDestroyRequest(current);
