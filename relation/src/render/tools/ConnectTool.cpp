@@ -24,18 +24,18 @@ nsRelation::Connection nsRelation::ConnectTool::pendingConnection() const {
 void nsRelation::ConnectTool::beginTouch(const QPoint& pos) {
   Q_UNUSED(pos);
 
-  Q_ASSERT( ! selection().empty());
-  Entity* current = selection().front();
+//  Q_ASSERT( ! selection().empty());
+//  Entity* current = selection().front();
 
-  Q_ASSERT( ! current->inRelations(mRelationType).empty());
+//  Q_ASSERT( ! current->inRelations(mRelationType).empty());
 
-  Entity* entity = current->inRelations(mRelationType).front();
-  current->inDetach(mRelationType, entity);
-  entity->outDetach(mRelationType, current);
+//  Entity* entity = current->inRelations(mRelationType).front();
+//  current->inDetach(mRelationType, entity);
+//  entity->outDetach(mRelationType, current);
 
-#warning idleMode(); // clean up and go as if we just connect entities
-#warning connectMode(entity);
-  emit changeTool(ConnectType, entity);
+//#warning idleMode(); // clean up and go as if we just connect entities
+//#warning connectMode(entity);
+//  emit changeTool(ConnectType, entity);
 }
 
 void nsRelation::ConnectTool::move(const QPoint& from, const QPoint& to) {

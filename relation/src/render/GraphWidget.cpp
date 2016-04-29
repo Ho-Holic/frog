@@ -79,8 +79,11 @@ void nsRelation::GraphWidget::entityOutcomingSlotEvent(WorldEvent* event) {
 }
 
 void nsRelation::GraphWidget::entityBodyEvent(WorldEvent* event) {
-  if (mMode == PendingConnection) {
+
+  if (mTools.currentToolType() == ConnectType) {
     mMode = Connect;
+
+    mTools.currentTool()->addToSelection(event->selectedEntity());
   }
   else {
 
