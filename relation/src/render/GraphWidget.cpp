@@ -64,6 +64,10 @@ void nsRelation::GraphWidget::entityIncomingSlotEvent(WorldEvent* event) {
   nsRelation::Entity* entity = event->selectedEntity();
   if (entity->hasInRelations(mTools.connectTool()->relationType())) {
     mMode = EditConnection;
+
+    mTools.changeToolTo(ConnectType);
+    mTools.currentTool()->addToSelection(event->selectedEntity());
+    mTools.connectTool()->disconnectRequested();
   }
   else {
     mMode = Idle;

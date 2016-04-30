@@ -5,7 +5,8 @@
 nsRelation::ConnectTool::ConnectTool(QObject* parent)
 : Tool(parent)
 , mRelationType(Relation::Needed)
-, mPendingConnection() {
+, mPendingConnection()
+, mIsDisconnectRequested(false) {
   //
 }
 
@@ -21,21 +22,25 @@ nsRelation::Connection nsRelation::ConnectTool::pendingConnection() const {
   return mPendingConnection;
 }
 
+void nsRelation::ConnectTool::disconnectRequested() {
+  mIsDisconnectRequested = true;
+}
+
 void nsRelation::ConnectTool::beginTouch(const QPoint& pos) {
   Q_UNUSED(pos);
 
-//  Q_ASSERT( ! selection().empty());
-//  Entity* current = selection().front();
+  if (mIsDisconnectRequested) {
 
-//  Q_ASSERT( ! current->inRelations(mRelationType).empty());
+    Q_ASSERT( ! selection().empty());
+    Entity* current = selection().front();
 
-//  Entity* entity = current->inRelations(mRelationType).front();
-//  current->inDetach(mRelationType, entity);
-//  entity->outDetach(mRelationType, current);
+    Q_ASSERT( ! current->inRelations(mRelationType).empty());
 
-//#warning idleMode(); // clean up and go as if we just connect entities
-//#warning connectMode(entity);
-//  emit changeTool(ConnectType, entity);
+    Entity* entity = current->inRelations(mRelationType).front();
+    current->inDetach(mRelationType, entity);
+    entity->outDetach(mRelationType, current);
+
+  }
 }
 
 void nsRelation::ConnectTool::move(const QPoint& from, const QPoint& to) {
