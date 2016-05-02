@@ -10,13 +10,21 @@ namespace nsRelation {
 
   class ConnectTool  : public Tool {
   public:
+
+    enum ConnectMode {
+      Idle,
+      AboutToConnect,
+      AboutToDisconnect
+    };
+
+  public:
     ConnectTool(QObject* parent = 0);
   public:
     RelationType relationType() const;
     void setRelationType(const RelationType& type);
-    Connection pendingConnection() const;
-    void disconnectRequested();
-    void connectRequested();
+    Connection pendingConnection() const;    
+    void setConnectMode(ConnectMode mode);
+
   public:
     virtual void beginTouch(const QPoint& pos);
     virtual void move(const QPoint& from, const QPoint& to);
@@ -25,8 +33,7 @@ namespace nsRelation {
   private:
     RelationType mRelationType;
     Connection mPendingConnection;  
-    bool mIsDisconnectRequested;
-    bool mIsConnectRequested;
+    ConnectMode mConnectMode;
   };
 }
 #endif // FROG_RELATION_CONNECTTOOL_HPP

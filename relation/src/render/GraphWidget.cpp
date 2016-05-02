@@ -65,7 +65,7 @@ void nsRelation::GraphWidget::entityIncomingSlotEvent(WorldEvent* event) {
 
     mTools.changeToolTo(ConnectType);
     mTools.currentTool()->addToSelection(event->selectedEntity());
-    mTools.connectTool()->disconnectRequested();
+    mTools.connectTool()->setConnectMode(ConnectTool::AboutToDisconnect);
   }
 }
 
@@ -78,7 +78,7 @@ void nsRelation::GraphWidget::entityOutcomingSlotEvent(WorldEvent* event) {
 void nsRelation::GraphWidget::entityBodyEvent(WorldEvent* event) {
 
   if (mTools.currentToolType() == ConnectType) {
-    mTools.connectTool()->connectRequested();
+    mTools.connectTool()->setConnectMode(ConnectTool::AboutToConnect);
     mTools.currentTool()->addToSelection(event->selectedEntity());
   }
   else {    
@@ -264,6 +264,7 @@ void nsRelation::GraphWidget::paintEvent(QPaintEvent* e) {
 }
 
 void nsRelation::GraphWidget::resizeEvent(QResizeEvent* e) {
+  Q_UNUSED(e);
   originChangeEvent(mTools.handTool()->origin());
 }
 
