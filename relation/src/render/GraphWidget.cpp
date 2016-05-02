@@ -35,8 +35,7 @@ nsRelation::GraphWidget::GraphWidget(QWidget* parent)
 , mDragPosition(0, 0)
 , mIsDragging(false)
 // other
-, mTools()
-, mMode(Idle) {
+, mTools() {
 
   connect(mTools.moveTool(), SIGNAL(onDestroyRequest(Entity*)),
           this,              SIGNAL(onDestroyRequest(Entity*)));
@@ -59,24 +58,18 @@ void nsRelation::GraphWidget::dispatchWorldEvent(WorldEvent* event) {
 }
 
 void nsRelation::GraphWidget::entityIncomingSlotEvent(WorldEvent* event) {
-  // TODO: replace with `connectMode` and
-  // move code from connectEditMode  
+
   nsRelation::Entity* entity = event->selectedEntity();
-  if (entity->hasInRelations(mTools.connectTool()->relationType())) {
-    mMode = EditConnection;
+
+  if (entity->hasInRelations(mTools.connectTool()->relationType())) {    
 
     mTools.changeToolTo(ConnectType);
     mTools.currentTool()->addToSelection(event->selectedEntity());
     mTools.connectTool()->disconnectRequested();
   }
-  else {
-    mMode = Idle;
-  }
 }
 
-void nsRelation::GraphWidget::entityOutcomingSlotEvent(WorldEvent* event) {
-
-  mMode = PendingConnection;
+void nsRelation::GraphWidget::entityOutcomingSlotEvent(WorldEvent* event) {  
 
   mTools.changeToolTo(ConnectType);
   mTools.currentTool()->addToSelection(event->selectedEntity());
@@ -84,26 +77,17 @@ void nsRelation::GraphWidget::entityOutcomingSlotEvent(WorldEvent* event) {
 
 void nsRelation::GraphWidget::entityBodyEvent(WorldEvent* event) {
 
-  if (mTools.currentToolType() == ConnectType) {
-    mMode = Connect;
-
+  if (mTools.currentToolType() == ConnectType) {    
     mTools.currentTool()->addToSelection(event->selectedEntity());
   }
-  else {
-
-    mMode = EntityMove;
-
+  else {    
     mTools.changeToolTo(MoveType);
     mTools.currentTool()->addToSelection(event->selectedEntity());
   }
 }
 
-void nsRelation::GraphWidget::entityNothingEvent(WorldEvent* event) {
-
-  mMode = OriginMove;
-
-  Q_UNUSED(event);
-  mTools.changeToolTo(HandType);
+void nsRelation::GraphWidget::entityNothingEvent(WorldEvent* event) { 
+  Q_UNUSED(event);  
 }
 
 void nsRelation::GraphWidget::originChangeEvent(const QPoint& origin) {
@@ -171,14 +155,9 @@ void nsRelation::GraphWidget::mousePressEvent(QMouseEvent* e) {
   mIsHolding = true;
   mMousePosition = e->pos();
 
-  if (e->button() == Qt::RightButton) {
-    // TODO: menu
-#warning entityShapeMenuMode();
-  }
-  else if (e->button() == Qt::LeftButton) {
-
+  if (e->button() == Qt::LeftButton) {
     QPoint p = withoutOrigin(mMousePosition);
-    emit onMousePress(p);
+    emit onMousePress(p);    
     mTools.beginTouch(p);
   }
 
@@ -187,17 +166,14 @@ void nsRelation::GraphWidget::mousePressEvent(QMouseEvent* e) {
 
 void nsRelation::GraphWidget::mouseReleaseEvent(QMouseEvent* e) {
 
-  // TODO: remove candidate
   QPoint p = withoutOrigin(e->pos());
   emit onMouseRelease(p);
 
   mTools.endTouch(p);
   mTools.reset();
-  // seems we can remove idleMode from here via clever tool deactivation
-#warning idleMode();
 
   mIsHolding = false;
-  update();
+  update();  
 }
 
 void nsRelation::GraphWidget::dragMoveEvent(QDragMoveEvent* e) {
@@ -268,14 +244,18 @@ void nsRelation::GraphWidget::paintEvent(QPaintEvent* e) {
 
   if (mIsDragging) drawDragArea();
 
-  if (mMode == EntityShapeMenu) drawEntityShapeMenu();
+#warning if (mMode == EntityShapeMenu) drawEntityShapeMenu();
 
   emit onSceneUpdate(mId);
 
   // send pending
-  Connection pendingConnection = mTools.connectTool()->pendingConnection();
-  if ((mMode == PendingConnection || mMode == EditConnection) && ! pendingConnection.isDisconnected()) {
-    drawConnection(mId, &pendingConnection);
+  if (mTools.currentToolType() == ConnectType) {
+
+    Connection pendingConnection = mTools.connectTool()->pendingConnection();
+
+    if (! pendingConnection.isDisconnected()) {
+      drawConnection(mId, &pendingConnection);
+    }
   }
 
 

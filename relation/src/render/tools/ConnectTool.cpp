@@ -2,6 +2,9 @@
 #include "ConnectTool.h"
 #include "world/Entity.h"
 
+// tmp
+#include <QDebug>
+
 nsRelation::ConnectTool::ConnectTool(QObject* parent)
 : Tool(parent)
 , mRelationType(Relation::Needed)
@@ -40,6 +43,9 @@ void nsRelation::ConnectTool::beginTouch(const QPoint& pos) {
     current->inDetach(mRelationType, entity);
     entity->outDetach(mRelationType, current);
 
+    this->reset();
+    this->addToSelection(entity);
+
   }
 }
 
@@ -66,4 +72,9 @@ void nsRelation::ConnectTool::endTouch(const QPoint& pos) {
     child->inAttach(mRelationType, parent);
     parent->outAttach(mRelationType, child);
   }
+}
+
+void nsRelation::ConnectTool::reset() {
+  mIsDisconnectRequested = false;
+  Tool::reset();
 }

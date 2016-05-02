@@ -20,9 +20,10 @@ namespace nsRelation {
     virtual void beginTouch(const QPoint& pos);
     virtual void move(const QPoint& from, const QPoint& to);
     virtual void endTouch(const QPoint& pos);
+    virtual void reset();
   private:
     RelationType mRelationType;
-    Connection mPendingConnection;
+    Connection mPendingConnection;  
     bool mIsDisconnectRequested;
   };
 }

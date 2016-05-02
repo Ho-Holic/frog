@@ -91,10 +91,7 @@ namespace nsRelation {
     // and you can check what type of cursor you have
     // cursor.type() == Cursor::Dragging
 
-    Tools mTools;
-
-    Mode mMode; // kill me
-
+    Tools mTools;    
   };
 }
 

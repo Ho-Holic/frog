@@ -66,7 +66,9 @@ nsRelation::ToolType nsRelation::Tools::currentToolType() const {
   return mCurrentTool;
 }
 
-void nsRelation::Tools::changeToolTo(nsRelation::ToolType tool) {    
+void nsRelation::Tools::changeToolTo(nsRelation::ToolType tool) {
+  // don't reset tool here, it would break "mouse events chain" invariant
+  // you need to reset tool only after onMouseRelease
   mCurrentTool = tool;
 }
 
