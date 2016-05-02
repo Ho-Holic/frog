@@ -77,7 +77,8 @@ void nsRelation::GraphWidget::entityOutcomingSlotEvent(WorldEvent* event) {
 
 void nsRelation::GraphWidget::entityBodyEvent(WorldEvent* event) {
 
-  if (mTools.currentToolType() == ConnectType) {    
+  if (mTools.currentToolType() == ConnectType) {
+    mTools.connectTool()->connectRequested();
     mTools.currentTool()->addToSelection(event->selectedEntity());
   }
   else {    

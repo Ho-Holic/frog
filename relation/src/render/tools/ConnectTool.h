@@ -16,6 +16,7 @@ namespace nsRelation {
     void setRelationType(const RelationType& type);
     Connection pendingConnection() const;
     void disconnectRequested();
+    void connectRequested();
   public:
     virtual void beginTouch(const QPoint& pos);
     virtual void move(const QPoint& from, const QPoint& to);
@@ -25,6 +26,7 @@ namespace nsRelation {
     RelationType mRelationType;
     Connection mPendingConnection;  
     bool mIsDisconnectRequested;
+    bool mIsConnectRequested;
   };
 }
 #endif // FROG_RELATION_CONNECTTOOL_HPP

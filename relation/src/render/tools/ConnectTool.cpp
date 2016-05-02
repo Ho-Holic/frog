@@ -9,7 +9,8 @@ nsRelation::ConnectTool::ConnectTool(QObject* parent)
 : Tool(parent)
 , mRelationType(Relation::Needed)
 , mPendingConnection()
-, mIsDisconnectRequested(false) {
+, mIsDisconnectRequested(false)
+, mIsConnectRequested(false) {
   //
 }
 
@@ -27,6 +28,10 @@ nsRelation::Connection nsRelation::ConnectTool::pendingConnection() const {
 
 void nsRelation::ConnectTool::disconnectRequested() {
   mIsDisconnectRequested = true;
+}
+
+void nsRelation::ConnectTool::connectRequested() {
+  mIsConnectRequested = true;
 }
 
 void nsRelation::ConnectTool::beginTouch(const QPoint& pos) {
@@ -60,21 +65,29 @@ void nsRelation::ConnectTool::move(const QPoint& from, const QPoint& to) {
 }
 
 void nsRelation::ConnectTool::endTouch(const QPoint& pos) {
-  Q_ASSERT(selection().size() > 1); // we need two to perform connection
 
-  Entity* parent = selection().at(0);
-  Entity* child = selection().at(1);
+  if (mIsConnectRequested) {
 
-  if (parent == child) return; // skip self  
+    Q_ASSERT(selection().size() > 1); // we need two to perform connection
+
+    Entity* parent = selection().at(0);
+    Entity* child = selection().at(1);
+
+    if (parent == child) return; // skip self
 
 #warning "if (child->rect().contains(withoutOrigin(pos))) {"
-  if (child->rect().contains(pos)) {
-    child->inAttach(mRelationType, parent);
-    parent->outAttach(mRelationType, child);
+    if (child->rect().contains(pos)) {
+      child->inAttach(mRelationType, parent);
+      parent->outAttach(mRelationType, child);
+    }
+    this->reset();
+    this->addToSelection(parent);
+    this->addToSelection(child);
   }
 }
 
 void nsRelation::ConnectTool::reset() {
   mIsDisconnectRequested = false;
+  mIsConnectRequested = false;
   Tool::reset();
 }

@@ -20,6 +20,7 @@ namespace nsRelation {
     HandTool* handTool() const;
     ConnectTool* connectTool() const;
     MoveTool* moveTool() const;
+    // isMoveTool() const; // and so on
   public:
     QPoint origin() const;
   public:
