@@ -3,10 +3,24 @@
 
 nsRelation::Tool::Tool(QObject* parent)
 : QObject(parent)
+, mOrigin(0, 0)
 , mSelectedEntities()
 , mMarkingMenu() {
   //
 }
+
+nsRelation::Tool::~Tool() {
+  qDeleteAll(mMarkingMenu.begin(), mMarkingMenu.end());
+}
+
+const QPoint& nsRelation::Tool::origin() const {
+  return mOrigin;
+}
+
+void nsRelation::Tool::setOrigin(const QPoint& pos) {
+  mOrigin = pos;
+}
+
 
 const nsRelation::Tool::SelectionList& nsRelation::Tool::selection() const {
   return mSelectedEntities;
@@ -20,14 +34,23 @@ void nsRelation::Tool::clearSelection() {
   mSelectedEntities.clear();
 }
 
-void nsRelation::Tool::reportMenuStatus(const QString& replyId) {
-  // foreach ...
-  //emit onMarkingMenuChanged(replyId, item);
+void nsRelation::Tool::addToMarkingMenu(const QString& action) {
+  MarkingMenuItem* item = new MarkingMenuItem(action);
+  mMarkingMenu.push_back(item);
+}
+
+void nsRelation::Tool::reportMenuStatus(const QString& replyId) {  
+
+  foreach (MarkingMenuItem* item, mMarkingMenu) {
+    emit onMarkingMenuChanged(replyId, item);
+  }
 }
 
 void nsRelation::Tool::beginTouch(const QPoint& pos) {
   Q_UNUSED(pos);
   // default implementation do nothing
+
+  // TODO: foreach markingmenu set position 360/angle
 }
 
 void nsRelation::Tool::move(const QPoint& from, const QPoint& to) {

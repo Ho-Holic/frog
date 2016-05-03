@@ -14,13 +14,9 @@ namespace nsRelation {
   signals:
     void onOriginChanged(const QPoint& origin);
   public:
-    HandTool(QObject* parent = 0);
-  public:
-    const QPoint& origin() const;
+    HandTool(QObject* parent = 0);    
   public:    
     virtual void move(const QPoint& from, const QPoint& to);    
-  private:
-    QPoint mOrigin;
   };
 }
 

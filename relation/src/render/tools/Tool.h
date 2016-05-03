@@ -4,12 +4,15 @@
 // qt
 #include <QList>
 #include <QObject>
+#include <QPoint>
 
 class QPoint;
 
 namespace nsRelation {
 
   class MarkingMenuItem {
+  public:
+    MarkingMenuItem(const QString& action) {}
 
   };
 
@@ -31,21 +34,25 @@ namespace nsRelation {
     typedef QList<Entity*> SelectionList; // TODO: rename Selection
     typedef QList<MarkingMenuItem*> MarkingMenu;
   public:
-    Tool(QObject* parent = 0);    
+    Tool(QObject* parent = 0);
+    ~Tool();
   public:
+    const QPoint& origin() const;
+    void setOrigin(const QPoint& pos);
     const SelectionList& selection() const;
     void addToSelection(Entity* selected);    
     void clearSelection();
-    void reportMenuStatus(const QString& replyId);
+    void addToMarkingMenu(const QString& action);
+    void reportMenuStatus(const QString& replyId);    
   public:
     virtual void beginTouch(const QPoint& pos);
     virtual void move(const QPoint& from, const QPoint& to);
     virtual void endTouch(const QPoint& pos);
     virtual void reset();    
-  private:
-    // you don't need to delete this pointers
-    SelectionList mSelectedEntities; // TODO: rename mSelection
-    MarkingMenu mMarkingMenu;
+  private:  
+    QPoint mOrigin;
+    SelectionList mSelectedEntities; // TODO: rename mSelection // you don't need to delete this pointers
+    MarkingMenu mMarkingMenu; // this pointers need to be deleted
   };
 }
 
