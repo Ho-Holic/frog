@@ -14,8 +14,13 @@
 namespace nsRelation {
 
   class Tools : public QObject {
+    Q_OBJECT
   public:
     explicit Tools(QObject* parent = 0);
+  signals:
+    void onMarkingMenuChanged(const QString&, MarkingMenuItem*);
+  public slots:
+    void reportMenuStatus(const QString& replyId);
   public:
     HandTool* handTool() const;
     ConnectTool* connectTool() const;

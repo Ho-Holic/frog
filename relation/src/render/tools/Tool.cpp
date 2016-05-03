@@ -3,7 +3,8 @@
 
 nsRelation::Tool::Tool(QObject* parent)
 : QObject(parent)
-, mSelectedEntities() {
+, mSelectedEntities()
+, mMarkingMenu() {
   //
 }
 
@@ -15,12 +16,13 @@ void nsRelation::Tool::addToSelection(nsRelation::Entity* selected) {
   mSelectedEntities.push_back(selected);
 }
 
-void nsRelation::Tool::subtractFromSelection(nsRelation::Entity* oldOne) {
-  Q_UNUSED(oldOne);
-}
-
 void nsRelation::Tool::clearSelection() {
   mSelectedEntities.clear();
+}
+
+void nsRelation::Tool::reportMenuStatus(const QString& replyId) {
+  // foreach ...
+  //emit onMarkingMenuChanged(replyId, item);
 }
 
 void nsRelation::Tool::beginTouch(const QPoint& pos) {

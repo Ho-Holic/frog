@@ -35,17 +35,23 @@ nsRelation::GraphWidget::GraphWidget(QWidget* parent)
 , mDragPosition(0, 0)
 , mIsDragging(false)
 // other
-, mTools() {
+, mTools(new Tools(this)) {
 
-  connect(mTools.moveTool(), SIGNAL(onDestroyRequest(Entity*)),
+  connect(mTools->moveTool(), SIGNAL(onDestroyRequest(Entity*)),
           this,              SIGNAL(onDestroyRequest(Entity*)));
 
-  connect(mTools.handTool(), SIGNAL(onOriginChanged(const QPoint&)),
+  connect(mTools->handTool(), SIGNAL(onOriginChanged(const QPoint&)),
           this,              SLOT  (originChangeEvent(const QPoint&)));
 
+  connect(this,    SIGNAL(onMarkingMenuUpdate(const QString&)),
+          mTools,  SLOT(reportMenuStatus(const QString&)));
+
+  connect(mTools, SIGNAL(onMarkingMenuChanged(const QString&, MarkingMenuItem*)),
+          this,   SLOT(drawMarkingMenuItem(const QString&, MarkingMenuItem*)));
+
   // default tool is "hand tool"
-  mTools.changeToolTo(HandType);
-  originChangeEvent(mTools.handTool()->origin());
+  mTools->changeToolTo(HandType);
+  originChangeEvent(mTools->handTool()->origin());
 }
 
 void nsRelation::GraphWidget::dispatchWorldEvent(WorldEvent* event) {
@@ -61,29 +67,29 @@ void nsRelation::GraphWidget::entityIncomingSlotEvent(WorldEvent* event) {
 
   nsRelation::Entity* entity = event->selectedEntity();
 
-  if (entity->hasInRelations(mTools.connectTool()->relationType())) {    
+  if (entity->hasInRelations(mTools->connectTool()->relationType())) {
 
-    mTools.changeToolTo(ConnectType);
-    mTools.currentTool()->addToSelection(event->selectedEntity());
-    mTools.connectTool()->setConnectMode(ConnectTool::AboutToDisconnect);
+    mTools->changeToolTo(ConnectType);
+    mTools->currentTool()->addToSelection(event->selectedEntity());
+    mTools->connectTool()->setConnectMode(ConnectTool::AboutToDisconnect);
   }
 }
 
 void nsRelation::GraphWidget::entityOutcomingSlotEvent(WorldEvent* event) {  
 
-  mTools.changeToolTo(ConnectType);
-  mTools.currentTool()->addToSelection(event->selectedEntity());
+  mTools->changeToolTo(ConnectType);
+  mTools->currentTool()->addToSelection(event->selectedEntity());
 }
 
 void nsRelation::GraphWidget::entityBodyEvent(WorldEvent* event) {
 
-  if (mTools.currentToolType() == ConnectType) {
-    mTools.connectTool()->setConnectMode(ConnectTool::AboutToConnect);
-    mTools.currentTool()->addToSelection(event->selectedEntity());
+  if (mTools->currentToolType() == ConnectType) {
+    mTools->connectTool()->setConnectMode(ConnectTool::AboutToConnect);
+    mTools->currentTool()->addToSelection(event->selectedEntity());
   }
   else {    
-    mTools.changeToolTo(MoveType);
-    mTools.currentTool()->addToSelection(event->selectedEntity());
+    mTools->changeToolTo(MoveType);
+    mTools->currentTool()->addToSelection(event->selectedEntity());
   }
 }
 
@@ -96,28 +102,28 @@ void nsRelation::GraphWidget::originChangeEvent(const QPoint& origin) {
   Q_UNUSED(origin);
   QRect deleteRect = withoutOrigin(QRect(QPoint(0,0),
                                          QSize(this->size().width(), MoveTool::DeleteRectHeight)));
-  mTools.moveTool()->setDeleteArea(deleteRect);
+  mTools->moveTool()->setDeleteArea(deleteRect);
 }
 
 
 int nsRelation::GraphWidget::withoutOriginY(int y) const {
-  return y - mTools.origin().y();
+  return y - mTools->origin().y();
 }
 
 QRect nsRelation::GraphWidget::withoutOrigin(const QRect& r) const {
-  return QRect(r.topLeft() - mTools.origin(), r.size());
+  return QRect(r.topLeft() - mTools->origin(), r.size());
 }
 
 QPoint nsRelation::GraphWidget::withoutOrigin(const QPoint& p) const {
-  return p - mTools.origin();
+  return p - mTools->origin();
 }
 
 QRect nsRelation::GraphWidget::withOrigin(const QRect& r) const {
-  return QRect(mTools.origin() + r.topLeft(), r.size());
+  return QRect(mTools->origin() + r.topLeft(), r.size());
 }
 
 QPoint nsRelation::GraphWidget::withOrigin(const QPoint& p) const {
-  return mTools.origin() + p;
+  return mTools->origin() + p;
 }
 
 void nsRelation::GraphWidget::mouseDoubleClickEvent(QMouseEvent* e) {
@@ -142,7 +148,7 @@ void nsRelation::GraphWidget::mouseMoveEvent(QMouseEvent* e) {
 
     QPoint from = withoutOrigin(mMousePosition);
     QPoint to = withoutOrigin(e->pos());
-    mTools.move(from, to);
+    mTools->move(from, to);
 
     mMousePosition = e->pos();    
 
@@ -158,8 +164,10 @@ void nsRelation::GraphWidget::mousePressEvent(QMouseEvent* e) {
 
   if (e->button() == Qt::LeftButton) {
     QPoint p = withoutOrigin(mMousePosition);
+    // TODO: replace with emit onMouseEvent(GraphMouseEvent(PressEvent, p))
+    // further replace -->  GraphMousePressEvent(p) : extends GraphMouseEvent
     emit onMousePress(p);    
-    mTools.beginTouch(p);
+    mTools->beginTouch(p);
   }
 
   update();
@@ -170,8 +178,8 @@ void nsRelation::GraphWidget::mouseReleaseEvent(QMouseEvent* e) {
   QPoint p = withoutOrigin(e->pos());
   emit onMouseRelease(p);
 
-  mTools.endTouch(p);
-  mTools.reset();
+  mTools->endTouch(p);
+  mTools->reset();
 
   mIsHolding = false;
   update();  
@@ -228,11 +236,11 @@ void nsRelation::GraphWidget::dropEvent(QDropEvent* e) {
 void nsRelation::GraphWidget::wheelEvent(QWheelEvent* e) {
 
   // TODO: temporary, take cyclic history collection from work project
-  RelationType type = (mTools.connectTool()->relationType() == Relation::Needed)
+  RelationType type = (mTools->connectTool()->relationType() == Relation::Needed)
                       ? Relation::Absorb
                       : Relation::Needed;
 
-  mTools.connectTool()->setRelationType(type);
+  mTools->connectTool()->setRelationType(type);
 
   QWidget::wheelEvent(e);
 }
@@ -242,47 +250,20 @@ void nsRelation::GraphWidget::paintEvent(QPaintEvent* e) {
   QWidget::paintEvent(e);
 
   drawBackground();
-
-  if (mIsDragging) drawDragArea();
-
-#warning if (mMode == EntityShapeMenu) drawEntityShapeMenu();
-
-  emit onSceneUpdate(mId);
-
-  // send pending
-  if (mTools.currentToolType() == ConnectType) {
-
-    Connection pendingConnection = mTools.connectTool()->pendingConnection();
-
-    if (! pendingConnection.isDisconnected()) {
-      drawConnection(mId, &pendingConnection);
-    }
-  }
-
-
+  drawDragArea();
+  drawScene();
+  drawPendingConnection();
+  drawMarkingMenu();
   drawDeleteArea();
 }
 
 void nsRelation::GraphWidget::resizeEvent(QResizeEvent* e) {
   Q_UNUSED(e);
-  originChangeEvent(mTools.handTool()->origin());
+  originChangeEvent(mTools->handTool()->origin());
 }
 
-void nsRelation::GraphWidget::drawEntityShapeMenu() {
-
-  //QStringList mEntityShapes = (QStringList() << "Module" << "Bridge");
-
-  QPainter p(this);
-
-  // draw body
-  QRect box = VectorMath::fromCenterPoint(mMousePosition, ColorScheme::boxForText(tr("Shape"), ColorScheme::itemTextFont()));
-  p.setPen(Qt::NoPen);
-  p.setBrush(ColorScheme::entity());
-  p.drawRect(box);
-
-  // draw text
-  p.setPen(ColorScheme::entityText());
-  p.drawText(box, Qt::AlignCenter, tr("Shape"));
+void nsRelation::GraphWidget::drawMarkingMenu() {
+  emit onMarkingMenuUpdate(mId);
 }
 
 void nsRelation::GraphWidget::drawBackground() {
@@ -296,6 +277,9 @@ void nsRelation::GraphWidget::drawBackground() {
 }
 
 void nsRelation::GraphWidget::drawDragArea() {
+
+  if ( ! mIsDragging) return;
+
   QPainter p(this);
   p.setPen(QPen(ColorScheme::entity(), 1, Qt::DashLine));
   p.setBrush(Qt::NoBrush);
@@ -305,7 +289,7 @@ void nsRelation::GraphWidget::drawDragArea() {
 void nsRelation::GraphWidget::drawDeleteArea() {
 
   // TODO: рассмотреть возможность записи currentToolType() == MoveTool::Type или хотябы MoveToolType
-  bool isDelete = (mTools.currentToolType() == MoveType) && (mMousePosition.y() < MoveTool::DeleteRectHeight);
+  bool isDelete = (mTools->currentToolType() == MoveType) && (mMousePosition.y() < MoveTool::DeleteRectHeight);
 
   if ( ! isDelete) {
     return;
@@ -320,6 +304,21 @@ void nsRelation::GraphWidget::drawDeleteArea() {
 
   p.setPen(QPen(ColorScheme::deleteAreaText(), Qt::SolidLine));
   p.drawText(rect, Qt::AlignCenter, tr("Delete"));
+}
+
+void nsRelation::GraphWidget::drawScene() {
+  emit onSceneUpdate(mId);
+}
+
+void nsRelation::GraphWidget::drawPendingConnection() {
+
+  if ( ! mTools->currentToolType() == ConnectType) return;
+
+  Connection pendingConnection = mTools->connectTool()->pendingConnection();
+
+  if (! pendingConnection.isDisconnected()) {
+    drawConnection(mId, &pendingConnection);
+  }
 }
 
 void nsRelation::GraphWidget::drawEntity(const QString& replyId, nsRelation::Entity* entity) {
@@ -369,4 +368,23 @@ void nsRelation::GraphWidget::drawConnection(const QString& replyId, nsRelation:
   // TODO: draw some text
   //p.setPen(QPen(QColor(240, 173, 109), Qt::SolidLine));
   //p.drawText(QRect(withOrigin(connection->to() - QPoint(-20, 20)), QSize(20, 20)), "123");
+}
+
+void nsRelation::GraphWidget::drawMarkingMenuItem(const QString& replyId, nsRelation::MarkingMenuItem* item) {
+
+  if (replyId != mId) return;
+
+  //  //QStringList mEntityShapes = (QStringList() << "Module" << "Bridge");
+
+  //  QPainter p(this);
+
+  //  // draw body
+  //  QRect box = VectorMath::fromCenterPoint(mMousePosition, ColorScheme::boxForText(tr("Shape"), ColorScheme::itemTextFont()));
+  //  p.setPen(Qt::NoPen);
+  //  p.setBrush(ColorScheme::entity());
+  //  p.drawRect(box);
+
+  //  // draw text
+  //  p.setPen(ColorScheme::entityText());
+  //  p.drawText(box, Qt::AlignCenter, tr("Shape"));
 }

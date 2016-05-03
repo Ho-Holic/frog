@@ -14,6 +14,19 @@ nsRelation::Tools::Tools(QObject* parent)
   mTools[HandType]    = new HandTool(this);
   mTools[MoveType]    = new MoveTool(this);
   mTools[ConnectType] = new ConnectTool(this);
+
+  connect(handTool(),    SIGNAL(onMarkingMenuChanged(const QString&, MarkingMenuItem*)),
+          this,          SIGNAL(onMarkingMenuChanged(const QString&, MarkingMenuItem*)));
+
+  connect(moveTool(),    SIGNAL(onMarkingMenuChanged(const QString&, MarkingMenuItem*)),
+          this,          SIGNAL(onMarkingMenuChanged(const QString&, MarkingMenuItem*)));
+
+  connect(connectTool(), SIGNAL(onMarkingMenuChanged(const QString&, MarkingMenuItem*)),
+          this,          SIGNAL(onMarkingMenuChanged(const QString&, MarkingMenuItem*)));
+}
+
+void nsRelation::Tools::reportMenuStatus(const QString& replyId) {
+  this->currentTool()->reportMenuStatus(replyId);
 }
 
 nsRelation::HandTool* nsRelation::Tools::handTool() const {

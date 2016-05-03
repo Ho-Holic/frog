@@ -37,6 +37,7 @@ namespace nsRelation {
     GraphWidget(QWidget* parent = 0);
   signals:
     void onSceneUpdate(const QString&);
+    void onMarkingMenuUpdate(const QString&);
     void onMousePress(const QPoint&);
     void onMouseRelease(const QPoint&);
 
@@ -46,9 +47,9 @@ namespace nsRelation {
   public slots:
     void dispatchWorldEvent(WorldEvent* event);
 
-    void drawEntityShapeMenu();
     void drawEntity(const QString& replyId, Entity* entity);
     void drawConnection(const QString& replyId, Connection* connection);
+    void drawMarkingMenuItem(const QString& replyId, MarkingMenuItem* item);
   public slots:
     void entityIncomingSlotEvent(WorldEvent* event);
     void entityOutcomingSlotEvent(WorldEvent* event);
@@ -71,6 +72,9 @@ namespace nsRelation {
     void drawBackground();
     void drawDragArea();
     void drawDeleteArea();
+    void drawScene();
+    void drawPendingConnection();
+    void drawMarkingMenu();
 
     // TODO: replace withOrigin --> toGraphWidgetCoordinates
     // TODO: replace withoutOrigin --> toWorldCoordinates
@@ -91,7 +95,7 @@ namespace nsRelation {
     // and you can check what type of cursor you have
     // cursor.type() == Cursor::Dragging
 
-    Tools mTools;    
+    Tools* mTools;
   };
 }
 
