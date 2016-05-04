@@ -5,7 +5,9 @@ nsRelation::Tool::Tool(QObject* parent)
 : QObject(parent)
 , mOrigin(0, 0)
 , mSelectedEntities()
-, mMarkingMenu() {
+, mMarkingMenu()
+, mIsMarkingMenuOpened(false)
+, mMarkingMenuPosition(0, 0) {
   //
 }
 
@@ -41,16 +43,27 @@ void nsRelation::Tool::addToMarkingMenu(const QString& action) {
 
 void nsRelation::Tool::reportMenuStatus(const QString& replyId) {  
 
+  if ( ! mIsMarkingMenuOpened) return;
+
   foreach (MarkingMenuItem* item, mMarkingMenu) {
     emit onMarkingMenuChanged(replyId, item);
+  }
+}
+
+void nsRelation::Tool::popMarkingMenu(const QPoint& pos) {
+  mMarkingMenuPosition = pos;
+  mIsMarkingMenuOpened = true;
+
+  double angle = 360.0 / mMarkingMenu.size();
+
+  foreach (MarkingMenuItem* item, mMarkingMenu) {
+    item->setTopLeft(mMarkingMenuPosition);
   }
 }
 
 void nsRelation::Tool::beginTouch(const QPoint& pos) {
   Q_UNUSED(pos);
   // default implementation do nothing
-
-  // TODO: foreach markingmenu set position 360/angle
 }
 
 void nsRelation::Tool::move(const QPoint& from, const QPoint& to) {
@@ -66,6 +79,8 @@ void nsRelation::Tool::endTouch(const QPoint& pos) {
 
 void nsRelation::Tool::reset() {
   clearSelection();
+  mIsMarkingMenuOpened = false;
+  mMarkingMenuPosition = QPoint(0,0);
 }
 
 

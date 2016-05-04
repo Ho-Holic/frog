@@ -36,7 +36,8 @@ SOURCES += \
     src/render/tools/ConnectTool.cpp \
     src/render/tools/MoveTool.cpp \
     src/render/Tools.cpp \
-    src/render/Environment.cpp
+    src/render/Environment.cpp \
+    src/render/tools/MarkingMenuItem.cpp
 
 HEADERS  += \
     src/cplusplus11.h \
@@ -63,4 +64,5 @@ HEADERS  += \
     src/render/tools/ConnectTool.h \
     src/render/tools/MoveTool.h \
     src/render/Tools.h \
-    src/render/Environment.h
+    src/render/Environment.h \
+    src/render/tools/MarkingMenuItem.h

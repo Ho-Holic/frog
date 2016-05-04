@@ -5,9 +5,10 @@
 // common
 #include <cplusplus11.h>
 
-// move from this class
+// move from this class somehow
 #include <QFontMetrics>
 #include <render/ColorScheme.h>
+#include <QApplication>
 
 nsRelation::Entity* nsRelation::Entity::create(const QPoint& center,
                                                const QString& shortPath,
@@ -38,7 +39,7 @@ nsRelation::Entity::Entity(const QPoint& center,
 , mRect()
 , mInRelation()
 , mOutRelation() {
-  QRect bodyRect = VectorMath::fromCenterPoint(center, ColorScheme::boxForText(mLibraryName, ColorScheme::itemTextFont()));
+  QRect bodyRect = VectorMath::fromCenterPoint(center, ColorScheme::boxForText(mLibraryName));
   bodyRect.setHeight(bodyRect.height() * 2);
   mRect = bodyRect;
 }
@@ -131,7 +132,7 @@ QRect nsRelation::Entity::connectionSlotRect() const {
 }
 
 QRect nsRelation::Entity::captionRect() const {
-  QFontMetrics metrics(ColorScheme::itemTextFont());
+  QFontMetrics metrics(qApp->font()); // TODO: remove qApp call from here
   return QRect(mRect.topLeft(), QSize(mRect.width(), metrics.height() * 2));
 }
 

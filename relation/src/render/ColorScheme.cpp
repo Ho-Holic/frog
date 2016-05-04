@@ -5,6 +5,7 @@
 #include <QRect>
 #include <QFontMetrics>
 #include <QColor>
+#include <QApplication>
 
 QColor nsRelation::ColorScheme::background() {
   return QColor(30, 30, 39);
@@ -34,16 +35,12 @@ QColor nsRelation::ColorScheme::deleteAreaText() {
   return QColor(55, 17, 21);
 }
 
-QFont nsRelation::ColorScheme::itemTextFont() {
-  return QFont();
-}
-
-QSize nsRelation::ColorScheme::boxForText(const QString& name, const QFont& usedFont) {
+QSize nsRelation::ColorScheme::boxForText(const QString& name) {
 
   static int twoSpacesFromEachSide = 4;
   static int twoLines = 2;
 
-  QFontMetrics metrics(usedFont);
+  QFontMetrics metrics(qApp->font());
   int w = metrics.boundingRect(name).width() + (metrics.averageCharWidth() * twoSpacesFromEachSide);
   return QSize(w, metrics.height() * twoLines);
 }

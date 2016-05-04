@@ -162,8 +162,12 @@ void nsRelation::GraphWidget::mousePressEvent(QMouseEvent* e) {
   mIsHolding = true;
   mMousePosition = e->pos();
 
-  if (e->button() == Qt::LeftButton) {
-    QPoint p = withoutOrigin(mMousePosition);
+  QPoint p = withoutOrigin(mMousePosition);
+
+  if (e->button() == Qt::RightButton) {
+    mTools->currentTool()->popMarkingMenu(p);
+  }
+  else if (e->button() == Qt::LeftButton) {
     // TODO: replace with emit onMouseEvent(GraphMouseEvent(PressEvent, p))
     // further replace -->  GraphMousePressEvent(p) : extends GraphMouseEvent
     emit onMousePress(p);    
@@ -372,19 +376,16 @@ void nsRelation::GraphWidget::drawConnection(const QString& replyId, nsRelation:
 
 void nsRelation::GraphWidget::drawMarkingMenuItem(const QString& replyId, nsRelation::MarkingMenuItem* item) {
 
-  if (replyId != mId) return;
+  if (replyId != mId) return;  
 
-  //  //QStringList mEntityShapes = (QStringList() << "Module" << "Bridge");
+  QPainter p(this);
 
-  //  QPainter p(this);
+  // draw body
+  p.setPen(Qt::NoPen);
+  p.setBrush(ColorScheme::entity());
+  p.drawRect(item->rect());
 
-  //  // draw body
-  //  QRect box = VectorMath::fromCenterPoint(mMousePosition, ColorScheme::boxForText(tr("Shape"), ColorScheme::itemTextFont()));
-  //  p.setPen(Qt::NoPen);
-  //  p.setBrush(ColorScheme::entity());
-  //  p.drawRect(box);
-
-  //  // draw text
-  //  p.setPen(ColorScheme::entityText());
-  //  p.drawText(box, Qt::AlignCenter, tr("Shape"));
+  // draw text
+  p.setPen(ColorScheme::entityText());
+  p.drawText(item->rect(), Qt::AlignCenter, item->actionName());
 }

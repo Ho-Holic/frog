@@ -14,8 +14,8 @@ nsRelation::HandTool::HandTool(QObject* parent)
 
 void nsRelation::HandTool::move(const QPoint& from, const QPoint& to) {
   this->setOrigin(this->origin() + (to - from));
-  // TODO: maybe no need for now?
-  emit onOriginChanged(this->origin());
+
+  emit onOriginChanged(this->origin()); // TODO: maybe no need for now?
 }
 
 
