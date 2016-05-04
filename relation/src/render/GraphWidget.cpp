@@ -316,11 +316,11 @@ void nsRelation::GraphWidget::drawScene() {
 
 void nsRelation::GraphWidget::drawPendingConnection() {
 
-  if ( ! mTools->currentToolType() == ConnectType) return;
+  if ( ! (mTools->currentToolType() == ConnectType)) return;
 
   Connection pendingConnection = mTools->connectTool()->pendingConnection();
 
-  if (! pendingConnection.isDisconnected()) {
+  if ( ! pendingConnection.isDisconnected()) {
     drawConnection(mId, &pendingConnection);
   }
 }
