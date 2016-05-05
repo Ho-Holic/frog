@@ -148,7 +148,10 @@ void nsRelation::GraphWidget::mouseMoveEvent(QMouseEvent* e) {
 
     QPoint from = withoutOrigin(mMousePosition);
     QPoint to = withoutOrigin(e->pos());
-    mTools->move(from, to);
+
+    if ( ! mTools->currentTool()->isMarkingMenuOpened()) {
+      mTools->move(from, to);
+    }
 
     mMousePosition = e->pos();    
 
@@ -383,9 +386,9 @@ void nsRelation::GraphWidget::drawMarkingMenuItem(const QString& replyId, nsRela
   // draw body
   p.setPen(Qt::NoPen);
   p.setBrush(ColorScheme::entity());
-  p.drawRect(item->rect());
+  p.drawRect(withOrigin(item->rect()));
 
   // draw text
   p.setPen(ColorScheme::entityText());
-  p.drawText(item->rect(), Qt::AlignCenter, item->actionName());
+  p.drawText(withOrigin(item->rect()), Qt::AlignCenter, item->actionName());
 }

@@ -16,6 +16,9 @@ void nsRelation::MoveTool::setDeleteArea(const QRect& area) {
 }
 
 void nsRelation::MoveTool::move(const QPoint& from, const QPoint& to) {
+
+  Tool::move(from, to);
+
   Q_ASSERT( ! this->selection().empty());
   Entity* current = this->selection().front();
 
@@ -23,6 +26,9 @@ void nsRelation::MoveTool::move(const QPoint& from, const QPoint& to) {
 }
 
 void nsRelation::MoveTool::endTouch(const QPoint& pos) {
+
+  Tool::endTouch(pos);
+
   Q_ASSERT( ! this->selection().empty());
   Entity* current = this->selection().front();
 

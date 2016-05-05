@@ -42,6 +42,7 @@ namespace nsRelation {
     void addToMarkingMenu(const QString& action);
     void reportMenuStatus(const QString& replyId);
     void popMarkingMenu(const QPoint& pos);
+    bool isMarkingMenuOpened() const;
   public:
     virtual void beginTouch(const QPoint& pos);
     virtual void move(const QPoint& from, const QPoint& to);

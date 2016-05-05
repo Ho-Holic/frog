@@ -11,7 +11,7 @@ namespace nsRelation {
   public:
     MarkingMenuItem(const QString& actionName);
   public:
-    void setTopLeft(const QPoint& pos);
+    void moveTopLeft(const QPoint& pos);
     const QString& actionName() const;
     const QRect& rect() const;
   private:

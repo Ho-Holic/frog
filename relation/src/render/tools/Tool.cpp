@@ -54,11 +54,18 @@ void nsRelation::Tool::popMarkingMenu(const QPoint& pos) {
   mMarkingMenuPosition = pos;
   mIsMarkingMenuOpened = true;
 
-  double angle = 360.0 / mMarkingMenu.size();
+  //double angleStep = 360.0 / mMarkingMenu.size();
+  QPoint oldPos = mMarkingMenuPosition;
+  QPoint offsetBetweenButtons(10, 0);
 
   foreach (MarkingMenuItem* item, mMarkingMenu) {
-    item->setTopLeft(mMarkingMenuPosition);
+    item->moveTopLeft(oldPos);
+    oldPos = item->rect().topRight() + offsetBetweenButtons;
   }
+}
+
+bool nsRelation::Tool::isMarkingMenuOpened() const {
+  return mIsMarkingMenuOpened;
 }
 
 void nsRelation::Tool::beginTouch(const QPoint& pos) {

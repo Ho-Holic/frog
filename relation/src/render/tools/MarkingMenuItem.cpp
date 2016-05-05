@@ -8,8 +8,8 @@ nsRelation::MarkingMenuItem::MarkingMenuItem(const QString& actionName)
   //
 }
 
-void nsRelation::MarkingMenuItem::setTopLeft(const QPoint& pos) {
-  mRect.setTopLeft(pos);
+void nsRelation::MarkingMenuItem::moveTopLeft(const QPoint& pos) {
+  mRect.moveTopLeft(pos);
 }
 
 const QString& nsRelation::MarkingMenuItem::actionName() const {

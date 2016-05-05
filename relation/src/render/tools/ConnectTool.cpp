@@ -29,8 +29,9 @@ void nsRelation::ConnectTool::setConnectMode(nsRelation::ConnectTool::ConnectMod
   mConnectMode = mode;
 }
 
-void nsRelation::ConnectTool::beginTouch(const QPoint& pos) {
-  Q_UNUSED(pos);
+void nsRelation::ConnectTool::beginTouch(const QPoint& pos) {  
+
+  Tool::beginTouch(pos);
 
   if (mConnectMode == AboutToDisconnect) {
 
@@ -50,8 +51,8 @@ void nsRelation::ConnectTool::beginTouch(const QPoint& pos) {
 }
 
 void nsRelation::ConnectTool::move(const QPoint& from, const QPoint& to) {
-  Q_UNUSED(from);
-  Q_UNUSED(to);
+
+  Tool::move(from, to);
 
   Q_ASSERT( ! selection().empty());
 
@@ -60,6 +61,8 @@ void nsRelation::ConnectTool::move(const QPoint& from, const QPoint& to) {
 }
 
 void nsRelation::ConnectTool::endTouch(const QPoint& pos) {
+
+  Tool::endTouch(pos);
 
   if (mConnectMode == AboutToConnect) {
 
@@ -82,6 +85,8 @@ void nsRelation::ConnectTool::endTouch(const QPoint& pos) {
 }
 
 void nsRelation::ConnectTool::reset() {  
-  mConnectMode = Idle;
+
   Tool::reset();
+
+  mConnectMode = Idle;
 }
