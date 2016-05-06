@@ -50,10 +50,13 @@ void nsRelation::Tool::reportMenuStatus(const QString& replyId) {
   foreach (MarkingMenuItem* item, mMarkingMenu) {
     emit onMarkingMenuChanged(replyId, item);
   }
+
+  emit onMarkingMenuSelectionChange(mMarkingMenuPosition, mCursorPosition);
 }
 
 void nsRelation::Tool::popMarkingMenu(const QPoint& pos) {
   mMarkingMenuPosition = pos;
+  mCursorPosition = pos;
   mIsMarkingMenuOpened = true;
 
   //double angleStep = 360.0 / mMarkingMenu.size();
@@ -79,6 +82,7 @@ void nsRelation::Tool::move(const QPoint& from, const QPoint& to) {
   Q_UNUSED(from);
   Q_UNUSED(to);
   // default implementation do nothing
+  mCursorPosition = to;
 }
 
 void nsRelation::Tool::endTouch(const QPoint& pos) {
@@ -90,6 +94,7 @@ void nsRelation::Tool::reset() {
   clearSelection();
   mIsMarkingMenuOpened = false;
   mMarkingMenuPosition = QPoint(0,0);
+  mCursorPosition = QPoint(0,0);
 }
 
 

@@ -54,6 +54,8 @@ void nsRelation::ConnectTool::move(const QPoint& from, const QPoint& to) {
 
   Tool::move(from, to);
 
+  if (isMarkingMenuOpened()) return;
+
   Q_ASSERT( ! selection().empty());
 
   Entity* current = selection().front();

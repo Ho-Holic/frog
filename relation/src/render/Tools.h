@@ -19,6 +19,7 @@ namespace nsRelation {
     explicit Tools(QObject* parent = 0);
   signals:
     void onMarkingMenuChanged(const QString&, MarkingMenuItem*);
+    void onMarkingMenuSelectionChange(const QPoint&, const QPoint&);
   public slots:
     void reportMenuStatus(const QString& replyId);
   public:

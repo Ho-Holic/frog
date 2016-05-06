@@ -28,6 +28,7 @@ namespace nsRelation {
     Q_OBJECT
   signals:    
     void onMarkingMenuChanged(const QString&, MarkingMenuItem*);
+    void onMarkingMenuSelectionChange(const QPoint&, const QPoint&);
   public:
     typedef QList<Entity*> SelectionList; // TODO: rename Selection
     typedef QList<MarkingMenuItem*> MarkingMenu;

@@ -18,6 +18,7 @@ void nsRelation::MoveTool::setDeleteArea(const QRect& area) {
 void nsRelation::MoveTool::move(const QPoint& from, const QPoint& to) {
 
   Tool::move(from, to);
+  if (isMarkingMenuOpened()) return;
 
   Q_ASSERT( ! this->selection().empty());
   Entity* current = this->selection().front();

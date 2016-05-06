@@ -49,6 +49,9 @@ nsRelation::GraphWidget::GraphWidget(QWidget* parent)
   connect(mTools, SIGNAL(onMarkingMenuChanged(const QString&, MarkingMenuItem*)),
           this,   SLOT  (drawMarkingMenuItem(const QString&, MarkingMenuItem*)));
 
+  connect(mTools, SIGNAL(onMarkingMenuSelectionChange(const QPoint&, const QPoint&)),
+          this,   SLOT  (drawMarkingMenuSelection(const QPoint&, const QPoint&)));
+
   // default tool is "hand tool"
   mTools->changeToolTo(HandType);
   originChangeEvent(mTools->handTool()->origin());
@@ -392,4 +395,13 @@ void nsRelation::GraphWidget::drawMarkingMenuItem(const QString& replyId, nsRela
   // draw text
   p.setPen(ColorScheme::entityText());
   p.drawText(withOrigin(item->rect()), Qt::AlignCenter, item->actionName());
+}
+
+void nsRelation::GraphWidget::drawMarkingMenuSelection(const QPoint& center, const QPoint& edge) {
+
+  QPainter p(this);
+  p.drawLine(withOrigin(center), withOrigin(edge));
+
+  p.setPen(QPen(ColorScheme::connection(), Qt::SolidLine));
+  p.setBrush(ColorScheme::connection());
 }

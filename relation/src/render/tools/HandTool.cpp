@@ -16,6 +16,8 @@ void nsRelation::HandTool::move(const QPoint& from, const QPoint& to) {
 
   Tool::move(from, to);
 
+  if (isMarkingMenuOpened()) return;
+
   this->setOrigin(this->origin() + (to - from));
 
   emit onOriginChanged(this->origin()); // TODO: maybe no need for now?

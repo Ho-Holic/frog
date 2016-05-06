@@ -40,6 +40,7 @@ namespace nsRelation {
     void drawEntity(const QString& replyId, Entity* entity);
     void drawConnection(const QString& replyId, Connection* connection);
     void drawMarkingMenuItem(const QString& replyId, MarkingMenuItem* item);
+    void drawMarkingMenuSelection(const QPoint& center, const QPoint& edge);
   public slots:
     void entityIncomingSlotEvent(WorldEvent* event);
     void entityOutcomingSlotEvent(WorldEvent* event);

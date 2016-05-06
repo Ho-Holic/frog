@@ -17,12 +17,19 @@ nsRelation::Tools::Tools(QObject* parent)
 
   connect(handTool(),    SIGNAL(onMarkingMenuChanged(const QString&, MarkingMenuItem*)),
           this,          SIGNAL(onMarkingMenuChanged(const QString&, MarkingMenuItem*)));
-
   connect(moveTool(),    SIGNAL(onMarkingMenuChanged(const QString&, MarkingMenuItem*)),
           this,          SIGNAL(onMarkingMenuChanged(const QString&, MarkingMenuItem*)));
-
   connect(connectTool(), SIGNAL(onMarkingMenuChanged(const QString&, MarkingMenuItem*)),
           this,          SIGNAL(onMarkingMenuChanged(const QString&, MarkingMenuItem*)));
+
+
+  connect(handTool(),    SIGNAL(onMarkingMenuSelectionChange(const QPoint&, const QPoint&)),
+          this,          SIGNAL(onMarkingMenuSelectionChange(const QPoint&, const QPoint&)));
+  connect(moveTool(),    SIGNAL(onMarkingMenuSelectionChange(const QPoint&, const QPoint&)),
+          this,          SIGNAL(onMarkingMenuSelectionChange(const QPoint&, const QPoint&)));
+  connect(connectTool(), SIGNAL(onMarkingMenuSelectionChange(const QPoint&, const QPoint&)),
+          this,          SIGNAL(onMarkingMenuSelectionChange(const QPoint&, const QPoint&)));
+
 }
 
 void nsRelation::Tools::reportMenuStatus(const QString& replyId) {
