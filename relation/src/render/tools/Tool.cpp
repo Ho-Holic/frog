@@ -7,12 +7,14 @@ nsRelation::Tool::Tool(QObject* parent)
 , mSelectedEntities()
 , mMarkingMenu()
 , mIsMarkingMenuOpened(false)
-, mMarkingMenuPosition(0, 0) {
+, mMarkingMenuPosition(0, 0)
+, mCursorPosition(0, 0) {
   //
 }
 
 nsRelation::Tool::~Tool() {
   qDeleteAll(mMarkingMenu.begin(), mMarkingMenu.end());
+  mMarkingMenu.clear();
 }
 
 const QPoint& nsRelation::Tool::origin() const {
@@ -43,7 +45,7 @@ void nsRelation::Tool::addToMarkingMenu(const QString& action) {
 
 void nsRelation::Tool::reportMenuStatus(const QString& replyId) {  
 
-  if ( ! mIsMarkingMenuOpened) return;
+  if ( ! isMarkingMenuOpened()) return;
 
   foreach (MarkingMenuItem* item, mMarkingMenu) {
     emit onMarkingMenuChanged(replyId, item);

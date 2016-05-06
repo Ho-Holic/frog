@@ -21,8 +21,8 @@ nsRelation::World::World(QObject* parent)
 }
 
 nsRelation::World::~World() {
-
   qDeleteAll(mEntityList);
+  mEntityList.clear();
 }
 
 void nsRelation::World::inspectWorldAt(const QPoint& pos) {

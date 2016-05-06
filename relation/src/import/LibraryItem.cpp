@@ -30,6 +30,7 @@ nsRelation::LibraryItem::LibraryItem(Type type,
 
 nsRelation::LibraryItem::~LibraryItem() {
   qDeleteAll(mChildItems);
+  mChildItems.clear();
 }
 
 void nsRelation::LibraryItem::prependChild(nsRelation::LibraryItem* child) {

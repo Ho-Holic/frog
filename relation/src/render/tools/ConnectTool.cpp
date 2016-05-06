@@ -87,6 +87,6 @@ void nsRelation::ConnectTool::endTouch(const QPoint& pos) {
 void nsRelation::ConnectTool::reset() {  
 
   Tool::reset();
-
   mConnectMode = Idle;
+  mPendingConnection = Connection(); // remove extra draw of edge on graph
 }

@@ -8,6 +8,7 @@
 
 // self
 #include "MarkingMenuItem.h"
+#include "world/Connection.h"
 
 class QPoint;
 
@@ -53,7 +54,8 @@ namespace nsRelation {
     SelectionList mSelectedEntities; // TODO: rename mSelection // you don't need to delete this pointers
     MarkingMenu mMarkingMenu; // this pointers need to be deleted
     bool mIsMarkingMenuOpened;
-    QPoint mMarkingMenuPosition;
+    QPoint mMarkingMenuPosition;    
+    QPoint mCursorPosition;
   };
 }
 

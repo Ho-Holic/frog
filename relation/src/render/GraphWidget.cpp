@@ -38,16 +38,16 @@ nsRelation::GraphWidget::GraphWidget(QWidget* parent)
 , mTools(new Tools(this)) {
 
   connect(mTools->moveTool(), SIGNAL(onDestroyRequest(Entity*)),
-          this,              SIGNAL(onDestroyRequest(Entity*)));
+          this,               SIGNAL(onDestroyRequest(Entity*)));
 
   connect(mTools->handTool(), SIGNAL(onOriginChanged(const QPoint&)),
-          this,              SLOT  (originChangeEvent(const QPoint&)));
+          this,               SLOT  (originChangeEvent(const QPoint&)));
 
   connect(this,    SIGNAL(onMarkingMenuUpdate(const QString&)),
-          mTools,  SLOT(reportMenuStatus(const QString&)));
+          mTools,  SLOT  (reportMenuStatus(const QString&)));
 
   connect(mTools, SIGNAL(onMarkingMenuChanged(const QString&, MarkingMenuItem*)),
-          this,   SLOT(drawMarkingMenuItem(const QString&, MarkingMenuItem*)));
+          this,   SLOT  (drawMarkingMenuItem(const QString&, MarkingMenuItem*)));
 
   // default tool is "hand tool"
   mTools->changeToolTo(HandType);
@@ -149,9 +149,7 @@ void nsRelation::GraphWidget::mouseMoveEvent(QMouseEvent* e) {
     QPoint from = withoutOrigin(mMousePosition);
     QPoint to = withoutOrigin(e->pos());
 
-    if ( ! mTools->currentTool()->isMarkingMenuOpened()) {
-      mTools->move(from, to);
-    }
+    mTools->move(from, to);
 
     mMousePosition = e->pos();    
 
@@ -174,8 +172,8 @@ void nsRelation::GraphWidget::mousePressEvent(QMouseEvent* e) {
     // TODO: replace with emit onMouseEvent(GraphMouseEvent(PressEvent, p))
     // further replace -->  GraphMousePressEvent(p) : extends GraphMouseEvent
     emit onMousePress(p);    
-    mTools->beginTouch(p);
   }
+  mTools->beginTouch(p);
 
   update();
 }
@@ -183,7 +181,10 @@ void nsRelation::GraphWidget::mousePressEvent(QMouseEvent* e) {
 void nsRelation::GraphWidget::mouseReleaseEvent(QMouseEvent* e) {
 
   QPoint p = withoutOrigin(e->pos());
-  emit onMouseRelease(p);
+
+  if (e->button() == Qt::LeftButton) {
+    emit onMouseRelease(p);
+  }
 
   mTools->endTouch(p);
   mTools->reset();

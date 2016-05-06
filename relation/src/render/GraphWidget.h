@@ -18,16 +18,6 @@ namespace nsRelation {
   class GraphWidget : public QWidget {
     Q_OBJECT
   public:
-    enum Mode {
-      Idle,
-      OriginMove,
-      EntityMove,
-      PendingConnection,
-      Connect,
-      EditConnection,
-      EntityShapeMenu
-    };
-
     typedef QList<Entity*> SelectionList;
     typedef void (GraphWidget::*TouchFunction)(const QPoint&);
     typedef void (GraphWidget::*MoveFunction)(const QPoint&, const QPoint&);
